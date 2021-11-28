@@ -10,8 +10,19 @@ public class Model {
     private String name;
     private Data data;
     private Student student;
+    private Results result;
+    private Status status;
 
-    enum status {PreTrained,Training,Trained,Tested};
-    enum results {None, Good, Bad};
+
+    enum Status {PreTrained,Training,Trained,Tested;};
+    enum Results {None, Good, Bad};
+
+    public Model(String name, Data data, Student student){
+        this.name = name;
+        this.data = data;
+        this.student = student;
+        this.status =Status.PreTrained;
+        this.result = Results.None;
+    }
 
 }

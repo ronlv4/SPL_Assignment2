@@ -14,9 +14,4 @@ public class MessageBusTest {
         messageBus = new MessageBusImpl();
     }
 
-    @Test
-    public void testMultiply(){
-        int result = 25;
-        assertEquals("result should be equal to 20", result, messageBus.multiply(5, 4));
-    }
 }
