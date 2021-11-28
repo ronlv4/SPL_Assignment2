@@ -6,6 +6,10 @@ package bgu.spl.mics.application.objects;
  * Add fields and methods to this class as you see fit (including public methods and constructors).
  */
 public class GPU {
+
+    private Model model;
+    private Cluster cluster;
+
     /**
      * Enum representing the type of the GPU.
      */

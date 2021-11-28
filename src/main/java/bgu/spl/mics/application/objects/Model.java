@@ -7,4 +7,11 @@ package bgu.spl.mics.application.objects;
  */
 public class Model {
 
+    private String name;
+    private Data data;
+    private Student student;
+
+    enum status {PreTrained,Training,Trained,Tested};
+    enum results {None, Good, Bad};
+
 }
