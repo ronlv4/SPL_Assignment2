@@ -35,9 +35,12 @@ public class FutureTest<T> {
     }
 
     @Test
-    public void testGet(){
+    public void testGetResolved(){
         assertEquals(deepLearningModel, future.get()); // TODO check if assertEqual is deep equal.
+        future.resolve(deepLearningModel);
+
     }
+
 
     @Test
     public void testGetTimeOut(){
