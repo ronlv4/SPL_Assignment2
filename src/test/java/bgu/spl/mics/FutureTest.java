@@ -21,24 +21,26 @@ public class FutureTest<T> {
     public void setUp(){
         future = new Future<>();
         deepLearningModel = new Model("Deep Learning Model", new Data(), new Student());
-        future.resolve(deepLearningModel);
     }
 
     @Test
     public void testResolve(){
+        assertFalse("Future should not be resolved", future.isDone());
+        future.resolve(deepLearningModel);
         assertTrue("Future should be resolved", future.isDone());
     }
 
     @Test
     public void testIsDone(){
+        assertFalse("Future should not be resolved", future.isDone());
+        future.resolve(deepLearningModel);
         assertTrue("Future should be resolved", future.isDone());
     }
 
     @Test
     public void testGetResolved(){
-        assertEquals(deepLearningModel, future.get()); // TODO check if assertEqual is deep equal.
         future.resolve(deepLearningModel);
-
+        assertEquals(deepLearningModel, future.get()); // TODO check if assertEqual is deep equal.
     }
 
 

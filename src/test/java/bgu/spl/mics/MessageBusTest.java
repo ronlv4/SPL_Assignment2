@@ -21,6 +21,8 @@ public class MessageBusTest {
 
     @Test
     public void testSusbriceEvent(){
+        messageBus.
+
         //<TrainModel<Model>
 //    <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m);
 
