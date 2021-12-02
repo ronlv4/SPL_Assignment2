@@ -31,7 +31,7 @@ public class Future<T> {
      */
 	public T get() {
 		//TODO: implement this.
-		return null;
+		return result;
 	}
 	
 	/**
@@ -39,6 +39,7 @@ public class Future<T> {
      */
 	public void resolve (T result) {
 		//TODO: implement this.
+		this.result = result;
 	}
 	
 	/**
@@ -46,7 +47,7 @@ public class Future<T> {
      */
 	public boolean isDone() {
 		//TODO: implement this.
-		return false;
+		return result != null;
 	}
 	
 	/**

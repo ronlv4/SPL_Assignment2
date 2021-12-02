@@ -52,6 +52,7 @@ public class MessageBusTest {
 
     @Test
     public void testSendBroadcast(){
+
 //        messageBus.register(studentService);
 //        messageBus.subscribeBroadcast();
 //        messageBus.sendEvent(trainModel);
