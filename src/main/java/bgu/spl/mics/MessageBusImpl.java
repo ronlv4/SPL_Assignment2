@@ -51,7 +51,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public Message awaitMessage(MicroService m) throws InterruptedException {
+	public Message awaitMessage(MicroService m	) throws InterruptedException {
 		// TODO Auto-generated method stub
 		return null;
 	}

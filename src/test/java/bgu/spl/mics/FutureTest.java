@@ -53,7 +53,7 @@ public class FutureTest<T> {
                 Thread.sleep(1000);
                 future.resolve(1);
             } catch (Exception e) {
-                fail("testGetBlocking was interrupted so the test has failed, try rerun without interrupting");
+                fail("test failed because it was interrupted, try rerun without interrupting");
             }
         });
         t1.start();
