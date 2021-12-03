@@ -25,4 +25,7 @@ public class Model {
         this.result = Results.None;
     }
 
+    public Data getData(){
+        return data;
+    }
 }

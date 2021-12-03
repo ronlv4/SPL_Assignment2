@@ -56,6 +56,9 @@ public class MessageBusImpl implements MessageBus {
 		return null;
 	}
 
-	
+	public MessageBusImpl getInstance(){
+		return this;
+	}
+
 
 }

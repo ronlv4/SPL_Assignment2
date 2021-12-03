@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.Collection;
+import java.util.Queue;
+
 /**
  * Passive object representing a single GPU.
  * Add all the fields described in the assignment as private fields.
@@ -8,7 +11,18 @@ package bgu.spl.mics.application.objects;
 public class GPU {
 
     private Model model;
+    int ticks;
     private Cluster cluster;
+
+    /* GPU receives a model which holds Data.
+    GPU split Data into Data batches and then sends them to CPUS
+    .
+    .
+    .
+    GPU receives processed data batches and then uses them to train the model
+    when the GPU is done training a model, it sends it back to the messageBus
+     */
+
 
     /**
      * Enum representing the type of the GPU.
@@ -30,9 +44,40 @@ public class GPU {
 //            this.type = Type.GTX1080;
 //        }
 //        else{
+
 //        }
     }
 
+    public Collection<DataBatch> getUnprocessedBatches(){
+        return null;
+    }
+
+    public void advanceTick(){
+
+    }
+
+    public void addProcessedBatch(DataBatch batch){
+
+    }
+
+    public int getNumberOfProcessedBatches(){
+        return 0;
+    }
+
+    public void finalizeModelTraining(){
+
+    }
+
+    public Data getData(){
+        return model.getData();
+    }
 
 
+    public Model getModel(){
+        return model;
+    }
+
+    public Type getType(){
+        return type;
+    }
 }
