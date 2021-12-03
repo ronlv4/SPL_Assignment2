@@ -17,4 +17,22 @@ public class GPU {
 
     private Type type;
 
+    public GPU(Model model, Cluster cluster, String type){
+//        this.model = model;
+//        this.cluster = cluster;
+//        if (type.equals("RTX3090")){
+//            this.type=Type.RTX3090;
+//        }
+//        else if (type.equals("RTX2080")){
+//            this.type = Type.RTX2080;
+//        }
+//        else if (type.equals("GTX1080")){
+//            this.type = Type.GTX1080;
+//        }
+//        else{
+//        }
+    }
+
+
+
 }

@@ -3,39 +3,37 @@ package bgu.spl.mics;
 import bgu.spl.mics.application.objects.Data;
 import bgu.spl.mics.application.objects.Model;
 import bgu.spl.mics.application.objects.Student;
-import bgu.spl.mics.application.services.TimeService;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
-public class FutureTest<T> {
+public class FutureTest {
 
     private Future<Integer> future;
     private Model deepLearningModel;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         future = new Future<>();
         deepLearningModel = new Model("Deep Learning Model", new Data(), new Student());
     }
 
     @Test
-    public void testResolve() {
+    public void resolve() {
         future.resolve(10);
         assertTrue("Future should be resolved", future.isDone());
     }
 
     @Test
-    public void testIsDoneUnResolved() {
+    public void isDoneUnresolved() {
         assertFalse("Future should not be resolved", future.isDone());
     }
 
     @Test
-    public void testIsDoneResolved(){
+    public void isDoneResolved() {
         future.resolve(10);
         assertTrue("Future should be resolved", future.isDone());
     }
