@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
+import static bgu.spl.mics.application.objects.Data.Type.Images;
 import static org.junit.Assert.*;
 
 public class FutureTest {
@@ -18,7 +19,7 @@ public class FutureTest {
     @Before
     public void setUp() throws Exception {
         future = new Future<>();
-        deepLearningModel = new Model("Deep Learning Model", new Data(), new Student());
+        deepLearningModel = new Model("Deep Learning Model", new Data(Images, 0,100_000), new Student());
     }
 
     @Test

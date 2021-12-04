@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Collection;
 import java.util.Queue;
 
@@ -10,9 +12,6 @@ import java.util.Queue;
  */
 public class GPU {
 
-    private Model model;
-    int ticks;
-    private Cluster cluster;
 
     /* GPU receives a model which holds Data.
     GPU split Data into Data batches and then sends them to CPUS
@@ -27,11 +26,18 @@ public class GPU {
     /**
      * Enum representing the type of the GPU.
      */
-    enum Type {RTX3090, RTX2080, GTX1080}
+    enum Type {
+        RTX3090,
+        RTX2080,
+        GTX1080
+    }
 
     private Type type;
+    private Model model;
+    private Cluster cluster;
+    int ticks;
 
-    public GPU(Model model, Cluster cluster, String type){
+    public GPU(Model model, Cluster cluster, String type) {
 //        this.model = model;
 //        this.cluster = cluster;
 //        if (type.equals("RTX3090")){
@@ -48,36 +54,36 @@ public class GPU {
 //        }
     }
 
-    public Collection<DataBatch> getUnprocessedBatches(){
+    public Collection<DataBatch> getUnprocessedBatches() {
         return null;
     }
 
-    public void advanceTick(){
+    public void advanceTick() {
 
     }
 
-    public void addProcessedBatch(DataBatch batch){
+    public void addProcessedBatch(DataBatch batch) {
 
     }
 
-    public int getNumberOfProcessedBatches(){
+    public int getNumberOfProcessedBatches() {
         return 0;
     }
 
-    public void finalizeModelTraining(){
+    public void finalizeModelTraining() {
 
     }
 
-    public Data getData(){
+    public Data getData() {
         return model.getData();
     }
 
 
-    public Model getModel(){
+    public Model getModel() {
         return model;
     }
 
-    public Type getType(){
+    public Type getType() {
         return type;
     }
 }

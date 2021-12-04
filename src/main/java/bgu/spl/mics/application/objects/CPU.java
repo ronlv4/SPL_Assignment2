@@ -21,8 +21,24 @@ public class CPU {
 
     }
 
+    public int getTicks() {
+        return ticks;
+    }
+
+    public Collection<DataBatch> getDataBatchCollection() {
+        return dataBatchCollection;
+    }
+
+    public int getNumOfBatches(){
+        return dataBatchCollection.size();
+    }
+
+    public Cluster getCluster() {
+        return cluster;
+    }
+
     /**
-     * @pre ticks + 1 == @post ticks
+     * @pre getTicks() + 1 == @post getTicks()
      *
      */
     public void advanceTick(){

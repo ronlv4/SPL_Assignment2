@@ -12,23 +12,36 @@ import static org.junit.Assert.*;
 
 public class CPUTest {
 
+    private CPU cpu32Cores;
+    private CPU cpu16Cores;
+    private DataBatch batch;
+
     @Before
     public void setUp() throws Exception {
-        CPU cpu32Cors = new CPU(32,new Cluster());
-        CPU cpu16Cors = new CPU(16,new Cluster());
-        DataBatch batch = new DataBatch(new Data(Images));
+        cpu32Cores = new CPU(32,new Cluster());
+        cpu16Cores = new CPU(16,new Cluster());
+        batch = new DataBatch(new Data(Images, 0, 500_000),0);
     }
 
     @Test
     public void advanceTick() {
+        int ticksBefore = cpu16Cores.getTicks();
+        cpu16Cores.advanceTick();
+        int ticksAfter = cpu16Cores.getTicks();
+        assertEquals(ticksBefore + 1, ticksAfter);
 
     }
 
     @Test
     public void getNumOfCores() {
+        assertEquals(16, cpu16Cores.getNumOfCores());
     }
 
     @Test
     public void addDataBatch() {
+        int numOfBatchesBefore = cpu16Cores.getNumOfBatches();
+        cpu16Cores.addDataBatch(batch);
+        int numOfBatchesAfter = cpu16Cores.getNumOfBatches();
+        assertEquals(numOfBatchesBefore + 1, numOfBatchesAfter);
     }
 }
