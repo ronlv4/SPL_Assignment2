@@ -8,6 +8,10 @@ package bgu.spl.mics.application.objects;
 public class DataBatch {
 
     private Data data;
-    private int start_index;
+    private int startIndex;
 
+    public DataBatch(Data data, int startIndex) {
+        this.data = data;
+        this.startIndex = startIndex;
+    }
 }

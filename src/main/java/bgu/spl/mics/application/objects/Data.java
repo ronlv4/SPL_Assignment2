@@ -15,4 +15,22 @@ public class Data {
     private Type type;
     private int processed;
     private int size;
+
+    public Data(Type type, int processed, int size) {
+        this.type = type;
+        this.processed = processed;
+        this.size = size;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public int getProcessed() {
+        return processed;
+    }
+
+    public int getSize() {
+        return size;
+    }
 }
