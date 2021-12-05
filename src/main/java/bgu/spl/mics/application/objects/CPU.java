@@ -1,7 +1,5 @@
 package bgu.spl.mics.application.objects;
 
-import bgu.spl.mics.Message;
-
 import java.util.Collection;
 
 /**
@@ -11,8 +9,7 @@ import java.util.Collection;
  */
 public class CPU {
     private int cores;
-    private boolean isProcessing; //decide between the 2
-    private int ticks; // decide between the 2
+    private int ticks;
     private Collection<DataBatch> dataBatchCollection;
     private Cluster cluster;
 

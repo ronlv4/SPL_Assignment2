@@ -36,6 +36,7 @@ public class CPUTest {
     @Test
     public void getNumOfCores() {
         assertEquals(16, cpu16Cores.getNumOfCores());
+        assertEquals(32, cpu32Cores.getNumOfCores());
     }
 
     @Test
