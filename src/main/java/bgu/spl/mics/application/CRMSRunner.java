@@ -1,40 +1,37 @@
 package bgu.spl.mics.application;
 
-import bgu.spl.mics.application.objects.CPU;
-import bgu.spl.mics.application.objects.ConfrenceInformation;
-import bgu.spl.mics.application.objects.GPU;
-import bgu.spl.mics.application.objects.Student;
+import bgu.spl.mics.application.services.InputFile;
+
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.Reader;
+import java.io.FileNotFoundException;
 
-/** This is the Main class of Compute Resources Management System application. You should parse the input file,
+/**
+ * This is the Main class of Compute Resources Management System application. You should parse the input file,
  * create the different instances of the objects, and run the system.
  * In the end, you should output a text file.
  */
 
-class InputFile{
-    private Student[] Students;
-    private String[] GPUS;
-    private int[] CPUS;
-    private ConfrenceInformation[] Conferences;
-    private int TickTime;
-    private int Duration;
-}
 public class CRMSRunner {
-    public static void main(String[] args) {
-        InputFile inputJson = null;
+
+    private static InputFile parseInputFile(String jsonPath) throws FileNotFoundException {
         Gson gson = new Gson();
-        try{
-            JsonReader reader = new JsonReader(new FileReader(args[0]));
-            inputJson= gson.fromJson(reader, InputFile.class);
-        }
-        catch (FileNotFoundException e){
+        JsonReader reader = new JsonReader(new FileReader(jsonPath));
+        return gson.fromJson(reader, InputFile.class);
+    }
+
+    public static void main(String[] args) {
+        InputFile inputJson;
+        try {
+            inputJson = parseInputFile(args[0]);
+        } catch (FileNotFoundException e) {
             System.out.println("File does not exist");
         }
+
+
+
+
     }
 }

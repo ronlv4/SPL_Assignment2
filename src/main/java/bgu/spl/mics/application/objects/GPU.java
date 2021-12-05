@@ -14,7 +14,7 @@ public class GPU {
 
 
     /* GPU receives a model which holds Data.
-    GPU split Data into Data batches and then sends them to CPUS
+    GPU split Data into Data batches and then sends them to CPUS (through the cluster)
     .
     .
     .
