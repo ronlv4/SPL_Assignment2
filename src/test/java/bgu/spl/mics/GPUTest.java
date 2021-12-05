@@ -9,43 +9,59 @@ import static org.junit.Assert.*;
 
 public class GPUTest {
     private GPU gpu;
+    private Data data;
+    private Model deepLearningModel;
     private DataBatch batch;
 
     @Before
     public void setUp() throws Exception {
-        batch = new DataBatch(new Data(Data.Type.Tabular, 0,100_000), 0);
-        gpu = new GPU(new Model("deepLearningModel", new Data(Data.Type.Text, 0,20_000), new Student()), new Cluster(), RTX3090);
+        data = new Data(Data.Type.Tabular, 0, 100_000);
+        deepLearningModel=new Model("deepLearningModel", data, new Student());
+        gpu = new GPU(deepLearningModel, new Cluster(), RTX3090);
+        /*batch = new DataBatch(new Data(Data.Type.Tabular, 0,100_000), 0);
+        gpu = new GPU(new Model("deepLearningModel", new Data(Data.Type.Text, 0,20_000), new Student()), new Cluster(), RTX3090);*/
     }
 
-    @Test
+    /*@Test
     public void getUnprocessedBatches() {
-    }
+        DataBatch getbatch=gpu.getUnprocessedBatches();
+    }*/
 
-    @Test
+   /* @Test
     public void advanceTick() {
-    }
+        int ticksBefore = gpu.getTicks();
+        gpu.advanceTick();
+        int ticksAfter = gpu.getTicks();
+        assertEquals(ticksBefore + 1, ticksAfter);
+    }*/
 
-    @Test
+    /*@Test
     public void addProcessedBatch() {
-    }
+
+    }*/
 
     @Test
     public void getNumberOfProcessedBatches() {
+        assertEquals(data.getSize()/1000,gpu.getNumberOfProcessedBatches());
     }
 
+    /*
     @Test
     public void finalizeModelTraining() {
-    }
+    }*/
 
     @Test
     public void getData() {
+        assertEquals(data,gpu.getData());
     }
 
     @Test
     public void getModel() {
+        assertEquals(gpu.getModel(),deepLearningModel);
     }
 
     @Test
     public void getType() {
+        assertEquals(gpu.getType(),RTX3090);
     }
 }
