@@ -26,7 +26,7 @@ public class GPU {
     /**
      * Enum representing the type of the GPU.
      */
-    enum Type {
+    public enum Type {
         RTX3090,
         RTX2080,
         GTX1080
@@ -37,7 +37,7 @@ public class GPU {
     private Cluster cluster;
     int ticks;
 
-    public GPU(Model model, Cluster cluster, String type) {
+    public GPU(Model model, Cluster cluster, Type type) {
 //        this.model = model;
 //        this.cluster = cluster;
 //        if (type.equals("RTX3090")){

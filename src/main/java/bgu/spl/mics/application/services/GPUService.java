@@ -18,6 +18,13 @@ import bgu.spl.mics.application.messages.DataPreProcessEvent;
 public class GPUService extends MicroService {
 
     private GPU gpu;
+    /*
+    flow:
+    GPUService calls to messageBus.complete
+    inside meesageBus.complete we need to invoke studentService.complete
+    inside studentService.complete we need to invoke future.resolve
+    inside future.resolve we need to change the result that future holds.
+     */
 
     public GPUService(String name) {
         super("Change_This_Name");

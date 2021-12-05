@@ -1,14 +1,20 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.objects.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import static bgu.spl.mics.application.objects.GPU.Type.RTX3090;
 import static org.junit.Assert.*;
 
 public class GPUTest {
+    private GPU gpu;
+    private DataBatch batch;
 
     @Before
     public void setUp() throws Exception {
+        batch = new DataBatch(new Data(Data.Type.Tabular, 0,100_000), 0);
+        gpu = new GPU(new Model("deepLearningModel", new Data(Data.Type.Text, 0,20_000), new Student()), new Cluster(), RTX3090);
     }
 
     @Test

@@ -14,18 +14,28 @@ public class Model {
     private Status status;
 
 
-    enum Status {PreTrained,Training,Trained,Tested;};
-    enum Results {None, Good, Bad};
+    enum Status {
+        PreTrained,
+        Training,
+        Trained,
+        Tested
+    }
 
-    public Model(String name, Data data, Student student){
+    enum Results {
+        None,
+        Good,
+        Bad
+    }
+
+    public Model(String name, Data data, Student student) {
         this.name = name;
         this.data = data;
         this.student = student;
-        this.status =Status.PreTrained;
+        this.status = Status.PreTrained;
         this.result = Results.None;
     }
 
-    public Data getData(){
+    public Data getData() {
         return data;
     }
 }
