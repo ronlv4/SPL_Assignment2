@@ -61,6 +61,10 @@ public class GPU {
 
     }
 
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
     public Data getData() {
         return model.getData();
     }
@@ -72,5 +76,9 @@ public class GPU {
 
     public Type getType() {
         return type;
+    }
+
+    public int getTicks() {
+        return ticks;
     }
 }
