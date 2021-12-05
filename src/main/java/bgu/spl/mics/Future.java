@@ -29,17 +29,23 @@ public class Future<T> {
      * @return return the result of type T if it is available, if not wait until it is available.
      * 	       
      */
-	public T get() {
-		//TODO: implement this.
+	public synchronized T get() {
+		try{
+			if (result == null)
+				wait();
+		}
+		catch (InterruptedException e) {
+			return result;
+		}
 		return result;
 	}
 	
 	/**
      * Resolves the result of this Future object.
      */
-	public void resolve (T result) {
-		//TODO: implement this.
+	public synchronized void resolve (T result) {
 		this.result = result;
+		notify();
 	}
 	
 	/**
@@ -55,15 +61,21 @@ public class Future<T> {
      * This method is non-blocking, it has a limited amount of time determined
      * by {@code timeout}
      * <p>
-     * @param timout 	the maximal amount of time units to wait for the result.
+     * @param timeout 	the maximal amount of time units to wait for the result.
      * @param unit		the {@link TimeUnit} time units to wait.
      * @return return the result of type T if it is available, if not, 
      * 	       wait for {@code timeout} TimeUnits {@code unit}. If time has
      *         elapsed, return null.
      */
 	public T get(long timeout, TimeUnit unit) {
-		//TODO: implement this.
-		return null;
+		if (result == null){
+			try{
+				wait(unit.toMillis(timeout));
+			} catch (InterruptedException e) {
+				return result;
+			}
+		}
+		return result;
 	}
 
 }
