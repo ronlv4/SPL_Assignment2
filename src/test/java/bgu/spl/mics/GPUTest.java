@@ -14,7 +14,7 @@ public class GPUTest {
     @Before
     public void setUp() throws Exception {
         batch = new DataBatch(new Data(Data.Type.Tabular, 0,100_000), 0);
-        gpu = new GPU(new Model("deepLearningModel", new Data(Data.Type.Text, 0,20_000), new Student()), new Cluster(), RTX3090);
+        gpu = new GPU(RTX3090);
     }
 
     @Test
