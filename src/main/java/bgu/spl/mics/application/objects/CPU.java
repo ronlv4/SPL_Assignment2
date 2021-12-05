@@ -18,7 +18,9 @@ public class CPU {
 
 
     public CPU(int cores){
-
+        this.cores = cores;
+        this.cluster = Cluster.getInstance();
+        this.ticks = 0;
     }
 
     public int getTicks() {

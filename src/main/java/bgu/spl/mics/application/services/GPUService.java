@@ -38,6 +38,6 @@ public class GPUService extends MicroService {
 
     }
 
-    public sendProcessedBatch(DataBatch batch){
+    public void sendProcessedBatch(DataBatch batch){
     }
 }

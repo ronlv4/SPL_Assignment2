@@ -112,15 +112,15 @@ public class CRMSRunner {
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
         buildCPUServices(cpus);
-        updateCluster(gpus,cpus);
+//        updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
 
 
     }
 
-    private static void updateCluster(GPU[] gpus, CPU[] cpus) {
-        Cluster.setCPUS(cpus);
-        Cluster.setGPUS(gpus);
-    }
+//    private static void updateCluster(GPU[] gpus, CPU[] cpus) {
+//        Cluster.setCPUS(cpus);
+//        Cluster.setGPUS(gpus);
+//    }
 }
