@@ -48,19 +48,3 @@ public class GPUTest {
     @Test
     public void finalizeModelTraining() {
     }*/
-
-    @Test
-    public void getData() {
-        assertEquals(data,gpu.getData());
-    }
-
-    @Test
-    public void getModel() {
-        assertEquals(gpu.getModel(),deepLearningModel);
-    }
-
-    @Test
-    public void getType() {
-        assertEquals(gpu.getType(),RTX3090);
-    }
-}
