@@ -1,4 +1,4 @@
-package bgu.spl.mics;
+package bgu.spl.mics.application.objects;
 
 import bgu.spl.mics.application.objects.CPU;
 import bgu.spl.mics.application.objects.Cluster;
