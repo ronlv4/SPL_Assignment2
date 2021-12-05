@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.objects.DataBatch;
 import bgu.spl.mics.application.objects.GPU;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
@@ -20,20 +21,23 @@ public class GPUService extends MicroService {
     private GPU gpu;
     /*
     flow:
-    GPUService calls to messageBus.complete
-    inside meesageBus.complete we need to invoke studentService.complete
-    inside studentService.complete we need to invoke future.resolve
+    GPUService calls to messageBus.complete(Event<T> e, T result)
+    inside meesageBus.complete we need to invoke studentService.complete(Event<T> e, T result)
+    inside studentService.complete we need to invoke future.resolve(T result)
     inside future.resolve we need to change the result that future holds.
      */
 
-    public GPUService(String name) {
+    public GPUService(String name, GPU gpu) {
         super("Change_This_Name");
-        // TODO Implement this
+        this.gpu = gpu;
     }
 
     @Override
     protected void initialize() {
         // TODO Implement this
 
+    }
+
+    public sendProcessedBatch(DataBatch batch){
     }
 }

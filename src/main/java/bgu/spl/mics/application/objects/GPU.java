@@ -37,23 +37,10 @@ public class GPU {
     private Cluster cluster;
     int ticks;
 
-    public GPU(Model model, Cluster cluster, Type type) {
-//        this.model = model;
-//        this.cluster = cluster;
-//        if (type.equals("RTX3090")){
-//            this.type=Type.RTX3090;
-//        }
-//        else if (type.equals("RTX2080")){
-//            this.type = Type.RTX2080;
-//        }
-//        else if (type.equals("GTX1080")){
-//            this.type = Type.GTX1080;
-//        }
-//        else{
-
-//        }
+    public GPU(Type type){
+        this.cluster = Cluster.getInstance();
+        this.type = type;
     }
-
     public Collection<DataBatch> getUnprocessedBatches() {
         return null;
     }

@@ -14,10 +14,9 @@ import bgu.spl.mics.application.messages.DataPreProcessEvent;
 public class CPUService extends MicroService {
 
     private CPU cpu;
-    public CPUService(String name) {
-
+    public CPUService(String name, CPU cpu) {
         super("Change_This_Name");
-        // TODO Implement this
+        this.cpu = cpu;
     }
 
     @Override

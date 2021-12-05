@@ -17,7 +17,7 @@ public class CPU {
     private Cluster cluster;
 
 
-    public CPU(int cores, Cluster cluster){
+    public CPU(int cores){
 
     }
 

@@ -18,8 +18,9 @@ public class CPUTest {
 
     @Before
     public void setUp() throws Exception {
-        cpu32Cores = new CPU(32,new Cluster());
-        cpu16Cores = new CPU(16,new Cluster());
+        Cluster cluster = Cluster.getInstance();
+        cpu32Cores = new CPU(32);
+        cpu16Cores = new CPU(16);
         batch = new DataBatch(new Data(Images, 0, 500_000),0);
     }
 
