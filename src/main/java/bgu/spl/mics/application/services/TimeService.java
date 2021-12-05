@@ -13,7 +13,9 @@ import bgu.spl.mics.MicroService;
  */
 public class TimeService extends MicroService{
 
-	public TimeService() {
+	private static TimeService instance = null;
+
+	private TimeService() {
 		super("Change_This_Name");
 		// TODO Implement this
 	}
@@ -22,6 +24,12 @@ public class TimeService extends MicroService{
 	protected void initialize() {
 		// TODO Implement this
 		
+	}
+
+	public static TimeService getInstance(){
+		if (instance == null)
+			instance = new TimeService();
+		return instance;
 	}
 
 }

@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.objects.ConfrenceInformation;
 
 /**
  * Conference service is in charge of
@@ -12,8 +13,11 @@ import bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class ConferenceService extends MicroService {
-    public ConferenceService(String name) {
+
+    private ConfrenceInformation confrence;
+    public ConferenceService(String name, ConfrenceInformation confrence) {
         super("Change_This_Name");
+        this.confrence = confrence;
         // TODO Implement this
     }
 
