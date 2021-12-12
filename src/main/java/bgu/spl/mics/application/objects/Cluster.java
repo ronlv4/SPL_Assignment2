@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.objects;
 
 
+import bgu.spl.mics.MessageBusImpl;
+
 import java.nio.file.LinkPermission;
 import java.util.Collection;
 
@@ -23,10 +25,7 @@ public class Cluster {
      * Retrieves the single instance of this class.
      */
     public static Cluster getInstance() {
-        if (instance == null){
-            instance = new Cluster();
-        }
-        return instance;
+        return instance != null? instance : new Cluster();
     }
 
     public static void setCPUS(Collection<CPU> inputCPUS) {

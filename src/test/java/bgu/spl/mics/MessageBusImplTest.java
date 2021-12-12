@@ -20,7 +20,7 @@ public class MessageBusImplTest {
 
     @Before
     public void setUp() throws Exception {
-        messageBus = new MessageBusImpl();
+        messageBus = MessageBusImpl.getInstance();
         studentService = new StudentService("Taz");
         exampleEvent = new ExampleEvent("Timon");
         exampleBroadcast = new ExampleBroadcast("123");

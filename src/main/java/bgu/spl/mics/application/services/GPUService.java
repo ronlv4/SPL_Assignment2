@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Message;
+import bgu.spl.mics.MessageBus;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.objects.DataBatch;
 import bgu.spl.mics.application.objects.GPU;
@@ -28,13 +31,13 @@ public class GPUService extends MicroService {
      */
 
     public GPUService(String name, GPU gpu) {
-        super("Change_This_Name");
+        super(name);
         this.gpu = gpu;
     }
 
     @Override
     protected void initialize() {
-        // TODO Implement this
+        MessageBusImpl.getInstance().register(this);
 
     }
 
