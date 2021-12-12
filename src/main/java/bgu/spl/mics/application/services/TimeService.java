@@ -4,6 +4,8 @@ import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TickBroadcast;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * TimeService is the global system timer There is only one instance of this micro-service.
  * It keeps track of the amount of ticks passed since initialization and notifies
@@ -15,7 +17,7 @@ import bgu.spl.mics.application.messages.TickBroadcast;
  */
 public class TimeService extends MicroService{
 
-	private static TimeService instance = null;
+	private static AtomicReference<TimeService> instance = new AtomicReference<>();
 
 	private TimeService() {
 		super("Universal_Time_Service");
@@ -27,8 +29,20 @@ public class TimeService extends MicroService{
 		// TODO Implement this
 		
 	}
-	
+
+
 	public static TimeService getInstance(){
+		do {
+			if (instance == null){
+
+			}
+		} while ()
+		if (instance == null){
+			instance = new TimeService();
+			do {
+
+			}
+		}
 		return instance != null? instance : new TimeService();
 	}
 
