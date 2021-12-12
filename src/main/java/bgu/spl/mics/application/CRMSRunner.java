@@ -6,6 +6,7 @@ import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import org.junit.experimental.theories.Theories;
 import sun.jvm.hotspot.debugger.cdbg.basic.BasicCDebugInfoDataBase;
 import sun.jvm.hotspot.debugger.posix.elf.ELFSectionHeader;
 
@@ -67,6 +68,7 @@ public class CRMSRunner {
     private static void buildTimeService(InputFile inputJava) {
         Thread timeServiceThread = new Thread(TimeService.getInstance());
         timeServiceThread.start();
+        Thread time = new Thread()
     }
 
     private static GPU[] parseAndConstructGPUS(String[] gpuStrings){

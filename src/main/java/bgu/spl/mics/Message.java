@@ -9,6 +9,7 @@ package bgu.spl.mics;
  */
 public interface Message {
 
-    public static final MicroService owner;
+    MicroService owner = null;
+לֹ
 
 }
