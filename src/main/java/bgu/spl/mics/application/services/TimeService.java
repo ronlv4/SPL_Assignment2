@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 
 /**
@@ -27,9 +28,7 @@ public class TimeService extends MicroService{
 	}
 
 	public static TimeService getInstance(){
-		if (instance == null)
-			instance = new TimeService();
-		return instance;
+		return instance != null? instance : new TimeService();
 	}
 
 }

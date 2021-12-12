@@ -105,7 +105,7 @@ public class CRMSRunner {
             System.out.println("File does not exist");
             return;
         }
-        MessageBusImpl messageBus = new MessageBusImpl();
+        MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
         buildStudentServices(inputAsJavaObject);
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
@@ -115,8 +115,6 @@ public class CRMSRunner {
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
-
-
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {
