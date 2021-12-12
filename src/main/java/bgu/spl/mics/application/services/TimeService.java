@@ -27,7 +27,7 @@ public class TimeService extends MicroService{
 		// TODO Implement this
 		
 	}
-
+	
 	public static TimeService getInstance(){
 		return instance != null? instance : new TimeService();
 	}
