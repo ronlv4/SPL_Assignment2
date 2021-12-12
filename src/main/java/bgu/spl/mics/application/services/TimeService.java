@@ -18,7 +18,7 @@ public class TimeService extends MicroService{
 	private static TimeService instance = null;
 
 	private TimeService() {
-		super("Change_This_Name");
+		super("Universal_Time_Service");
 		// TODO Implement this
 	}
 

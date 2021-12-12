@@ -88,9 +88,11 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void unregister(MicroService m) {
+        for (Class<? extends Event<?>> type: subscribersByMicroService.get(m)){
+            subscribersByType.get(type).remove(m);
+        }
+        subscribersByMicroService.remove(m);
         microServices.remove(m); // does not throw exception if key does not exist in map
-        for (Class<? extends Event<?>> type: subscribersByMicroService.)
-        // TODO: Clean other associations for @code m
     }
 
     @Override
