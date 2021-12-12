@@ -3,6 +3,11 @@ package bgu.spl.mics;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -21,6 +26,7 @@ public class MessageBusImpl implements MessageBus {
 	 */
 
     private static MessageBusImpl instance = null;
+
     private Map<MicroService, Queue<Message>> microServices;
     private Map<Class<? extends Event<?>>, Deque<MicroService>> subscribersByType;
     private Map<MicroService, Deque<Class<? extends Event<?>>>> subscribersByMicroService;
@@ -83,7 +89,7 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void register(MicroService m) {
-        microServices.put(m, new ConcurrentLinkedQueue<>());
+        microServices.put(m, new PriorityBlockingQueue<>());
     }
 
     @Override
@@ -110,12 +116,4 @@ public class MessageBusImpl implements MessageBus {
         // TODO sholuld change to Compare-and-Swap implementation learned in class.
     }
 
-    private <T> boolean isSubscribed(MicroService m, Event<T> e) {
-        Queue<MicroService> eventSubscribers = subscribersByType.get(e.getClass());
-        for (MicroService service : eventSubscribers) {
-            if (service.equals(m))
-                return true;
-        }
-        return false;
-    }
 }

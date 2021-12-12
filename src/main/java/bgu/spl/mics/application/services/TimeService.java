@@ -2,6 +2,9 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TickBroadcast;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * TimeService is the global system timer There is only one instance of this micro-service.
@@ -14,7 +17,7 @@ import bgu.spl.mics.MicroService;
  */
 public class TimeService extends MicroService{
 
-	private static TimeService instance = null;
+	private static AtomicReference<TimeService> instance = new AtomicReference<>();
 
 	private TimeService() {
 		super("Universal_Time_Service");
@@ -26,6 +29,7 @@ public class TimeService extends MicroService{
 		// TODO Implement this
 		
 	}
+
 
 	public static TimeService getInstance(){
 		return instance != null? instance : new TimeService();
