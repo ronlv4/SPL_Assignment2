@@ -1,7 +1,17 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Callback;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.PublishConferenceBroadcast;
+import bgu.spl.mics.application.messages.PublishResultsEvent;
+import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.ConfrenceInformation;
+import bgu.spl.mics.application.objects.Model;
+
+import java.util.LinkedList;
+import java.util.List;
+
 
 /**
  * Conference service is in charge of
@@ -14,16 +24,23 @@ import bgu.spl.mics.application.objects.ConfrenceInformation;
  */
 public class ConferenceService extends MicroService {
 
-    private ConfrenceInformation confrence;
-    public ConferenceService(String name, ConfrenceInformation confrence) {
-        super("Change_This_Name");
-        this.confrence = confrence;
-        // TODO Implement this
+    private ConfrenceInformation conference;
+    private MessageBusImpl messageBus;
+    private List<Model> toPublish;
+
+    public ConferenceService(String name, ConfrenceInformation conference) {
+        super(name);
+        this.conference = conference;
+        this.messageBus=MessageBusImpl.getInstance();
+        toPublish = new LinkedList<Model>();
     }
 
     @Override
     protected void initialize() {
-        // TODO Implement this
-
+        messageBus.register(this);
+        subscribeEvent(PublishResultsEvent.class,c->{toPublish.add(c.get());});
+        //subscribeBroadcast(TickBroadcast.class,c->);
+        PublishConferenceBroadcast broadcast = new PublishConferenceBroadcast(toPublish);
+        messageBus.sendBroadcast(broadcast);
     }
 }
