@@ -68,7 +68,6 @@ public class CRMSRunner {
     private static void buildTimeService(InputFile inputJava) {
         Thread timeServiceThread = new Thread(TimeService.getInstance());
         timeServiceThread.start();
-        Thread time = new Thread()
     }
 
     private static GPU[] parseAndConstructGPUS(String[] gpuStrings){

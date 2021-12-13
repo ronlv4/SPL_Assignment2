@@ -2,12 +2,10 @@ package bgu.spl.mics;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -26,6 +24,7 @@ public class MessageBusImpl implements MessageBus {
 	 */
 
     private static MessageBusImpl instance = null;
+    private static AtomicBoolean instantiated = new AtomicBoolean(false);
 
     private Map<MicroService, Queue<Message>> microServices;
     private Map<Class<? extends Event<?>>, Deque<MicroService>> subscribersByType;
@@ -104,16 +103,18 @@ public class MessageBusImpl implements MessageBus {
     @Override
     public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
         Queue<? extends Message> microServiceQueue = microServices.get(m);
-        if (microServiceQueue.isEmpty()) {
-            wait(); // locked on "this", waiting for notify when the Queue won't be empty
-        }
-        return microServiceQueue.remove();
+//        if (microServiceQueue.isEmpty()) {
+//            wait(); // locked on "this", waiting for notify when the Queue won't be empty
+//        }
+        return microServiceQueue.remove(); // queue is blocking if you try to remove from an empty queue
     }
 
     public static MessageBusImpl getInstance() {
-        return instance != null ? instance : new MessageBusImpl();
-        // TODO not good implementation of singleton.. not thread safe, multiple instances could be created.
-        // TODO sholuld change to Compare-and-Swap implementation learned in class.
+        MessageBusImpl newVal;
+        do {
+            newVal = new MessageBusImpl();
+        }while (instantiated.getAndSet(false));
+        return instance;
     }
 
 }
