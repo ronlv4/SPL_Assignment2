@@ -35,4 +35,6 @@ public class Cluster {
     public static void setGPUS(Collection<GPU> inputGPUS) {
         GPUS = inputGPUS;
     }
+
+    public void sendEvent
 }
