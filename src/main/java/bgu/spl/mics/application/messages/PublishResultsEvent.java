@@ -4,14 +4,14 @@ import bgu.spl.mics.Event;
 import bgu.spl.mics.application.objects.Model;
 
 public class PublishResultsEvent implements Event {
-    private Model model;
+    private Model[] goodModels;
 
     public PublishResultsEvent(Model models){
-        this.model = models;
+        this.goodModels = goodModels;
     }
 
-    public Model get(){
-        return model;
+    public Model getGoodModels(){
+        return goodModels;
     }
 
 }
