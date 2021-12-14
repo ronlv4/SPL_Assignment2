@@ -66,7 +66,10 @@ public class CRMSRunner {
     }
 
     private static void buildTimeService(InputFile inputJava) {
-        Thread timeServiceThread = new Thread(TimeService.getInstance());
+        int TickTime = inputJava.getTickTime();
+        int Duration = inputJava.getDuration();
+        Thread timeServiceThread = new Thread(new TimeService(TickTime, Duration));
+        //Thread timeServiceThread = new Thread(TimeService.getInstance());
         timeServiceThread.start();
     }
 

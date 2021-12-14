@@ -2,9 +2,7 @@ package bgu.spl.mics;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.PriorityBlockingQueue;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -24,8 +22,7 @@ public class MessageBusImpl implements MessageBus {
 	 */
 
     private static MessageBusImpl instance = null;
-    private static AtomicBoolean instantiated = new AtomicBoolean(false);
-
+    private static boolean isDone = false;
     private Map<MicroService, Queue<Message>> microServices;
     private Map<Class<? extends Event<?>>, Deque<MicroService>> subscribersByType;
     private Map<MicroService, Deque<Class<? extends Event<?>>>> subscribersByMicroService;
@@ -110,10 +107,15 @@ public class MessageBusImpl implements MessageBus {
     }
 
     public static MessageBusImpl getInstance() {
-        MessageBusImpl newVal;
-        do {
-            newVal = new MessageBusImpl();
-        }while (instantiated.getAndSet(false));
+        if(isDone == false) {
+            synchronized(MessageBusImpl.class)
+            {
+                if(isDone == false) {
+                    instance = new MessageBusImpl();
+                    isDone = true;
+                }
+            }
+        }
         return instance;
     }
 
