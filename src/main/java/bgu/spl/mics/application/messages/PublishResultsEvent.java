@@ -3,14 +3,16 @@ package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Event;
 import bgu.spl.mics.application.objects.Model;
 
-public class PublishResultsEvent implements Event {
-    private Model[] goodModels;
+import java.util.List;
 
-    public PublishResultsEvent(Model models){
-        this.goodModels = goodModels;
+public class PublishResultsEvent implements Event {
+    private List<Model> goodModels;
+
+    public PublishResultsEvent(List<Model> models){
+        this.goodModels = models;
     }
 
-    public Model getGoodModels(){
+    public List<Model> getGoodModels(){
         return goodModels;
     }
 
