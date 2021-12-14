@@ -20,16 +20,14 @@ public class TimeService extends MicroService{
 
 //	private static TimeService instance = null;
 	private MessageBusImpl MessageBus;
-	private int TickTime;
+	private int tickTime;
 	private int Duration;
 	private int time;
 	private Timer timer;
 
-
-
 	public TimeService(int TickTime, int Duration) {
 		super("Universal_Time_Service");
-		this.TickTime = TickTime;//speed?
+		this.TickTime = TickTime;
 		this.Duration = Duration;
 		this.MessageBus = MessageBusImpl.getInstance();
 		this.time = 1;
@@ -39,16 +37,17 @@ public class TimeService extends MicroService{
 	@Override
 	protected void initialize() {
 		MessageBus.register(this);
-		terminate();
-		timer.schedule(new TimerTask() {
+    timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				time++;
 				MessageBus.sendBroadcast(new TickBroadcast(time));
+        this.tickTime += this.tickTime;
 			}
 		}, TickTime, Duration);
 		terminate();
 	}
+  
+  
 	//public static TimeService getInstance(){
 	//	return instance != null? instance : new TimeService();
 	//}

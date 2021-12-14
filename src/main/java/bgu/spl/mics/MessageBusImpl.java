@@ -85,7 +85,7 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void register(MicroService m) {
-        microServices.put(m, new ConcurrentLinkedQueue<>());
+        microServices.put(m, new PriorityBlockingQueue<>());
     }
 
     @Override
@@ -100,10 +100,10 @@ public class MessageBusImpl implements MessageBus {
     @Override
     public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
         Queue<? extends Message> microServiceQueue = microServices.get(m);
-        if (microServiceQueue.isEmpty()) {
-            wait(); // locked on "this", waiting for notify when the Queue won't be empty
-        }
-        return microServiceQueue.remove();
+//        if (microServiceQueue.isEmpty()) {
+//            wait(); // locked on "this", waiting for notify when the Queue won't be empty
+//        }
+        return microServiceQueue.remove(); // queue is blocking if you try to remove from an empty queue
     }
 
     public static MessageBusImpl getInstance() {
@@ -119,12 +119,4 @@ public class MessageBusImpl implements MessageBus {
         return instance;
     }
 
-    private <T> boolean isSubscribed(MicroService m, Event<T> e) {
-        Queue<MicroService> eventSubscribers = subscribersByType.get(e.getClass());
-        for (MicroService service : eventSubscribers) {
-            if (service.equals(m))
-                return true;
-        }
-        return false;
-    }
 }
