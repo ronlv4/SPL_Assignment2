@@ -2,9 +2,8 @@ package bgu.spl.mics;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -42,7 +41,7 @@ public class MessageBusImpl implements MessageBus {
         Deque<MicroService> subscribedMicroServiceDeque = subscribersByType.get(type);
         // adding the microsevice to the subscriberByType queue
         if (subscribedMicroServiceDeque == null){ // TODO: Needs to bo done in a do_while thread safe design
-            subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
+            subscribedMicroServiceDeque = new SynchronousQueue<>();
             subscribersByType.put(type, subscribedMicroServiceDeque);
         }
         subscribedMicroServiceDeque.addFirst(m);
@@ -83,9 +82,9 @@ public class MessageBusImpl implements MessageBus {
 
 
     @Override
-    public <T> Future<T> sendEvent(Event<T> e) {
+    public synchronized  <T> Future<T> sendEvent(Event<T> e) {
         Queue<MicroService> subscribedMicroServiceQueue = subscribersByType.get(e.getClass());
-        if (subscribedMicroServiceQueue == null) //TODO make sure that if an event has no subscribers it's being deleted from the map
+        if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
             return null; //TODO what should we do if the type of event has no subscribers?
         MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
         microServices.get(microServiceInLine).add(e);
@@ -119,10 +118,10 @@ public class MessageBusImpl implements MessageBus {
     }
 
     public static MessageBusImpl getInstance() {
-        if(isDone == false) {
+        if(!isDone) {
             synchronized(MessageBusImpl.class)
             {
-                if(isDone == false) {
+                if(!isDone) {
                     instance = new MessageBusImpl();
                     isDone = true;
                 }

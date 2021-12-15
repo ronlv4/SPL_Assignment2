@@ -1,4 +1,5 @@
 package bgu.spl.mics.application.services;
+import bgu.spl.mics.Event;
 import bgu.spl.mics.Message;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
@@ -48,7 +49,10 @@ public class GPUService extends MicroService {
     protected void initialize() {
         messageBus.register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
-            gpu.advanceTick();
+            Model model = gpu.advanceTick();
+            if (model != null){
+                complete(TrainModelEvent.class, model); //TODO think of a way to send the completed event back to the GPUService
+            }
         });
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
