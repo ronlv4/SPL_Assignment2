@@ -43,7 +43,7 @@ public class ConferenceService extends MicroService {
         subscribeBroadcast(TickBroadcast.class, c->{
             if (c.getCurrentTick() == conference.getDate())
                 messageBus.sendBroadcast(new PublishConferenceBroadcast(goodResultsModels));
-            Thread.currentThread().interrupt(); // makes the conference unregister and terminate
+                Thread.currentThread().interrupt(); // makes the conference unregister and terminate
         });
     }
 }

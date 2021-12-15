@@ -36,6 +36,11 @@ public class Cluster {
         GPUS = inputGPUS;
     }
 
+    /**
+     * used by GPU to send unprocessed batches to the cpu.
+     * those batches will be transferred to some CPU by the Cluster
+     * @param batch
+     */
     public void sendUnprocessedBatch(DataBatch batch){
 
     }
