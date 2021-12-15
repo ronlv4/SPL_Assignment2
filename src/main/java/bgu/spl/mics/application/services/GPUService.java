@@ -1,16 +1,13 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Message;
-import bgu.spl.mics.MessageBus;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.DataBatch;
-import bgu.spl.mics.application.objects.GPU;
+import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
-import bgu.spl.mics.application.objects.Model;
 
 /**
  * GPU service is responsible for handling the
@@ -24,7 +21,7 @@ import bgu.spl.mics.application.objects.Model;
 public class GPUService extends MicroService {
 
     private GPU gpu;
-    private MessageBusImpl MessageBus;
+    private MessageBusImpl messageBus;
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -36,58 +33,52 @@ public class GPUService extends MicroService {
     public GPUService(String name, GPU gpu) {
         super(name);
         this.gpu = gpu;
-        this.MessageBus = MessageBusImpl.getInstance();
+        this.messageBus = MessageBusImpl.getInstance();
     }
 
-    private void createAndSendBatches(){
+    private void createAndSendBatches(Data data) {
+        Cluster cluster = Cluster.getInstance();
+        for (int i = 0; i < data.getSize(); i += 1000) {
+            DataBatch batch = new DataBatch(data, i);
+            cluster.sendUnprocessedBatch(batch);
+        }
 
     }
 
     @Override
     protected void initialize() {
-        MessageBusImpl.getInstance().register(this);
-        subscribeBroadcast(TickBroadcast.class, c->{
+        messageBus.register(this);
+        subscribeBroadcast(TickBroadcast.class, c -> {
             gpu.advanceTick();
         });
-        subscribeEvent(TrainModelEvent.class, c->{
-
-            /*
-            create batches
-            send to cpu through cluster
-            receive from cpu through cluster
-            use processed batches to train the model
-            set it trained
-             */
-
-        });
-        subscribeEvent(TestModelEvent.class, c->{
+        subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
+            createAndSendBatches(model.getData());
+        });
+        subscribeEvent(TestModelEvent.class, c -> {
+            Model model = c.getModelToTest();
             if (model.getStudent().isMsc()) {
                 if (Math.random() < 0.6) {
                     model.setGoodResult();
                 } else {
                     model.setBadResult();
                 }
-            }
-            else {
+            } else {
                 if (Math.random() < 0.8) {
                     model.setGoodResult();
                 } else {
                     model.setBadResult();
                 }
             }
-            MessageBusImpl.getInstance().complete(c, model);
+            messageBus.complete(c, model);
         });
     }
 
-    private void getMessages(){
+    private void getMessages() {
         try {
-            Message message = MessageBus.awaitMessage(this);
+            Message message = messageBus.awaitMessage(this);
+        } catch (InterruptedException ignored) {
         }
-        catch (InterruptedException ignored){}
 
     }
-    protected Model proccess(Message message){
-        return model
-    }
-    }
+}

@@ -38,7 +38,7 @@ public class ConferenceService extends MicroService {
     protected void initialize() {
         messageBus.register(this);
         subscribeEvent(PublishResultsEvent.class,c->{
-            goodResultsModels.addAll(c.getGoodModels());
+            goodResultsModels.add(c.getGoodModel());
         });
         subscribeBroadcast(TickBroadcast.class, c->{
             if (c.getCurrentTick() == conference.getDate())

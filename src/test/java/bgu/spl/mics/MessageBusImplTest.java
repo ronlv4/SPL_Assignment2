@@ -24,7 +24,7 @@ public class MessageBusImplTest {
 //        studentService = new StudentService("Taz");
         exampleEvent = new ExampleEvent("Timon");
         exampleBroadcast = new ExampleBroadcast("123");
-        trainModelEvent = new TrainModelEvent();
+//        trainModelEvent = new TrainModelEvent();
     }
 
     @After

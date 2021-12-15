@@ -36,7 +36,11 @@ public class Cluster {
         GPUS = inputGPUS;
     }
 
-    public void assignBatch(DataBatch batch){
+    public void sendUnprocessedBatch(DataBatch batch){
+
+    }
+
+    public void sendProcessedBatch(DataBatch batch){
 
     }
 
