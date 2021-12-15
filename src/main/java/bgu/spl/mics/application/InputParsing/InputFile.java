@@ -1,7 +1,14 @@
-package bgu.spl.mics.application.services;
+package bgu.spl.mics.application.InputParsing;
 
 import bgu.spl.mics.application.objects.ConfrenceInformation;
+import bgu.spl.mics.application.objects.Model;
 import bgu.spl.mics.application.objects.Student;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
 
 public class InputFile {
     private Student[] Students;

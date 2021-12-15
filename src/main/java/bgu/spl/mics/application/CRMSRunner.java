@@ -1,10 +1,13 @@
 package bgu.spl.mics.application;
 
 import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.application.InputParsing.InputFile;
+import bgu.spl.mics.application.InputParsing.ModelDeserializer;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
@@ -19,7 +22,7 @@ import java.io.FileNotFoundException;
 public class CRMSRunner {
 
     private static InputFile parseInputFile(String jsonPath) throws FileNotFoundException {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
         JsonReader reader = new JsonReader(new FileReader(jsonPath));
         return gson.fromJson(reader, InputFile.class);
     }
