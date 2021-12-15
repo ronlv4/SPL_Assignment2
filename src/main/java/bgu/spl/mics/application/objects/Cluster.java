@@ -16,8 +16,8 @@ import java.util.Collection;
 public class Cluster {
 
     private static Cluster instance = null;
-    private static Collection<GPU> GPUS;
-    private static Collection<CPU> CPUS;
+    private static GPU[] GPUS;
+    private static CPU[] CPUS;
 
     private Cluster() {
     }
@@ -28,13 +28,16 @@ public class Cluster {
         return instance != null? instance : new Cluster();
     }
 
-    public static void setCPUS(Collection<CPU> inputCPUS) {
+    public static void setCPUS(CPU[] inputCPUS) {
         CPUS = inputCPUS;
     }
 
-    public static void setGPUS(Collection<GPU> inputGPUS) {
+    public static void setGPUS(GPU[] inputGPUS) {
         GPUS = inputGPUS;
     }
 
-    public void sendEvent
+    public void assignBatch(DataBatch batch){
+
+    }
+
 }

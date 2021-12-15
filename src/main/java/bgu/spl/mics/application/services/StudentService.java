@@ -32,10 +32,9 @@ public class StudentService extends MicroService {
 
     @Override
     protected void initialize() {
-        MessageBusImpl.getInstance().get().register(this);
+        MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(PublishConferenceBroadcast.class, c -> {
             student.increasePublications();
-            if
 
         });
 //        Future<Model> future = sendEvent(new TrainModelEvent());

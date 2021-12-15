@@ -10,6 +10,7 @@ import bgu.spl.mics.application.objects.GPU;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
+import bgu.spl.mics.application.objects.Model;
 
 /**
  * GPU service is responsible for handling the
@@ -48,13 +49,33 @@ public class GPUService extends MicroService {
         });
         subscribeEvent(TrainModelEvent.class, c->{
 
+            /*
+            create batches
+            send to cpu through cluster
+            receive from cpu through cluster
+            use processed batches to train the model
+            set it trained
+             */
 
         });
         subscribeEvent(TestModelEvent.class, c->{
-
+            Model model = c.getModel();
+            if (model.getStudent().isMsc()) {
+                if (Math.random() < 0.6) {
+                    model.setGoodResult();
+                } else {
+                    model.setBadResult();
+                }
+            }
+            else {
+                if (Math.random() < 0.8) {
+                    model.setGoodResult();
+                } else {
+                    model.setBadResult();
+                }
+            }
+            MessageBusImpl.getInstance().complete(c, model);
         });
-
-
     }
 
     public void sendProcessedBatch(DataBatch batch){

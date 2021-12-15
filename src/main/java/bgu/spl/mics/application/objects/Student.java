@@ -46,6 +46,14 @@ public class Student {
         return papersRead;
     }
 
+    public boolean isMsc(){
+        return status == Degree.MSc;
+    }
+
+    public boolean isPhD(){
+        return status == Degree.PhD;
+    }
+
     public void increasePublications(){
         publications++;
     }

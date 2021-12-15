@@ -38,4 +38,30 @@ public class Model {
     public Data getData() {
         return data;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    private void setResult(Results result) {
+        this.result = result;
+    }
+
+    public void setGoodResult(){
+        setResult(Results.Good);
+    }
+    public void setBadResult(){
+        setResult(Results.Bad);
+    }
+    public Student getStudent() {
+        return student;
+    }
+
+    public Results getResult() {
+        return result;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
 }
