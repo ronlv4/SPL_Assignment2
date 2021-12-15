@@ -4,11 +4,10 @@ import bgu.spl.mics.Message;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.GPU;
+import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
-import bgu.spl.mics.application.objects.Model;
 
 /**
  * GPU service is responsible for handling the
@@ -37,7 +36,12 @@ public class GPUService extends MicroService {
         this.messageBus = MessageBusImpl.getInstance();
     }
 
-    private void createAndSendBatches() {
+    private void createAndSendBatches(Data data) {
+        Cluster cluster = Cluster.getInstance();
+        for (int i = 0; i < data.getSize(); i += 1000) {
+            DataBatch batch = new DataBatch(data, i);
+            cluster.sendUnprocessedBatch(batch);
+        }
 
     }
 
@@ -48,9 +52,10 @@ public class GPUService extends MicroService {
             gpu.advanceTick();
         });
         subscribeEvent(TrainModelEvent.class, c -> {
+            Model model = c.getModel();
+            createAndSendBatches(model.getData());
 
             /*
-            this is my change
             create batches
             send to cpu through cluster
             receive from cpu through cluster
