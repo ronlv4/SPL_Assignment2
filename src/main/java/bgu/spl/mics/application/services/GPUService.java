@@ -52,6 +52,7 @@ public class GPUService extends MicroService {
         subscribeEvent(TrainModelEvent.class, c->{
 
             /*
+            this is my change
             create batches
             send to cpu through cluster
             receive from cpu through cluster
