@@ -1,5 +1,4 @@
 package bgu.spl.mics.application.services;
-
 import bgu.spl.mics.Message;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
@@ -78,6 +77,7 @@ public class GPUService extends MicroService {
         try {
             Message message = messageBus.awaitMessage(this);
         } catch (InterruptedException ignored) {
+
         }
 
     }
