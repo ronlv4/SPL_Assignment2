@@ -1,14 +1,14 @@
 package bgu.spl.mics.application;
 
 import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.application.InputParsing.InputFile;
+import bgu.spl.mics.application.InputParsing.ModelDeserializer;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-import org.junit.experimental.theories.Theories;
-import sun.jvm.hotspot.debugger.cdbg.basic.BasicCDebugInfoDataBase;
-import sun.jvm.hotspot.debugger.posix.elf.ELFSectionHeader;
 
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -22,18 +22,18 @@ import java.io.FileNotFoundException;
 public class CRMSRunner {
 
     private static InputFile parseInputFile(String jsonPath) throws FileNotFoundException {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
         JsonReader reader = new JsonReader(new FileReader(jsonPath));
         return gson.fromJson(reader, InputFile.class);
     }
 
     private static void buildStudentServices(InputFile inputJava) {
-        int numOfStudents = inputJava.getNumOfStudents();
+        Student[] students = inputJava.getStudents();
+        int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
-        int i = 1;
-        for (Student student : inputJava.getStudents()) {
-            studentServicesThreads[i] = new Thread(new StudentService("Student Service " + i));
-            studentServicesThreads[i++].start();
+        for (int i = 0; i < numOfStudents; i++) {
+            studentServicesThreads[i] = new Thread(new StudentService("Student Service " + i, students[i]));
+            studentServicesThreads[i].start();
         }
     }
 
@@ -116,13 +116,13 @@ public class CRMSRunner {
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
         buildCPUServices(cpus);
-        updateCluster(gpus,cpus);
+//        updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
     }
 
-    private static void updateCluster(GPU[] gpus, CPU[] cpus) {
-        Cluster.setCPUS(cpus);
-        Cluster.setGPUS(gpus);
-    }
+//    private static void updateCluster(GPU[] gpus, CPU[] cpus) {
+//        Cluster.setCPUS(cpus);
+//        Cluster.setGPUS(gpus);
+//    }
 }

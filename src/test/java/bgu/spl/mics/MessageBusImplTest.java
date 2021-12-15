@@ -21,7 +21,7 @@ public class MessageBusImplTest {
     @Before
     public void setUp() throws Exception {
         messageBus = MessageBusImpl.getInstance();
-        studentService = new StudentService("Taz");
+//        studentService = new StudentService("Taz");
         exampleEvent = new ExampleEvent("Timon");
         exampleBroadcast = new ExampleBroadcast("123");
         trainModelEvent = new TrainModelEvent();

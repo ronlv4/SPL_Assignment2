@@ -19,7 +19,7 @@ public class FutureTest {
     @Before
     public void setUp() throws Exception {
         future = new Future<>();
-        deepLearningModel = new Model("Deep Learning Model", new Data(Images, 0,100_000), new Student());
+//        deepLearningModel = new Model("Deep Learning Model", new Data(Images, 0,100_000), new Student("Simba", "Computer Science", Student.Degree.MSc, 0, 0));
     }
 
     @Test

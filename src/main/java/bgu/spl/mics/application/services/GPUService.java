@@ -4,6 +4,7 @@ import bgu.spl.mics.Message;
 import bgu.spl.mics.MessageBus;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.DataBatch;
 import bgu.spl.mics.application.objects.GPU;
 import bgu.spl.mics.application.messages.TestModelEvent;
@@ -38,10 +39,45 @@ public class GPUService extends MicroService {
         this.MessageBus = MessageBusImpl.getInstance();
     }
 
+    private void createAndSendBatches(){
+
+    }
+
     @Override
     protected void initialize() {
-        MessageBus.register(this);
-        getMessages();
+        MessageBusImpl.getInstance().register(this);
+        subscribeBroadcast(TickBroadcast.class, c->{
+            gpu.advanceTick();
+        });
+        subscribeEvent(TrainModelEvent.class, c->{
+
+            /*
+            create batches
+            send to cpu through cluster
+            receive from cpu through cluster
+            use processed batches to train the model
+            set it trained
+             */
+
+        });
+        subscribeEvent(TestModelEvent.class, c->{
+            Model model = c.getModel();
+            if (model.getStudent().isMsc()) {
+                if (Math.random() < 0.6) {
+                    model.setGoodResult();
+                } else {
+                    model.setBadResult();
+                }
+            }
+            else {
+                if (Math.random() < 0.8) {
+                    model.setGoodResult();
+                } else {
+                    model.setBadResult();
+                }
+            }
+            MessageBusImpl.getInstance().complete(c, model);
+        });
     }
 
     private void getMessages(){

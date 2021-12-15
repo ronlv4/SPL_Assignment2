@@ -1,6 +1,5 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.Callback;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.PublishConferenceBroadcast;
@@ -26,25 +25,25 @@ public class ConferenceService extends MicroService {
 
     private ConfrenceInformation conference;
     private MessageBusImpl messageBus;
-    private List<Model> toPublish;
+    private List<Model> goodResultsModels;
 
     public ConferenceService(String name, ConfrenceInformation conference) {
         super(name);
         this.conference = conference;
         this.messageBus=MessageBusImpl.getInstance();
-        toPublish = new LinkedList<Model>();
+        goodResultsModels = new LinkedList<Model>();
     }
 
     @Override
     protected void initialize() {
         messageBus.register(this);
-        subscribeEvent(PublishResultsEvent.class,c->toPublish.add(c.get()));
-        subscribeBroadcast(TickBroadcast.class,c-> {
-            if(c.Time()==conference.getDate()){
-                PublishConferenceBroadcast broadcast = new PublishConferenceBroadcast(toPublish);
-                messageBus.sendBroadcast(broadcast);
-                messageBus.unregister(this);
-            }
+        subscribeEvent(PublishResultsEvent.class,c->{
+            goodResultsModels.addAll(c.getGoodModels());
+        });
+        subscribeBroadcast(TickBroadcast.class, c->{
+            if (c.getCurrentTick() == conference.getDate())
+                messageBus.sendBroadcast(new PublishConferenceBroadcast(goodResultsModels));
+            Thread.currentThread().interrupt(); // makes the conference unregister and terminate
         });
     }
 }
