@@ -46,6 +46,7 @@ public class TimeService extends MicroService {
                     timer.cancel();
             }
         }, 0, tickTime);
+        MessageBus.sendBroadcast(new TickBroadcast(0));
         terminate();
     }
 
