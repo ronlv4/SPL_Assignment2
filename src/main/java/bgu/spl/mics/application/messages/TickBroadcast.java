@@ -3,10 +3,13 @@ package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Broadcast;
 
 public class TickBroadcast implements Broadcast {
-    int time;
+    private int time;
 
 
     public TickBroadcast(int time) {
         this.time = time;
+    }
+    public int Time(){
+        return time;
     }
 }

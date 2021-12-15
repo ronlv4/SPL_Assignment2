@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.objects.CPU;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
@@ -14,14 +15,19 @@ import bgu.spl.mics.application.messages.DataPreProcessEvent;
 public class CPUService extends MicroService {
 
     private CPU cpu;
+    private MessageBusImpl MessageBus;
+
     public CPUService(String name, CPU cpu) {
         super("Change_This_Name");
         this.cpu = cpu;
+        this.MessageBus = MessageBusImpl.getInstance();
     }
 
     @Override
     protected void initialize() {
         // TODO Implement this
+        MessageBus.register(this);
+
 
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Conference service is in charge of
- * aggregating good results and publishing them via the {@link PublishConfrenceBroadcast},
+ * aggregating good results and publishing them via the {@link PublishConferenceBroadcast},
  * after publishing results the conference will unregister from the system.
  * This class may not hold references for objects which it is not responsible for.
  *
@@ -38,9 +38,13 @@ public class ConferenceService extends MicroService {
     @Override
     protected void initialize() {
         messageBus.register(this);
-        subscribeEvent(PublishResultsEvent.class,c->{toPublish.add(c.get());});
-        //subscribeBroadcast(TickBroadcast.class,c->);
-        PublishConferenceBroadcast broadcast = new PublishConferenceBroadcast(toPublish);
-        messageBus.sendBroadcast(broadcast);
+        subscribeEvent(PublishResultsEvent.class,c->toPublish.add(c.get()));
+        subscribeBroadcast(TickBroadcast.class,c-> {
+            if(c.Time()==conference.getDate()){
+                PublishConferenceBroadcast broadcast = new PublishConferenceBroadcast(toPublish);
+                messageBus.sendBroadcast(broadcast);
+                messageBus.unregister(this);
+            }
+        });
     }
 }

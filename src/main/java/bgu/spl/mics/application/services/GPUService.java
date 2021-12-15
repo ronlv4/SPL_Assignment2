@@ -9,6 +9,7 @@ import bgu.spl.mics.application.objects.GPU;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
+import bgu.spl.mics.application.objects.Model;
 
 /**
  * GPU service is responsible for handling the
@@ -22,6 +23,7 @@ import bgu.spl.mics.application.messages.DataPreProcessEvent;
 public class GPUService extends MicroService {
 
     private GPU gpu;
+    private MessageBusImpl MessageBus;
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -33,14 +35,23 @@ public class GPUService extends MicroService {
     public GPUService(String name, GPU gpu) {
         super(name);
         this.gpu = gpu;
+        this.MessageBus = MessageBusImpl.getInstance();
     }
 
     @Override
     protected void initialize() {
-        MessageBusImpl.getInstance().register(this);
-
+        MessageBus.register(this);
+        getMessages();
     }
 
-    public void sendProcessedBatch(DataBatch batch){
+    private void getMessages(){
+        try {
+            Message message = MessageBus.awaitMessage(this);
+        }
+        catch (InterruptedException ignored){}
+
     }
-}
+    protected Model proccess(Message message){
+        return model
+    }
+    }
