@@ -30,10 +30,9 @@ public class Model {
     public Model(String name, String type, int size){
         this.name = name;
         Data data;
-        type = type.toLowerCase();
-        if (type.equals("images")) {
+        if (type.equals("Images")) {
             data = new Data(Data.Type.Images, 0, size);
-        } else if (type.equals("text")){
+        } else if (type.equals("Text")){
             data = new Data(Data.Type.Text, 0, size);
         }
         else {

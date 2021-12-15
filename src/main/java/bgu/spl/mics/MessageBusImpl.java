@@ -107,7 +107,7 @@ public class MessageBusImpl implements MessageBus {
 //        if (microServiceQueue.isEmpty()) {
 //            wait(); // locked on "this", waiting for notify when the Queue won't be empty
 //        }
-        return microServiceQueue.remove(); // queue is blocking if you try to remove from an empty queue
+        return microServiceQueue.poll(); // queue is blocking if you try to remove from an empty queue
     }
 
     public static MessageBusImpl getInstance() {

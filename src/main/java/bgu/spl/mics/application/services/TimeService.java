@@ -48,10 +48,4 @@ public class TimeService extends MicroService {
         }, 0, tickTime);
         terminate();
     }
-
-
-    //public static TimeService getInstance(){
-    //	return instance != null? instance : new TimeService();
-    //}
-
 }

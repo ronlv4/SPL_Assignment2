@@ -20,7 +20,7 @@ public class CPUService extends MicroService {
     private MessageBusImpl MessageBus;
 
     public CPUService(String name, CPU cpu) {
-        super("Change_This_Name");
+        super(name);
         this.cpu = cpu;
         this.MessageBus = MessageBusImpl.getInstance();
     }

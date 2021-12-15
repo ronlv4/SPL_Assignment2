@@ -39,7 +39,7 @@ public class CRMSRunner {
 
     private static void buildGPUServices(GPU[] gpus) {
         Thread[] GPUServicesThreads = new Thread[gpus.length];
-        int i = 1;
+        int i = 0;
         for (GPU gpu: gpus){
             GPUServicesThreads[i] = new Thread(new GPUService("GPU Service " + i, gpu));
             GPUServicesThreads[i++].start();
@@ -48,7 +48,7 @@ public class CRMSRunner {
 
     private static void buildCPUServices(CPU[] cpus) {
         Thread[] CPUServicesThreads = new Thread[cpus.length];
-        int i = 1;
+        int i = 0;
         for (CPU cpu: cpus){
             CPUServicesThreads[i] = new Thread(new CPUService("GPU Service " + i, cpu));
             CPUServicesThreads[i++].start();
@@ -58,18 +58,17 @@ public class CRMSRunner {
     private static void buildConferenceServices(InputFile inputJava) {
         int numOfConferences = inputJava.getNumOfConferences();
         Thread[] conferencesServicesThreads = new Thread[numOfConferences];
-        int i = 1;
+        int i = 0;
         for(ConfrenceInformation conference: inputJava.getConferences()){
             conferencesServicesThreads[i] = new Thread(new ConferenceService("Conference Service " + i, conference));
-            conferencesServicesThreads[i].start();
+            conferencesServicesThreads[i++].start();
         }
     }
 
     private static void buildTimeService(InputFile inputJava) {
-        int TickTime = inputJava.getTickTime();
-        int Duration = inputJava.getDuration();
-        Thread timeServiceThread = new Thread(new TimeService(TickTime, Duration));
-        //Thread timeServiceThread = new Thread(TimeService.getInstance());
+        int tickTime = inputJava.getTickTime();
+        int duration = inputJava.getDuration();
+        Thread timeServiceThread = new Thread(new TimeService(tickTime, duration));
         timeServiceThread.start();
     }
 
@@ -116,13 +115,13 @@ public class CRMSRunner {
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
         buildCPUServices(cpus);
-//        updateCluster(gpus,cpus);
+        updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
     }
 
-//    private static void updateCluster(GPU[] gpus, CPU[] cpus) {
-//        Cluster.setCPUS(cpus);
-//        Cluster.setGPUS(gpus);
-//    }
+    private static void updateCluster(GPU[] gpus, CPU[] cpus) {
+        Cluster.setCPUS(cpus);
+        Cluster.setGPUS(gpus);
+    }
 }

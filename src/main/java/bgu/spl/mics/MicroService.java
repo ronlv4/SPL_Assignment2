@@ -29,6 +29,7 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
+        System.out.println(name + " was created and it's name is" +Thread.currentThread().getName());
     }
 
     /**
@@ -160,7 +161,6 @@ public abstract class MicroService implements Runnable {
         while (!terminated) {
             try{
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
-//                message.
             } catch (InterruptedException e) {
                 MessageBusImpl.getInstance().unregister(this);
                 terminate();

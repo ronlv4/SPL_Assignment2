@@ -25,7 +25,7 @@ public class StudentService extends MicroService {
     private Student student;
 
     public StudentService(String name, Student student) {
-        super("Student_Service");
+        super(name);
         this.student = student;
     }
 
@@ -37,8 +37,6 @@ public class StudentService extends MicroService {
             student.increasePublications();
 
         });
-//        Future<Model> future = sendEvent(new TrainModelEvent());
-//        sendEvent(new TestModelEvent());
-
+        Future<Model> future = sendEvent(new TrainModelEvent());
     }
 }

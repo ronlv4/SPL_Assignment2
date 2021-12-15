@@ -40,4 +40,8 @@ public class Cluster {
 
     }
 
+    public void sendProcessedBatch(DataBatch batch){
+
+    }
+
 }

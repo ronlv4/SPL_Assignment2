@@ -9,9 +9,22 @@ public class DataBatch {
 
     private Data data;
     private int startIndex;
+    private int startingProcessTick;
 
     public DataBatch(Data data, int startIndex) {
         this.data = data;
         this.startIndex = startIndex;
+    }
+
+    public void setStartingProcessTick(int startingProcessTick) {
+        this.startingProcessTick = startingProcessTick;
+    }
+
+    public int getStartingProcessTick() {
+        return startingProcessTick;
+    }
+
+    public Data.Type getDataType(){
+        return data.getType();
     }
 }
