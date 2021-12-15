@@ -4,10 +4,13 @@ import bgu.spl.mics.Event;
 import bgu.spl.mics.application.objects.Model;
 
 public class TestModelEvent implements Event<Model> {
+  
+    private Model modelToTest;
 
-    private Model model;
-
-    public Model getModel() {
-        return model;
+    public TestModelEvent(Model modelToTest){
+        this.modelToTest=modelToTest;
+    }
+    public Model get(){
+        return modelToTest;
     }
 }

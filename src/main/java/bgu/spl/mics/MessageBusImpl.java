@@ -58,11 +58,14 @@ public class MessageBusImpl implements MessageBus {
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
         // TODO Auto-generated method stub
 
+
+
     }
 
     @Override
     public <T> void complete(Event<T> e, T result) {
         // TODO Auto-generated method stub
+
 
     }
 

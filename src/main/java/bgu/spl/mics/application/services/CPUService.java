@@ -17,9 +17,12 @@ import bgu.spl.mics.application.messages.DataPreProcessEvent;
 public class CPUService extends MicroService {
 
     private CPU cpu;
+    private MessageBusImpl MessageBus;
+
     public CPUService(String name, CPU cpu) {
         super("Change_This_Name");
         this.cpu = cpu;
+        this.MessageBus = MessageBusImpl.getInstance();
     }
 
     @Override
@@ -28,6 +31,5 @@ public class CPUService extends MicroService {
         subscribeBroadcast(TickBroadcast.class, c->{
             cpu.advanceTick();
         });
-
     }
 }

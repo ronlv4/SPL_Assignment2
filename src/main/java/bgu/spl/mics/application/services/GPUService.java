@@ -24,6 +24,7 @@ import bgu.spl.mics.application.objects.Model;
 public class GPUService extends MicroService {
 
     private GPU gpu;
+    private MessageBusImpl MessageBus;
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -35,6 +36,7 @@ public class GPUService extends MicroService {
     public GPUService(String name, GPU gpu) {
         super(name);
         this.gpu = gpu;
+        this.MessageBus = MessageBusImpl.getInstance();
     }
 
     private void createAndSendBatches(){
@@ -78,6 +80,14 @@ public class GPUService extends MicroService {
         });
     }
 
-    public void sendProcessedBatch(DataBatch batch){
+    private void getMessages(){
+        try {
+            Message message = MessageBus.awaitMessage(this);
+        }
+        catch (InterruptedException ignored){}
+
     }
-}
+    protected Model proccess(Message message){
+        return model
+    }
+    }

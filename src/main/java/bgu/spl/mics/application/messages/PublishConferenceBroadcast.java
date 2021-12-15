@@ -12,7 +12,7 @@ public class PublishConferenceBroadcast implements Broadcast {
         this.toPublish=toPublish;
     }
 
-    public List<Model> getPublish(){
+    public List<Model> get(){
         return toPublish;
     }
 }
