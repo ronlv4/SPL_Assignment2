@@ -27,8 +27,18 @@ public class Model {
         Bad
     }
 
-    public Model(String name, Data data, Student student) {
+    public Model(String name, String type, int size){
         this.name = name;
+        Data data;
+        type = type.toLowerCase();
+        if (type.equals("images")) {
+            data = new Data(Data.Type.Images, 0, size);
+        } else if (type.equals("text")){
+            data = new Data(Data.Type.Text, 0, size);
+        }
+        else {
+            data = new Data(Data.Type.Tabular, 0, size);
+        }
         this.data = data;
         this.student = student;
         this.status = Status.PreTrained;

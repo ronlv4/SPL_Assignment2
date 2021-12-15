@@ -24,9 +24,9 @@ public class StudentService extends MicroService {
 
     private Student student;
 
-    public StudentService(String name) {
+    public StudentService(String name, Student student) {
         super("Student_Service");
-        // TODO Implement this
+        this.student = student;
     }
 
 

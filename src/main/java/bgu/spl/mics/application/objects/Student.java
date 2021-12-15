@@ -17,14 +17,7 @@ public class Student {
     private Degree status;
     private int publications;
     private int papersRead;
-
-    public Student(String name, String department, Degree status, int publications, int papersRead) {
-        this.name = name;
-        this.department = department;
-        this.status = status;
-        this.publications = publications;
-        this.papersRead = papersRead;
-    }
+    private Model[] models;
 
     public String getName() {
         return name;

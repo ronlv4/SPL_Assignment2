@@ -47,7 +47,7 @@ public class GPUTest {
 
     @Test
     public void getModel() {
-        model = new Model("deepLearning", data, new Student("Simba", "Computer Science", Student.Degree.MSc, 0, 0));
+//        model = new Model("deepLearning", data, new Student("Simba", "Computer Science", Student.Degree.MSc, 0, 0));
         gpu.setModel(model);
         assertEquals(gpu.getModel(), model);
     }

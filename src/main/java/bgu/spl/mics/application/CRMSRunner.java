@@ -25,12 +25,12 @@ public class CRMSRunner {
     }
 
     private static void buildStudentServices(InputFile inputJava) {
-        int numOfStudents = inputJava.getNumOfStudents();
+        Student[] students = inputJava.getStudents();
+        int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
-        int i = 1;
-        for (Student student : inputJava.getStudents()) {
-            studentServicesThreads[i] = new Thread(new StudentService("Student Service " + i));
-            studentServicesThreads[i++].start();
+        for (int i = 0; i < numOfStudents; i++) {
+            studentServicesThreads[i] = new Thread(new StudentService("Student Service " + i, students[i]));
+            studentServicesThreads[i].start();
         }
     }
 
