@@ -6,14 +6,14 @@ import bgu.spl.mics.application.objects.Model;
 import java.util.List;
 
 public class PublishResultsEvent implements Event {
-    private List<Model> goodModels;
+    private Model goodModel;
 
-    public PublishResultsEvent(List<Model> models){
-        this.goodModels = models;
+    public PublishResultsEvent(Model model){
+        this.goodModel = model;
     }
 
-    public List<Model> getGoodModels(){
-        return goodModels;
+    public Model getGoodModel(){
+        return goodModel;
     }
 
 }

@@ -21,7 +21,7 @@ public class Model {
         Tested
     }
 
-    enum Results {
+    public enum Results {
         None,
         Good,
         Bad

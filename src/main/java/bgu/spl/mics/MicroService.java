@@ -29,7 +29,6 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
-        System.out.println(name + " was created and it's name is" +Thread.currentThread().getName());
     }
 
     /**

@@ -19,6 +19,10 @@ public class Student {
     private int papersRead;
     private Model[] models;
 
+    public Model[] getModels() {
+        return models;
+    }
+
     public String getName() {
         return name;
     }

@@ -34,9 +34,23 @@ public class StudentService extends MicroService {
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(PublishConferenceBroadcast.class, c -> {
-            student.increasePublications();
-
+            for (Model goodModel : c.getGoodModels()) {
+                if (goodModel.getStudent().equals(student)){
+                    student.increasePublications();
+                }
+                else{
+                    student.increasePapersRead();
+                }
+            }
         });
-        Future<Model> future = sendEvent(new TrainModelEvent());
+        for (Model model : student.getModels()) {
+            Future<Model> future = sendEvent(new TrainModelEvent(model));
+            future.get();
+            future = sendEvent(new TestModelEvent(model));
+            Model finishedModel = future.get();
+            if (finishedModel.getResult() == Model.Results.Good){
+                sendEvent(new PublishResultsEvent(model));
+            }
+        }
     }
 }

@@ -39,7 +39,7 @@ public class MessageBusImpl implements MessageBus {
     public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
         Deque<MicroService> subscribedMicroServiceDeque = subscribersByType.get(type);
         // adding the microsevice to the subscriberByType queue
-        if (subscribedMicroServiceDeque == null){
+        if (subscribedMicroServiceDeque == null){ // TODO: Needs to bo done in a do_while thread safe design
             subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
             subscribersByType.put(type, subscribedMicroServiceDeque);
         }
