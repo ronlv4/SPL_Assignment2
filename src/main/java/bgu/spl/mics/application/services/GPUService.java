@@ -54,15 +54,6 @@ public class GPUService extends MicroService {
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
             createAndSendBatches(model.getData());
-
-            /*
-            create batches
-            send to cpu through cluster
-            receive from cpu through cluster
-            use processed batches to train the model
-            set it trained
-             */
-
         });
         subscribeEvent(TestModelEvent.class, c -> {
             Model model = c.getModelToTest();

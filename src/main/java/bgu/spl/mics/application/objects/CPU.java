@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Passive object representing a single CPU.
@@ -10,7 +11,7 @@ import java.util.Collection;
 public class CPU {
     private int cores;
     private int ticks;
-    private Collection<DataBatch> dataBatchCollection;
+    private BlockingQueue<DataBatch> unprocessedDataBatches;
     private Cluster cluster;
 
 
@@ -41,6 +42,8 @@ public class CPU {
      *
      */
     public void advanceTick(){
+
+
 
     }
 

@@ -11,18 +11,6 @@ import java.util.Queue;
  * Add fields and methods to this class as you see fit (including public methods and constructors).
  */
 public class GPU {
-
-
-    /* GPU receives a model which holds Data.
-    GPU split Data into Data batches and then sends them to CPUS (through the cluster)
-    .
-    .
-    .
-    GPU receives processed data batches and then uses them to train the model
-    when the GPU is done training a model, it sends it back to the messageBus
-     */
-
-
     /**
      * Enum representing the type of the GPU.
      */
