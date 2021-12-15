@@ -27,11 +27,13 @@ public class MessageBusImpl implements MessageBus {
     private Map<MicroService, Queue<Message>> microServices;
     private Map<Class<? extends Event<?>>, Deque<MicroService>> subscribersByType;
     private Map<MicroService, Deque<Class<? extends Event<?>>>> subscribersByMicroService;
+    private HashMap<Event<?> , Future<?>> eventToFuture;
 
     private MessageBusImpl() {
         microServices = new HashMap<>();
         subscribersByType = new HashMap<>();
         subscribersByMicroService = new HashMap<>();
+        eventToFuture = new HashMap<>();
         instance = this;
     }
 
@@ -60,13 +62,17 @@ public class MessageBusImpl implements MessageBus {
 
 
 
+
+
     }
 
     @Override
     public <T> void complete(Event<T> e, T result) {
         // TODO Auto-generated method stub
-
-
+        if (result != null) {
+            Future<T> future = (Future<T>) eventToFuture.get(e);
+            future.resolve(result);
+        }
     }
 
     @Override
@@ -84,7 +90,9 @@ public class MessageBusImpl implements MessageBus {
         MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
         microServices.get(microServiceInLine).add(e);
         subscribedMicroServiceQueue.add(microServiceInLine);
-        return new Future<>();
+        Future newFuture = new Future<>();
+        eventToFuture.put(e ,newFuture);
+        return newFuture;
     }
 
     @Override
