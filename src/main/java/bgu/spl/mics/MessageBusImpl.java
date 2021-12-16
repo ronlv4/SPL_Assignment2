@@ -1,5 +1,7 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.TickBroadcast;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -27,12 +29,18 @@ public class MessageBusImpl implements MessageBus {
     private Map<MicroService, Queue<Message>> microServices;
     private Map<Class<? extends Event<?>>, Deque<MicroService>> subscribersByType;
     private Map<MicroService, Deque<Class<? extends Event<?>>>> subscribersByMicroService;
+    private Map<MicroService, Queue<Message>> microServicesBroadcasts;
+    private Map<Class<? extends Broadcast>, Deque<MicroService>> subscribersByTypeBroadcasts;
+    private Map<MicroService, Deque<Class<? extends Broadcast>>> subscribersByMicroServiceBroadcasts;
     private HashMap<Event<?> , Future<?>> eventToFuture;
 
     private MessageBusImpl() {
         microServices = new HashMap<>();
         subscribersByType = new HashMap<>();
         subscribersByMicroService = new HashMap<>();
+        microServicesBroadcasts = new HashMap<>();
+        subscribersByTypeBroadcasts = new HashMap<>();
+        subscribersByMicroServiceBroadcasts = new HashMap<>();
         eventToFuture = new HashMap<>();
         instance = this;
     }
@@ -58,12 +66,22 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+        Deque<MicroService> subscribedMicroServiceDeque = subscribersByTypeBroadcasts.get(type);
+        // adding the microsevice to the subscriberByType queue
+        if (subscribedMicroServiceDeque == null){ // TODO: Needs to bo done in a do_while thread safe design
+            subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
+            subscribersByTypeBroadcasts.put(type, subscribedMicroServiceDeque);
+        }
+        subscribedMicroServiceDeque.addFirst(m);
+
+        // adding the microservice to the subscriberByMicroService queue
+        Deque<Class<? extends Broadcast>> typesSubscriptions = subscribersByMicroServiceBroadcasts.get(m);
+        if (typesSubscriptions == null){
+            typesSubscriptions = new ConcurrentLinkedDeque<>();
+            subscribersByMicroServiceBroadcasts.put(m, typesSubscriptions);
+        }
+        typesSubscriptions.add(type);
         // TODO Auto-generated method stub
-
-
-
-
-
     }
 
     @Override
@@ -77,8 +95,13 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void sendBroadcast(Broadcast b) {
+        Queue<MicroService> subscribedMicroServiceQueue = subscribersByType.get(b.getClass());
+        for(int i=0; i<subscribedMicroServiceQueue.size(); i++) {
+            MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
+            microServicesBroadcasts.get(microServiceInLine).add(b);
+            subscribedMicroServiceQueue.add(microServiceInLine);
+        }
         // TODO Auto-generated method stub
-
     }
 
 

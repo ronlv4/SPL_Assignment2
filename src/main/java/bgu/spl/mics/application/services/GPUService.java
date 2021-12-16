@@ -49,6 +49,9 @@ public class GPUService extends MicroService {
         messageBus.register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
             gpu.advanceTick();
+            if(c.getCurrentTick()==0){
+                Thread.currentThread().interrupt();
+            }
         });
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();

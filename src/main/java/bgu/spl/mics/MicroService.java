@@ -80,6 +80,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         //TODO: implement this.
+        MessageBusImpl.getInstance().subscribeBroadcast(type, this);
     }
 
     /**
@@ -162,7 +163,7 @@ public abstract class MicroService implements Runnable {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
             } catch (InterruptedException e) {
                 MessageBusImpl.getInstance().unregister(this);
-                terminate();
+                Thread.currentThread().interrupt();
             }
         }
     }

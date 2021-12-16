@@ -4,10 +4,7 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.PublishConferenceBroadcast;
-import bgu.spl.mics.application.messages.PublishResultsEvent;
-import bgu.spl.mics.application.messages.TestModelEvent;
-import bgu.spl.mics.application.messages.TrainModelEvent;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.Model;
 import bgu.spl.mics.application.objects.Student;
 
@@ -33,6 +30,11 @@ public class StudentService extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
+        subscribeBroadcast(TickBroadcast.class, c -> {
+            if(c.getCurrentTick()==0)
+                Thread.currentThread().interrupt();
+            });
+
         subscribeBroadcast(PublishConferenceBroadcast.class, c -> {
             for (Model goodModel : c.getGoodModels()) {
                 if (goodModel.getStudent().equals(student)){
@@ -43,6 +45,7 @@ public class StudentService extends MicroService {
                 }
             }
         });
+
         for (Model model : student.getModels()) {
             Future<Model> future = sendEvent(new TrainModelEvent(model));
             future.get();
