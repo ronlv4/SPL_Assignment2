@@ -21,9 +21,9 @@ public class GPUTest {
 
     @Test
     public void advanceTick() {
-        int ticksBefore = gpu.getTicks();
+        int ticksBefore = gpu.getCurrentTick();
         gpu.advanceTick();
-        int ticksAfter = gpu.getTicks();
+        int ticksAfter = gpu.getCurrentTick();
         assertEquals(ticksBefore + 1, ticksAfter);
     }
 

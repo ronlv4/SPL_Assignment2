@@ -51,12 +51,16 @@ public class GPUService extends MicroService {
         subscribeBroadcast(TickBroadcast.class, c -> {
             Model model = gpu.advanceTick();
             if (model != null){
-                complete(TrainModelEvent.class, model); //TODO think of a way to send the completed event back to the GPUService
+                complete(, model);
+
             }
+//            }
         });
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
             createAndSendBatches(model.getData());
+            //TODO probably need to call to complete here, because I need @code c
+
         });
         subscribeEvent(TestModelEvent.class, c -> {
             Model model = c.getModelToTest();

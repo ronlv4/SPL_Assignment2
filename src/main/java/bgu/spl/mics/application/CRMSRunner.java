@@ -59,7 +59,7 @@ public class CRMSRunner {
         int numOfConferences = inputJava.getNumOfConferences();
         Thread[] conferencesServicesThreads = new Thread[numOfConferences];
         int i = 0;
-        for(ConfrenceInformation conference: inputJava.getConferences()){
+        for(ConferenceInformation conference: inputJava.getConferences()){
             conferencesServicesThreads[i] = new Thread(new ConferenceService("Conference Service " + i, conference));
             conferencesServicesThreads[i++].start();
         }

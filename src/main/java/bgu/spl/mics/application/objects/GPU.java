@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -42,41 +44,42 @@ public class GPU {
         return null;
     }
 
-    public synchronized void advanceTick() {
-        while (!VRAM.isEmpty()) {
+    public synchronized Model advanceTick() {
+        if (!VRAM.isEmpty()) {
             DataBatch batch = VRAM.poll();
             batch.setStartingTrainTick(currentTick);
-            if (type == Type.RTX3090) {
-                Train3090(batch);
-            } else if (batch.getDataType() == Data.Type.Text) {
-                Train2080(batch);
-            } else {
-                Train1080(batch);
-            }
             model.setStatus(Model.Status.Training);
+            if (type == Type.RTX3090) {
+                return Train3090(batch);
+            } else if (batch.getDataType() == Data.Type.Text) {
+                return Train2080(batch);
+            } else {
+                return Train1080(batch);
+            }
         }
-
+        return null;
     }
 
-    private void Train3090(DataBatch batch) {
-        train(batch, 1);
+    private Model Train3090(DataBatch batch) {
+        return train(batch, 1);
     }
 
-    private void Train2080(DataBatch batch) {
-        train(batch, 2);
+    private Model Train2080(DataBatch batch) {
+        return train(batch, 2);
     }
 
-    private void Train1080(DataBatch batch) {
-        train(batch, 4);
+    private Model Train1080(DataBatch batch) {
+        return train(batch, 4);
     }
 
-    private void train(DataBatch batch, int trainTimeRequired) {
+    private Model train(DataBatch batch, int trainTimeRequired) {
         if (currentTick - batch.getStartingTrainTick() == trainTimeRequired) {
             if (batch.getStartIndex() == getData().getSize()-1000){
                 finalizeModelTraining();
+                return model;
             }
-
         }
+        return null;
     }
 
     public void addProcessedBatch(DataBatch batch) {
@@ -92,7 +95,7 @@ public class GPU {
 
     public void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
-        return
+//        return
     }
 
     public void setModel(Model model) {
