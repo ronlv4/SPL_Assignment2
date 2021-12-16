@@ -27,8 +27,23 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    private static void buildStudentServices(InputFile inputJava) {
+    private static String buildOutputFile(InputFile inputJava) {
+        //Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
+        //JsonObject output = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Student[] students=getStudents(inputJava);
+        ConferenceInformation[] conferences=getConferences(inputJava);
+        String output=gson.toJson(students)+gson.toJson(conferences);
+        System.out.println(output);
+        return output;
+    }
+
+    private static Student[] getStudents(InputFile inputJava) {
         Student[] students = inputJava.getStudents();
+        return students;
+    }
+
+    private static void buildStudentServices(Student[] students) {
         int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
         for (int i = 0; i < numOfStudents; i++) {
@@ -55,11 +70,16 @@ public class CRMSRunner {
         }
     }
 
+    private static ConferenceInformation[] getConferences(InputFile inputJava) {
+        ConferenceInformation[] conferences = inputJava.getConferences();
+        return conferences;
+    }
+
     private static void buildConferenceServices(InputFile inputJava) {
         int numOfConferences = inputJava.getNumOfConferences();
         Thread[] conferencesServicesThreads = new Thread[numOfConferences];
         int i = 0;
-        for(ConfrenceInformation conference: inputJava.getConferences()){
+        for(ConferenceInformation conference: inputJava.getConferences()){
             conferencesServicesThreads[i] = new Thread(new ConferenceService("Conference Service " + i, conference));
             conferencesServicesThreads[i++].start();
         }
@@ -110,7 +130,7 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
-        buildStudentServices(inputAsJavaObject);
+        buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
@@ -118,6 +138,7 @@ public class CRMSRunner {
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
+        buildOutputFile(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

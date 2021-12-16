@@ -46,7 +46,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+    public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {//synchronized?
         Deque<MicroService> subscribedMicroServiceDeque = subscribersByType.get(type);
         // adding the microsevice to the subscriberByType queue
         if (subscribedMicroServiceDeque == null){ // TODO: Needs to bo done in a do_while thread safe design
