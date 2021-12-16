@@ -1,7 +1,4 @@
 package bgu.spl.mics.application.objects;
-
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;

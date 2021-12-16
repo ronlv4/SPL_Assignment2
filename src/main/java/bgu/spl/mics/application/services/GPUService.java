@@ -1,8 +1,5 @@
 package bgu.spl.mics.application.services;
-import bgu.spl.mics.Event;
-import bgu.spl.mics.Message;
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.MicroService;
+import bgu.spl.mics.*;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.messages.TestModelEvent;
@@ -51,7 +48,7 @@ public class GPUService extends MicroService {
         subscribeBroadcast(TickBroadcast.class, c -> {
             Model model = gpu.advanceTick();
             if (model != null){
-                complete(, model);
+//                complete(, model);
 
             }
             if(c.getCurrentTick()==0){

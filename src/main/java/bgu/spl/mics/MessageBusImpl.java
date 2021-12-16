@@ -66,27 +66,28 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-        Deque<MicroService> subscribedMicroServiceDeque = broadcastsSubscribersByType.get(type);
-        // adding the microsevice to the subscriberByType queue
-        if (subscribedMicroServiceDeque == null){ // TODO: Needs to bo done in a do_while thread safe design
-            subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
-            broadcastsSubscribersByType.put(type, subscribedMicroServiceDeque);
+        Deque<MicroService> subscribedMicroServiceDeque;
+        synchronized (this){
+            subscribedMicroServiceDeque = broadcastsSubscribersByType.get(type);
+            if (subscribedMicroServiceDeque == null){
+                subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
+                broadcastsSubscribersByType.put(type, subscribedMicroServiceDeque);
+            }
         }
         subscribedMicroServiceDeque.addFirst(m);
 
-        // adding the microservice to the subscriberByMicroService queue
         Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastsSubscribersByMicroService.get(m);
-        if (typesSubscriptions == null){
-            typesSubscriptions = new ConcurrentLinkedDeque<>();
-            broadcastsSubscribersByMicroService.put(m, typesSubscriptions);
+        synchronized (this){
+            if (typesSubscriptions == null){
+                typesSubscriptions = new ConcurrentLinkedDeque<>();
+                broadcastsSubscribersByMicroService.put(m, typesSubscriptions);
+            }
         }
         typesSubscriptions.add(type);
-        // TODO Auto-generated method stub
     }
 
     @Override
     public <T> void complete(Event<T> e, T result) {
-        // TODO Auto-generated method stub
         if (result != null) {
             Future<T> future = (Future<T>) eventToFuture.get(e);
             future.resolve(result);
