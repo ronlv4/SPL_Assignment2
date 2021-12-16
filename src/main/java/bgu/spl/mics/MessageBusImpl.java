@@ -1,9 +1,11 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.PublishResultsEvent;
+
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -24,7 +26,7 @@ public class MessageBusImpl implements MessageBus {
 
     private static MessageBusImpl instance = null;
     private static boolean isDone = false;
-    private Map<MicroService, Queue<Message>> microServices;
+    private Map<MicroService, Queue<Event<?>>> microServices;
     private Map<Class<? extends Event<?>>, Deque<MicroService>> subscribersByType;
     private Map<MicroService, Deque<Class<? extends Event<?>>>> subscribersByMicroService;
     private HashMap<Event<?> , Future<?>> eventToFuture;
@@ -39,21 +41,30 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-        Deque<MicroService> subscribedMicroServiceDeque = subscribersByType.get(type);
-        // adding the microsevice to the subscriberByType queue
-        if (subscribedMicroServiceDeque == null){ // TODO: Needs to bo done in a do_while thread safe design
-            subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
-            subscribersByType.put(type, subscribedMicroServiceDeque);
+        // adding the microservice to the subscriberByType queue
+        Deque<MicroService> subscribedMicroServiceDeque;
+        synchronized (this){
+            subscribedMicroServiceDeque = subscribersByType.get(type);
+            if (subscribedMicroServiceDeque == null){
+                subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
+                subscribersByType.put(type, subscribedMicroServiceDeque);
+            }
         }
         subscribedMicroServiceDeque.addFirst(m);
+//        AtomicBoolean lock = new AtomicBoolean(true);
+//        while (!lock.compareAndSet(false,true)){
+//            lock.set(false);
+//        }
 
         // adding the microservice to the subscriberByMicroService queue
         Deque<Class<? extends Event<?>>> typesSubscriptions = subscribersByMicroService.get(m);
-        if (typesSubscriptions == null){
-            typesSubscriptions = new ConcurrentLinkedDeque<>();
-            subscribersByMicroService.put(m, typesSubscriptions);
+        synchronized (this){
+            if (typesSubscriptions == null){
+                typesSubscriptions = new ConcurrentLinkedDeque<>();
+                subscribersByMicroService.put(m, typesSubscriptions);
+            }
         }
-        typesSubscriptions.add(type);
+        typesSubscriptions.addFirst(type);
     }
 
     @Override
@@ -85,19 +96,22 @@ public class MessageBusImpl implements MessageBus {
     @Override
     public <T> Future<T> sendEvent(Event<T> e) {
         Queue<MicroService> subscribedMicroServiceQueue = subscribersByType.get(e.getClass());
-        if (subscribedMicroServiceQueue == null) //TODO make sure that if an event has no subscribers it's being deleted from the map
+        if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
             return null; //TODO what should we do if the type of event has no subscribers?
-        MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
-        microServices.get(microServiceInLine).add(e);
-        subscribedMicroServiceQueue.add(microServiceInLine);
-        Future newFuture = new Future<>();
+        synchronized (this){
+            MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
+            microServices.get(microServiceInLine).add(e);
+            notifyAll();
+            subscribedMicroServiceQueue.add(microServiceInLine);
+        }
+        Future<T> newFuture = new Future<>();
         eventToFuture.put(e ,newFuture);
         return newFuture;
     }
 
     @Override
     public void register(MicroService m) {
-        microServices.put(m, new PriorityBlockingQueue<>());
+        microServices.put(m, new ConcurrentLinkedQueue<>());
     }
 
     @Override
@@ -112,17 +126,16 @@ public class MessageBusImpl implements MessageBus {
     @Override
     public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
         Queue<? extends Message> microServiceQueue = microServices.get(m);
-//        if (microServiceQueue.isEmpty()) {
-//            wait(); // locked on "this", waiting for notify when the Queue won't be empty
-//        }
-        return microServiceQueue.poll(); // queue is blocking if you try to remove from an empty queue
+        while (microServiceQueue.isEmpty())
+            wait();
+        return microServiceQueue.poll();
     }
 
     public static MessageBusImpl getInstance() {
-        if(isDone == false) {
+        if(!isDone) {
             synchronized(MessageBusImpl.class)
             {
-                if(isDone == false) {
+                if(!isDone) {
                     instance = new MessageBusImpl();
                     isDone = true;
                 }

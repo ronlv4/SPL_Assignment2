@@ -10,6 +10,19 @@ public class DataBatch {
     private Data data;
     private int startIndex;
     private int startingProcessTick;
+    private int startingTrainTick;
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public int getStartingTrainTick() {
+        return startingTrainTick;
+    }
+
+    public void setStartingTrainTick(int startingTrainTick) {
+        this.startingTrainTick = startingTrainTick;
+    }
 
     public DataBatch(Data data, int startIndex) {
         this.data = data;

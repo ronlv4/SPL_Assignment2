@@ -59,7 +59,7 @@ public class CRMSRunner {
         int numOfConferences = inputJava.getNumOfConferences();
         Thread[] conferencesServicesThreads = new Thread[numOfConferences];
         int i = 0;
-        for(ConfrenceInformation conference: inputJava.getConferences()){
+        for(ConferenceInformation conference: inputJava.getConferences()){
             conferencesServicesThreads[i] = new Thread(new ConferenceService("Conference Service " + i, conference));
             conferencesServicesThreads[i++].start();
         }
@@ -110,18 +110,19 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
-        buildStudentServices(inputAsJavaObject);
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
+        buildStudentServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {
-        Cluster.setCPUS(cpus);
-        Cluster.setGPUS(gpus);
+        Cluster cluster = Cluster.getInstance();
+        cluster.setCPUS(cpus);
+        cluster.setGPUS(gpus);
     }
 }

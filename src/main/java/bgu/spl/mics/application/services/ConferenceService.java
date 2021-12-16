@@ -5,7 +5,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.PublishConferenceBroadcast;
 import bgu.spl.mics.application.messages.PublishResultsEvent;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.ConfrenceInformation;
+import bgu.spl.mics.application.objects.ConferenceInformation;
 import bgu.spl.mics.application.objects.Model;
 
 import java.util.LinkedList;
@@ -23,11 +23,11 @@ import java.util.List;
  */
 public class ConferenceService extends MicroService {
 
-    private ConfrenceInformation conference;
+    private ConferenceInformation conference;
     private MessageBusImpl messageBus;
     private List<Model> goodResultsModels;
 
-    public ConferenceService(String name, ConfrenceInformation conference) {
+    public ConferenceService(String name, ConferenceInformation conference) {
         super(name);
         this.conference = conference;
         this.messageBus=MessageBusImpl.getInstance();

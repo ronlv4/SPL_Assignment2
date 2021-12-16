@@ -68,7 +68,6 @@ public class CPU {
     }
     private void processImage(DataBatch batch){
         process(batch, 32 / cores * 4);
-
     }
 
     private void process(DataBatch batch, int processTimeRequired){

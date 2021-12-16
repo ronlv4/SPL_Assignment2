@@ -1,6 +1,6 @@
 package bgu.spl.mics.application.InputParsing;
 
-import bgu.spl.mics.application.objects.ConfrenceInformation;
+import bgu.spl.mics.application.objects.ConferenceInformation;
 import bgu.spl.mics.application.objects.Model;
 import bgu.spl.mics.application.objects.Student;
 import com.google.gson.JsonDeserializationContext;
@@ -14,7 +14,7 @@ public class InputFile {
     private Student[] Students;
     private String[] GPUS;
     private int[] CPUS;
-    private ConfrenceInformation[] Conferences;
+    private ConferenceInformation[] Conferences;
     private int TickTime;
     private int Duration;
 
@@ -40,7 +40,7 @@ public class InputFile {
         return CPUS.length;
     }
 
-    public ConfrenceInformation[] getConferences() {
+    public ConferenceInformation[] getConferences() {
         return Conferences;
     }
 
