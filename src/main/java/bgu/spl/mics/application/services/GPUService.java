@@ -49,7 +49,6 @@ public class GPUService extends MicroService {
     protected void initialize() {
         messageBus.register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
-            gpu.advanceTick();
             Model model = gpu.advanceTick();
             if (model != null){
                 complete(, model);
