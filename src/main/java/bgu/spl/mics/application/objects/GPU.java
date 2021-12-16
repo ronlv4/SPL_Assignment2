@@ -24,6 +24,7 @@ public class GPU {
     private Type type;
     private Model model;
     private Cluster cluster;
+    private int totalTime;
     private int currentTick;
 
     private Queue<DataBatch> VRAM;
@@ -31,6 +32,7 @@ public class GPU {
     public GPU(Type type) {
         this.cluster = Cluster.getInstance();
         this.type = type;
+        this.totalTime = 0;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
         } else if (type == Type.RTX2080) {
@@ -46,6 +48,7 @@ public class GPU {
 
     public synchronized Model advanceTick() {
         if (!VRAM.isEmpty()) {
+            totalTime++;
             DataBatch batch = VRAM.poll();
             batch.setStartingTrainTick(currentTick);
             model.setStatus(Model.Status.Training);
@@ -118,4 +121,6 @@ public class GPU {
     public int getCurrentTick() {
         return currentTick;
     }
+
+    public int getTotalTime(){return totalTime;}
 }

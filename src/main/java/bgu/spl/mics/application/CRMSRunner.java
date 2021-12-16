@@ -8,6 +8,7 @@ import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
@@ -27,8 +28,35 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    private static void buildStudentServices(InputFile inputJava) {
+    private static String buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
+        //Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
+        //JsonObject output = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Student[] students=getStudents(inputJava);
+        ConferenceInformation[] conferences=getConferences(inputJava);
+        int batchesProcessed=0;
+        int gpuTimeUsed=0;
+        int cpuTimeUsed=0;
+        for(int i=0; i< gpus.length; i++){
+            gpuTimeUsed+=gpus[i].getTotalTime();
+        }
+        for(int i=0; i< cpus.length; i++){
+            batchesProcessed+=cpus[i].getNumOfProcessed();
+            cpuTimeUsed+=cpus[i].getTotalTime();
+        }
+        JsonObject outputJson=new JsonObject();
+        String output=gson.toJson(students)+gson.toJson(conferences);
+        output += ",\ngpuTimeUsed: "+gpuTimeUsed+",\ncpuTimeUsed: "+cpuTimeUsed+",\nbatchesProcessed: "+batchesProcessed;
+        outputJson.getAsJsonObject(output);
+        return output;
+    }
+
+    private static Student[] getStudents(InputFile inputJava) {
         Student[] students = inputJava.getStudents();
+        return students;
+    }
+
+    private static void buildStudentServices(Student[] students) {
         int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
         for (int i = 0; i < numOfStudents; i++) {
@@ -53,6 +81,11 @@ public class CRMSRunner {
             CPUServicesThreads[i] = new Thread(new CPUService("GPU Service " + i, cpu));
             CPUServicesThreads[i++].start();
         }
+    }
+
+    private static ConferenceInformation[] getConferences(InputFile inputJava) {
+        ConferenceInformation[] conferences = inputJava.getConferences();
+        return conferences;
     }
 
     private static void buildConferenceServices(InputFile inputJava) {
@@ -112,6 +145,7 @@ public class CRMSRunner {
         Cluster cluster = Cluster.getInstance();
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
+        buildOutputFile(inputAsJavaObject, cpus, gpus);
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);

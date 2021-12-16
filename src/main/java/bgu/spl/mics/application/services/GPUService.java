@@ -54,7 +54,9 @@ public class GPUService extends MicroService {
                 complete(, model);
 
             }
-//            }
+            if(c.getCurrentTick()==0){
+                Thread.currentThread().interrupt();
+            }
         });
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
@@ -89,4 +91,5 @@ public class GPUService extends MicroService {
         }
 
     }
+
 }

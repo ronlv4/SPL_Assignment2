@@ -81,6 +81,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         //TODO: implement this.
+        messageBus.subscribeBroadcast(type, this);
     }
 
     /**

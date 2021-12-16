@@ -41,12 +41,12 @@ public class TimeService extends MicroService {
             @Override
             public void run() {
                 MessageBus.sendBroadcast(new TickBroadcast(currentTick));
-                currentTick += tickTime;
+                currentTick ++;
                 if (currentTick > Duration)
                     timer.cancel();
             }
         }, 0, tickTime);
         MessageBus.sendBroadcast(new TickBroadcast(0));
-        terminate();
+        Thread.currentThread().interrupt();
     }
 }
