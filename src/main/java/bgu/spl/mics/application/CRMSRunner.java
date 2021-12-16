@@ -8,6 +8,7 @@ import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
@@ -27,14 +28,26 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    private static String buildOutputFile(InputFile inputJava) {
+    private static String buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
         //Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
         //JsonObject output = new JsonObject();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Student[] students=getStudents(inputJava);
         ConferenceInformation[] conferences=getConferences(inputJava);
+        int batchesProcessed=0;
+        int gpuTimeUsed=0;
+        int cpuTimeUsed=0;
+        for(int i=0; i< gpus.length; i++){
+            gpuTimeUsed+=gpus[i].getTotalTime();
+        }
+        for(int i=0; i< cpus.length; i++){
+            batchesProcessed+=cpus[i].getNumOfProcessed();
+            cpuTimeUsed+=cpus[i].getTotalTime();
+        }
+        JsonObject outputJson=new JsonObject();
         String output=gson.toJson(students)+gson.toJson(conferences);
-        System.out.println(output);
+        output += ",\ngpuTimeUsed: "+gpuTimeUsed+",\ncpuTimeUsed: "+cpuTimeUsed+",\nbatchesProcessed: "+batchesProcessed;
+        outputJson.getAsJsonObject(output);
         return output;
     }
 
@@ -133,12 +146,12 @@ public class CRMSRunner {
         buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
+        buildOutputFile(inputAsJavaObject, cpus, gpus);
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
-        buildOutputFile(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

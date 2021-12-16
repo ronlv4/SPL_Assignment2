@@ -23,18 +23,20 @@ public class GPU {
     private Type type;
     private Model model;
     private Cluster cluster;
-    int ticks;
+    private int ticks;
+    private int totalTime;
 
     public GPU(Type type){
         this.cluster = Cluster.getInstance();
         this.type = type;
+        this.totalTime = 0;
     }
     public Collection<DataBatch> getUnprocessedBatches() {
         return null;
     }
 
     public void advanceTick() {
-
+        totalTime++;
     }
 
     public void addProcessedBatch(DataBatch batch) {
@@ -69,4 +71,6 @@ public class GPU {
     public int getTicks() {
         return ticks;
     }
+
+    public int getTotalTime(){return totalTime;}
 }

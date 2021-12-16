@@ -13,14 +13,17 @@ import java.util.concurrent.SynchronousQueue;
 public class CPU {
     private int cores;
     private int currentTick;
+    private int numOfProcessed;
     private BlockingQueue<DataBatch> unprocessedDataBatches;
     private Cluster cluster;
+    private int totalTime;
 
 
     public CPU(int cores){
         this.cores = cores;
         this.cluster = Cluster.getInstance();
         this.currentTick = 1;
+        this.numOfProcessed = 0;
         this.unprocessedDataBatches = new LinkedBlockingQueue<>();
     }
 
@@ -45,6 +48,7 @@ public class CPU {
      *
      */
     public synchronized void advanceTick(){
+        totalTime++;
         while (!unprocessedDataBatches.isEmpty()){
             DataBatch batch = unprocessedDataBatches.poll();
             batch.setStartingProcessTick(currentTick);
@@ -74,6 +78,7 @@ public class CPU {
     private void process(DataBatch batch, int processTimeRequired){
         if (currentTick-batch.getStartingProcessTick() == processTimeRequired){
             cluster.sendProcessedBatch(batch);
+            numOfProcessed++;
         }
     }
 
@@ -92,4 +97,9 @@ public class CPU {
         System.out.println("adding a data batch to cpu");
         unprocessedDataBatches.add(batch);
     }
+    public int getNumOfProcessed(){
+        return numOfProcessed;
+    }
+    public int getTotalTime(){ return totalTime;}
+
 }
