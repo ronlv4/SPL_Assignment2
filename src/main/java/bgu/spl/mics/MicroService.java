@@ -163,7 +163,7 @@ public abstract class MicroService implements Runnable {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
             } catch (InterruptedException e) {
                 MessageBusImpl.getInstance().unregister(this);
-                Thread.currentThread().interrupt();
+                terminate();
             }
         }
     }
