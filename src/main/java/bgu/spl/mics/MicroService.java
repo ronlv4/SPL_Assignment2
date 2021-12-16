@@ -22,6 +22,7 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
+    private final MessageBusImpl messageBus = MessageBusImpl.getInstance();
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -54,7 +55,7 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-        MessageBusImpl.getInstance().subscribeEvent(type, this);
+        messageBus.subscribeEvent(type, this);
     }
 
     /**
@@ -97,11 +98,7 @@ public abstract class MicroService implements Runnable {
      * null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-        Future<T> future = MessageBusImpl.getInstance().sendEvent(e);
-//        .
-//        .
-//        .
-        return future;
+        return messageBus.sendEvent(e);
     }
 
     /**
@@ -112,7 +109,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        MessageBusImpl.getInstance().sendBroadcast(b);
+        messageBus.sendBroadcast(b);
     }
 
     /**
@@ -127,7 +124,7 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-        MessageBusImpl.getInstance().complete(e, result);
+        messageBus.complete(e, result);
     }
 
     /**
@@ -157,12 +154,14 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        Thread.currentThread().setName(name);
         initialize();
         while (!terminated) {
             try{
-                Message message = MessageBusImpl.getInstance().awaitMessage(this);
+                Message message = messageBus.awaitMessage(this);
             } catch (InterruptedException e) {
-                MessageBusImpl.getInstance().unregister(this);
+                messageBus.unregister(this);
+                System.out.println("Terminating " + Thread.currentThread().getName());
                 terminate();
             }
         }

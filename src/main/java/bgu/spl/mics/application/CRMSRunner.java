@@ -143,7 +143,6 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
-        buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildOutputFile(inputAsJavaObject, cpus, gpus);
@@ -151,11 +150,13 @@ public class CRMSRunner {
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
+        buildStudentServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {
-        Cluster.setCPUS(cpus);
-        Cluster.setGPUS(gpus);
+        Cluster cluster = Cluster.getInstance();
+        cluster.setCPUS(cpus);
+        cluster.setGPUS(gpus);
     }
 }
