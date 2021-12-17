@@ -10,8 +10,8 @@ public class Model {
     private String name;
     private Data data;
     private Student student;
-    private Results result;
     private Status status;
+    private Results result;
 
 
     enum Status {

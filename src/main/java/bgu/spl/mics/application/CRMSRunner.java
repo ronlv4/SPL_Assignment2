@@ -3,16 +3,17 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.InputParsing.InputFile;
 import bgu.spl.mics.application.InputParsing.ModelDeserializer;
+import bgu.spl.mics.application.OutputWriting.OutputFile;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
@@ -44,15 +45,7 @@ public class CRMSRunner {
         }
         try{
             Writer writer = new FileWriter("output1.json");
-            Object[] output = new Object[7];
-            output[0]="students: ";
-            output[1]=students;
-            output[2]="conferences: ";
-            output[3]=conferences;
-            output[4]="gpuTimeUsed: "+gpuTimeUsed;
-            output[5]="cpuTimeUsed: "+cpuTimeUsed;
-            output[6]="batchesProcessed: "+batchesProcessed;
-            gson.toJson(output, writer);
+            gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
             writer.flush(); //flush data to file
             writer.close(); //close write
         }

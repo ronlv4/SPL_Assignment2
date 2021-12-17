@@ -1,6 +1,5 @@
-[
-  "students: ",
-  [
+{
+  "students": [
     {
       "name": "Simba",
       "department": "Computer Science",
@@ -12,41 +11,37 @@
           "name": "YOLO10",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 200000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "ResNet9000",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 200000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "LessEfficientNet",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 20000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "DensestNet",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 200000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         }
       ]
     },
@@ -61,11 +56,10 @@
           "name": "VIT",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 100000000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         }
       ]
     },
@@ -80,41 +74,37 @@
           "name": "Bert",
           "data": {
             "type": "Text",
-            "processed": 0,
             "size": 1000000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "GPT4",
           "data": {
             "type": "Text",
-            "processed": 0,
             "size": 1000000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "GPT5",
           "data": {
             "type": "Text",
-            "processed": 0,
             "size": 200000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "GPT10",
           "data": {
             "type": "Text",
-            "processed": 0,
             "size": 50000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         }
       ]
     },
@@ -129,41 +119,37 @@
           "name": "Percepetron",
           "data": {
             "type": "Tabular",
-            "processed": 0,
             "size": 1000000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "GNN",
           "data": {
             "type": "Tabular",
-            "processed": 0,
             "size": 1000000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "MoreStyleGAN",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 100000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "ConditionalGAN",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 500000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         }
       ]
     },
@@ -178,47 +164,42 @@
           "name": "YOLO9000",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 100000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "VIT2",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 1000000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "MuchMoreEfficientNet",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 20000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         },
         {
           "name": "DenserNet",
           "data": {
             "type": "Images",
-            "processed": 0,
             "size": 100000
           },
-          "result": "None",
-          "status": "PreTrained"
+          "status": "PreTrained",
+          "result": "None"
         }
       ]
     }
   ],
-  "conferences: ",
-  [
+  "conferences": [
     {
       "name": "ICML",
       "date": 20000
@@ -240,7 +221,7 @@
       "date": 50000
     }
   ],
-  "batchesProcessed: 0",
-  "gpuTimeUsed: 0",
-  "cpuTimeUsed: 0"
-]
+  "gpuTimeUsed": 0,
+  "cpuTimeUsed": 0,
+  "batchesProcessed": 0
+}
