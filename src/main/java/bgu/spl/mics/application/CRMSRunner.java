@@ -30,7 +30,7 @@ public class CRMSRunner {
 
     private static String buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Student[] students=getStudents(inputJava);
+        Student[] students=inputJava.getStudents();
         ConferenceInformation[] conferences=getConferences(inputJava);
         int batchesProcessed=0;
         int gpuTimeUsed=0;
@@ -146,7 +146,7 @@ public class CRMSRunner {
         buildConferenceServices(inputAsJavaObject);
         buildStudentServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
-        buildOutputFile(inputAsJavaObject);
+//        buildOutputFile(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

@@ -167,7 +167,7 @@ public abstract class MicroService implements Runnable {
             try{
                 Message message = messageBus.awaitMessage(this);
                 Callback callback;
-                if (message.getClass().isAssignableFrom(Event.class)){
+                if (Event.class.isAssignableFrom(message.getClass())){
                     callback = eventCallBacks.get(message.getClass());
                 }
                 else {

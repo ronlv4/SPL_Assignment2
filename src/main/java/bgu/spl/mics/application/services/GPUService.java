@@ -19,6 +19,7 @@ public class GPUService extends MicroService {
 
     private GPU gpu;
     private MessageBusImpl messageBus;
+    private Model model;
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -48,8 +49,8 @@ public class GPUService extends MicroService {
         subscribeBroadcast(TickBroadcast.class, c -> {
             Model model = gpu.advanceTick();
             if (model != null){
-//                complete(, model);
-
+                this.model = model;
+                notify();
             }
             if(c.getCurrentTick()==0){
                 Thread.currentThread().interrupt();
@@ -58,8 +59,15 @@ public class GPUService extends MicroService {
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
             createAndSendBatches(model.getData());
-            //TODO probably need to call to complete here, because I need @code c
-
+            synchronized (this){
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("finished model");
+            complete(c, model);
         });
         subscribeEvent(TestModelEvent.class, c -> {
             Model model = c.getModelToTest();

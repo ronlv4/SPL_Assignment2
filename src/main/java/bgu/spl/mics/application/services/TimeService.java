@@ -40,13 +40,15 @@ public class TimeService extends MicroService {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("Sending tick broadcast: tick #" + currentTick);
                 MessageBus.sendBroadcast(new TickBroadcast(currentTick));
                 currentTick ++;
-                if (currentTick > Duration)
+                if (currentTick > Duration) {
+                    MessageBus.sendBroadcast(new TickBroadcast(0));
+                    Thread.currentThread().interrupt();
                     timer.cancel();
+                }
             }
-        }, 0, tickTime);
-        MessageBus.sendBroadcast(new TickBroadcast(0));
-        Thread.currentThread().interrupt();
+        }, 300, tickTime);
     }
 }

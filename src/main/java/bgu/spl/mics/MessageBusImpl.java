@@ -10,6 +10,8 @@ import java.util.concurrent.*;
  */
 public class MessageBusImpl implements MessageBus {
 
+    private final static int SERVICES_DEFAULT_INITIAL_CAPACITY = 21;
+
 	/*
 	subscribers: need to hold which microservice is subscribed to some type of event
 	subscribeEvent: mark that some microservice is subscribed to an event.
@@ -21,21 +23,19 @@ public class MessageBusImpl implements MessageBus {
 
     private static MessageBusImpl instance = null;
     private static boolean isDone = false;
-    private Map<MicroService, Queue<Event<?>>> microServicesEvents;
-    private Map<MicroService, Queue<Message>> microServicesBroadcasts;
-    private Map<Class<? extends Event<?>>, Deque<MicroService>> eventsSubscribersByType;
-    private Map<Class<? extends Broadcast>, Deque<MicroService>> broadcastsSubscribersByType;
-    private Map<MicroService, Deque<Class<? extends Event<?>>>> eventsSubscribersByMicroService;
-    private Map<MicroService, Deque<Class<? extends Broadcast>>> broadcastsSubscribersByMicroService;
-    private HashMap<Event<?> , Future<?>> eventToFuture;
+    private Map<MicroService, PriorityBlockingQueue<Message>> microServicesMessages;
+    private Map<Class<? extends Event<?>>, Deque<MicroService>> eventSubscribersByType;
+    private Map<Class<? extends Broadcast>, Deque<MicroService>> broadcastSubscribersByType;
+    private Map<MicroService, Deque<Class<? extends Event<?>>>> eventSubscribersByMicroService;
+    private Map<MicroService, Deque<Class<? extends Broadcast>>> broadcastSubscribersByMicroService;
+    private HashMap<Event<?>, Future<?>> eventToFuture;
 
     private MessageBusImpl() {
-        microServicesEvents = new HashMap<>();
-        eventsSubscribersByType = new HashMap<>();
-        eventsSubscribersByMicroService = new HashMap<>();
-        microServicesBroadcasts = new HashMap<>();
-        broadcastsSubscribersByType = new HashMap<>();
-        broadcastsSubscribersByMicroService = new HashMap<>();
+        microServicesMessages = new HashMap<>();
+        broadcastSubscribersByType = new HashMap<>();
+        eventSubscribersByType = new HashMap<>();
+        broadcastSubscribersByMicroService = new HashMap<>();
+        eventSubscribersByMicroService = new HashMap<>();
         eventToFuture = new HashMap<>();
         instance = this;
     }
@@ -44,21 +44,21 @@ public class MessageBusImpl implements MessageBus {
     public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
         // adding the microservice to the subscriberByType queue
         Deque<MicroService> subscribedMicroServiceDeque;
-        synchronized (this){
-            subscribedMicroServiceDeque = eventsSubscribersByType.get(type);
-            if (subscribedMicroServiceDeque == null){
+        synchronized (this) {
+            subscribedMicroServiceDeque = eventSubscribersByType.get(type);
+            if (subscribedMicroServiceDeque == null) {
                 subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
-                eventsSubscribersByType.put(type, subscribedMicroServiceDeque);
+                eventSubscribersByType.put(type, subscribedMicroServiceDeque);
             }
         }
         subscribedMicroServiceDeque.addFirst(m);
 
         // adding the microservice to the subscriberByMicroService queue
-        Deque<Class<? extends Event<?>>> typesSubscriptions = eventsSubscribersByMicroService.get(m);
-        synchronized (this){
-            if (typesSubscriptions == null){
+        Deque<Class<? extends Event<?>>> typesSubscriptions = eventSubscribersByMicroService.get(m);
+        synchronized (this) {
+            if (typesSubscriptions == null) {
                 typesSubscriptions = new ConcurrentLinkedDeque<>();
-                eventsSubscribersByMicroService.put(m, typesSubscriptions);
+                eventSubscribersByMicroService.put(m, typesSubscriptions);
             }
         }
         typesSubscriptions.addFirst(type);
@@ -66,21 +66,21 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-        Deque<MicroService> subscribedMicroServiceDeque;
-        synchronized (this){
-            subscribedMicroServiceDeque = broadcastsSubscribersByType.get(type);
-            if (subscribedMicroServiceDeque == null){
-                subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
-                broadcastsSubscribersByType.put(type, subscribedMicroServiceDeque);
+        Deque<MicroService> subscribedMicroServiceList;
+        synchronized (this) {
+            subscribedMicroServiceList = broadcastSubscribersByType.get(type);
+            if (subscribedMicroServiceList == null) {
+                subscribedMicroServiceList = new ConcurrentLinkedDeque<>();
+                broadcastSubscribersByType.put(type, subscribedMicroServiceList);
             }
         }
-        subscribedMicroServiceDeque.addFirst(m);
+        subscribedMicroServiceList.addFirst(m);
 
-        Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastsSubscribersByMicroService.get(m);
-        synchronized (this){
-            if (typesSubscriptions == null){
+        Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastSubscribersByMicroService.get(m);
+        synchronized (this) {
+            if (typesSubscriptions == null) {
                 typesSubscriptions = new ConcurrentLinkedDeque<>();
-                broadcastsSubscribersByMicroService.put(m, typesSubscriptions);
+                broadcastSubscribersByMicroService.put(m, typesSubscriptions);
             }
         }
         typesSubscriptions.add(type);
@@ -96,65 +96,75 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void sendBroadcast(Broadcast b) {
-        Queue<MicroService> subscribedMicroServiceQueue = eventsSubscribersByType.get(b.getClass());
-        for(int i=0; i<subscribedMicroServiceQueue.size(); i++) {
-            MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
-            microServicesBroadcasts.get(microServiceInLine).add(b);
-            subscribedMicroServiceQueue.add(microServiceInLine);
+        Queue<MicroService> subscribedMicroServiceQueue = broadcastSubscribersByType.get(b.getClass());
+        for (MicroService subscriber : subscribedMicroServiceQueue) {
+            microServicesMessages.get(subscriber).add(b);
         }
-        // TODO Auto-generated method stub
+//        notifyAll();
     }
-
 
     @Override
     public <T> Future<T> sendEvent(Event<T> e) {
-        Queue<MicroService> subscribedMicroServiceQueue = eventsSubscribersByType.get(e.getClass());
+        Queue<MicroService> subscribedMicroServiceQueue = eventSubscribersByType.get(e.getClass());
         if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
             return null; //TODO what should we do if the type of event has no subscribers?
-        synchronized (this){
+        synchronized (this) {
             MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
-            microServicesEvents.get(microServiceInLine).add(e);
-            notifyAll();
+            microServicesMessages.get(microServiceInLine).add(e);
+//            notifyAll();
             subscribedMicroServiceQueue.add(microServiceInLine);
         }
         Future<T> newFuture = new Future<>();
-        eventToFuture.put(e ,newFuture);
+        eventToFuture.put(e, newFuture);
         return newFuture;
     }
 
     @Override
     public void register(MicroService m) {
-        microServicesEvents.put(m, new ConcurrentLinkedQueue<>());
+        microServicesMessages.put(m, new PriorityBlockingQueue<>(SERVICES_DEFAULT_INITIAL_CAPACITY, (m1,m2)->{
+            // returns negative if m1 < m2
+            // Broadcast > event
+            if (Broadcast.class.isAssignableFrom(m1.getClass()) && Event.class.isAssignableFrom(m2.getClass()))
+                return 1;
+            else if (Broadcast.class.isAssignableFrom(m2.getClass()) && Event.class.isAssignableFrom(m1.getClass()))
+                return -1;
+            else
+                return 0;
+        }));
     }
 
     @Override
     public void unregister(MicroService m) {
-        for (Class<? extends Event<?>> type: eventsSubscribersByMicroService.get(m)){
-            eventsSubscribersByType.get(type).remove(m);
-        }
-        eventsSubscribersByMicroService.remove(m);
-        microServicesEvents.remove(m); // does not throw exception if key does not exist in map
+        // TODO rewrite this function
+//        for (Class<Message> type : eventSubscribersByMicroService.get(m)) {
+//            broadcastSubscribersByType.get(type).remove(m);
+//        }
+        eventSubscribersByMicroService.remove(m);
+        microServicesMessages.remove(m); // does not throw exception if key does not exist in map
     }
 
     @Override
     public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
-        Queue<? extends Message> microServiceQueue = microServicesEvents.get(m);
-        while (microServiceQueue.isEmpty())
-            wait();
-        return microServiceQueue.poll();
+        if (!isRegistered(m))
+            throw new IllegalStateException("Microservice " + m.getName() + " Was never registered");
+        PriorityBlockingQueue<Message> awaitingMessagesQueue = microServicesMessages.get(m);
+        return awaitingMessagesQueue.take();
     }
 
     public static MessageBusImpl getInstance() {
-        if(!isDone) {
-            synchronized(MessageBusImpl.class)
-            {
-                if(!isDone) {
+        if (!isDone) {
+            synchronized (MessageBusImpl.class) {
+                if (!isDone) {
                     instance = new MessageBusImpl();
                     isDone = true;
                 }
             }
         }
         return instance;
+    }
+
+    private boolean isRegistered(MicroService m){
+        return microServicesMessages.containsKey(m);
     }
 
 }
