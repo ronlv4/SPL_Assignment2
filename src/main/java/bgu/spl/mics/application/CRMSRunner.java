@@ -157,7 +157,8 @@ public class CRMSRunner {
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {
-        Cluster.setCPUS(cpus);
-        Cluster.setGPUS(gpus);
+        Cluster cluster = Cluster.getInstance();
+        cluster.setCPUS(cpus);
+        cluster.setGPUS(gpus);
     }
 }
