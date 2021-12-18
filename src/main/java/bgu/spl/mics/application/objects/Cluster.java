@@ -5,6 +5,8 @@ import bgu.spl.mics.MessageBusImpl;
 
 import java.nio.file.LinkPermission;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Passive object representing the cluster.
@@ -16,6 +18,7 @@ import java.util.Collection;
 public class Cluster {
 
     private static Cluster instance = null;
+    private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
 
@@ -23,12 +26,21 @@ public class Cluster {
     private int gpuPointer;
 
     private Cluster() {
+
     }
     /**
      * Retrieves the single instance of this class.
      */
     public static Cluster getInstance() {
-        return instance != null? instance : new Cluster();
+        if (!isDone) {
+            synchronized (Class.class) {
+                if (!isDone) {
+                    instance = new Cluster();
+                    isDone = true;
+                }
+            }
+        }
+        return instance;
     }
 
     public void setCPUS(CPU[] inputCPUS) {
@@ -46,18 +58,17 @@ public class Cluster {
      * those batches will be transferred to some CPU by the Cluster
      * @param batch - the unprocessed batch to transfer
      */
-    public void sendUnprocessedBatch(DataBatch batch){
+    public synchronized void sendUnprocessedBatch(DataBatch batch){
         CPUS[cpuPointer].addDataBatch(batch);
+        cpuPointer++;
         cpuPointer %= CPUS.length;
     }
-
     /**
      * used by CPU to send processed batches back to the GPU
      * those batches will be transferred to some GPU by the Cluster
      * @param batch - the processed batch to transfer
      */
     public void sendProcessedBatch(DataBatch batch){
-
-
+        batch.getGpu().addProcessedBatch(batch);
     }
 }

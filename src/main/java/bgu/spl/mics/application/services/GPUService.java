@@ -17,9 +17,10 @@ import bgu.spl.mics.application.messages.DataPreProcessEvent;
  */
 public class GPUService extends MicroService {
 
-    private GPU gpu;
+    private final GPU gpu;
     private MessageBusImpl messageBus;
     private Model model;
+    private Cluster cluster = Cluster.getInstance();
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -37,7 +38,7 @@ public class GPUService extends MicroService {
     private void createAndSendBatches(Data data) {
         Cluster cluster = Cluster.getInstance();
         for (int i = 0; i < data.getSize(); i += 1000) {
-            DataBatch batch = new DataBatch(data, i);
+            DataBatch batch = new DataBatch(data, i, gpu);
             cluster.sendUnprocessedBatch(batch);
         }
 
@@ -47,11 +48,7 @@ public class GPUService extends MicroService {
     protected void initialize() {
         messageBus.register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
-            Model model = gpu.advanceTick();
-            if (model != null){
-                this.model = model;
-                notify();
-            }
+            gpu.advanceTick();
             if(c.getCurrentTick()==0){
                 Thread.currentThread().interrupt();
             }
@@ -59,15 +56,18 @@ public class GPUService extends MicroService {
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
             createAndSendBatches(model.getData());
-            synchronized (this){
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            synchronized (gpu) {
+                if (model.getStatus() != Model.Status.Trained) {
+                    try {
+                        gpu.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("finished Training the model");
+                    complete(c, model);
                 }
             }
-            System.out.println("finished model");
-            complete(c, model);
         });
         subscribeEvent(TestModelEvent.class, c -> {
             Model model = c.getModelToTest();

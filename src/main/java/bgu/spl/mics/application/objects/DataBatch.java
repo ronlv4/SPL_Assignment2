@@ -9,8 +9,19 @@ public class DataBatch {
 
     private Data data;
     private int startIndex;
+    private GPU gpu;
     private int startingProcessTick;
     private int startingTrainTick;
+
+    public DataBatch(Data data, int startIndex, GPU gpu) {
+        this.data = data;
+        this.startIndex = startIndex;
+        this.gpu = gpu;
+    }
+
+    public GPU getGpu() {
+        return gpu;
+    }
 
     public int getStartIndex() {
         return startIndex;
@@ -22,11 +33,6 @@ public class DataBatch {
 
     public void setStartingTrainTick(int startingTrainTick) {
         this.startingTrainTick = startingTrainTick;
-    }
-
-    public DataBatch(Data data, int startIndex) {
-        this.data = data;
-        this.startIndex = startIndex;
     }
 
     public void setStartingProcessTick(int startingProcessTick) {

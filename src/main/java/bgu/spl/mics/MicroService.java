@@ -1,6 +1,8 @@
 package bgu.spl.mics;
 
+import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -25,6 +27,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final MessageBusImpl messageBus = MessageBusImpl.getInstance();
+    private Map<Class<? extends Message>, Callback<? extends Message>> messageCallbacks = new HashMap<>();
     private HashMap<Class<? extends Event<?>>, Callback<? extends Event<?>>> eventCallBacks;
     private HashMap<Class<? extends Broadcast>, Callback<? extends Broadcast>> broadcastCallBacks;
 
@@ -62,7 +65,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         messageBus.subscribeEvent(type, this);
-        eventCallBacks.put(type, callback);
+        messageCallbacks.put(type, callback);
     }
 
     /**
@@ -88,7 +91,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         messageBus.subscribeBroadcast(type, this);
-        broadcastCallBacks.put(type, callback);
+        messageCallbacks.put(type, callback);
     }
 
     /**
@@ -166,14 +169,9 @@ public abstract class MicroService implements Runnable {
         while (!terminated) {
             try{
                 Message message = messageBus.awaitMessage(this);
-                Callback callback;
-                if (Event.class.isAssignableFrom(message.getClass())){
-                    callback = eventCallBacks.get(message.getClass());
-                }
-                else {
-                    callback = broadcastCallBacks.get(message.getClass());
-                }
-                callback.call(message);
+                Callback callback = messageCallbacks.get(message.getClass());
+                if (callback != null)
+                    callback.call(message);
             } catch (InterruptedException e) {
                 messageBus.unregister(this);
                 System.out.println("Terminating " + Thread.currentThread().getName());

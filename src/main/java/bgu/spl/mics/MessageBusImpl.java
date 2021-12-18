@@ -62,20 +62,19 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-        System.out.println("subscribing " + m.getName() + " to Broadcast of type " + type.getName());
         Deque<MicroService> subscribedMicroServiceList;
-            subscribedMicroServiceList = broadcastSubscribersByType.get(type);
-            if (subscribedMicroServiceList == null) {
-                subscribedMicroServiceList = new ConcurrentLinkedDeque<>();
-                broadcastSubscribersByType.put(type, subscribedMicroServiceList);
-            }
-            subscribedMicroServiceList.addFirst(m);
+        subscribedMicroServiceList = broadcastSubscribersByType.get(type);
+        if (subscribedMicroServiceList == null) {
+            subscribedMicroServiceList = new ConcurrentLinkedDeque<>();
+            broadcastSubscribersByType.put(type, subscribedMicroServiceList);
+        }
+        subscribedMicroServiceList.addFirst(m);
 
         Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastSubscribersByMicroService.get(m);
-            if (typesSubscriptions == null) {
-                typesSubscriptions = new ConcurrentLinkedDeque<>();
-                broadcastSubscribersByMicroService.put(m, typesSubscriptions);
-            }
+        if (typesSubscriptions == null) {
+            typesSubscriptions = new ConcurrentLinkedDeque<>();
+            broadcastSubscribersByMicroService.put(m, typesSubscriptions);
+        }
         typesSubscriptions.add(type);
     }
 
@@ -101,10 +100,12 @@ public class MessageBusImpl implements MessageBus {
         Queue<MicroService> subscribedMicroServiceQueue = eventSubscribersByType.get(e.getClass());
         if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
             return null; //TODO what should we do if the type of event has no subscribers?
-        MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
-        microServicesMessages.get(microServiceInLine).add(e);
+        synchronized (this){
+            MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
+            microServicesMessages.get(microServiceInLine).add(e);
 //            notifyAll();
-        subscribedMicroServiceQueue.add(microServiceInLine);
+            subscribedMicroServiceQueue.add(microServiceInLine);
+        }
         Future<T> newFuture = new Future<>();
         eventToFuture.put(e, newFuture);
         return newFuture;
@@ -112,7 +113,7 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void register(MicroService m) {
-        microServicesMessages.put(m, new PriorityBlockingQueue<>(SERVICES_DEFAULT_INITIAL_CAPACITY, (m1,m2)->{
+        microServicesMessages.put(m, new PriorityBlockingQueue<>(SERVICES_DEFAULT_INITIAL_CAPACITY, (m1, m2) -> {
             // returns negative if m1 < m2
             // Broadcast > event
             if (Broadcast.class.isAssignableFrom(m1.getClass()) && Event.class.isAssignableFrom(m2.getClass()))
@@ -154,7 +155,7 @@ public class MessageBusImpl implements MessageBus {
         return instance;
     }
 
-    private boolean isRegistered(MicroService m){
+    private boolean isRegistered(MicroService m) {
         return microServicesMessages.containsKey(m);
     }
 

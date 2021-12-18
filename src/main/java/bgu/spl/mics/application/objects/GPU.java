@@ -1,7 +1,9 @@
 package bgu.spl.mics.application.objects;
+
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Passive object representing a single GPU.
@@ -44,59 +46,57 @@ public class GPU {
         return null;
     }
 
-    public synchronized Model advanceTick() {
+    public synchronized void advanceTick() {
         if (!VRAM.isEmpty()) {
             totalTime++;
             DataBatch batch = VRAM.poll();
             batch.setStartingTrainTick(currentTick);
             model.setStatus(Model.Status.Training);
             if (type == Type.RTX3090) {
-                return Train3090(batch);
+                Train3090(batch);
             } else if (batch.getDataType() == Data.Type.Text) {
-                return Train2080(batch);
+                Train2080(batch);
             } else {
-                return Train1080(batch);
+                Train1080(batch);
             }
         }
-        return null;
     }
 
-    private Model Train3090(DataBatch batch) {
-        return train(batch, 1);
+    private void Train3090(DataBatch batch) {
+        train(batch, 1);
     }
 
-    private Model Train2080(DataBatch batch) {
-        return train(batch, 2);
+    private void Train2080(DataBatch batch) {
+        train(batch, 2);
     }
 
-    private Model Train1080(DataBatch batch) {
-        return train(batch, 4);
+    private void Train1080(DataBatch batch) {
+        train(batch, 4);
     }
 
-    private Model train(DataBatch batch, int trainTimeRequired) {
+    private void train(DataBatch batch, int trainTimeRequired) {
         if (currentTick - batch.getStartingTrainTick() == trainTimeRequired) {
-            if (batch.getStartIndex() == getData().getSize()-1000){
+            if (batch.getStartIndex() == getData().getSize() - 1000) {
                 finalizeModelTraining();
-                return model;
             }
         }
-        return null;
     }
 
     public void addProcessedBatch(DataBatch batch) {
         boolean wasAdded;
         do {
             wasAdded = VRAM.offer(batch);
-        }while(!wasAdded);
+        } while (!wasAdded);
+
     }
 
     public int getNumberOfProcessedBatches() {
         return VRAM.size();
     }
 
-    public void finalizeModelTraining() {
+    public synchronized void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
-//        return
+        this.notifyAll();
     }
 
     public void setModel(Model model) {
@@ -120,5 +120,7 @@ public class GPU {
         return currentTick;
     }
 
-    public int getTotalTime(){return totalTime;}
+    public int getTotalTime() {
+        return totalTime;
+    }
 }

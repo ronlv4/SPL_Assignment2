@@ -3,7 +3,6 @@ package bgu.spl.mics.application.objects;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * Passive object representing a single CPU.
@@ -47,11 +46,11 @@ public class CPU {
      * @pre getTicks() + 1 == @post getTicks()
      *
      */
-    public synchronized void advanceTick(){
-        totalTime++;
+    public void advanceTick(){
+        System.out.println("advancing tick");
+        currentTick++;
         while (!unprocessedDataBatches.isEmpty()){
             DataBatch batch = unprocessedDataBatches.poll();
-            batch.setStartingProcessTick(currentTick);
             if (batch.getDataType() == Data.Type.Tabular){
                 processTabular(batch);
             }
@@ -62,7 +61,6 @@ public class CPU {
                 processImage(batch);
             }
         }
-
     }
     private void processTabular(DataBatch batch){
         process(batch, 32 / cores);
@@ -75,9 +73,15 @@ public class CPU {
     }
 
     private void process(DataBatch batch, int processTimeRequired){
+
         if (currentTick-batch.getStartingProcessTick() == processTimeRequired){
+            System.out.println(Thread.currentThread().getName() + " processing a batch");
+            System.out.println("currently processed " + numOfProcessed);
             cluster.sendProcessedBatch(batch);
             numOfProcessed++;
+        }
+        else {
+            unprocessedDataBatches.add(batch);
         }
     }
 
@@ -93,6 +97,7 @@ public class CPU {
      * @param batch - the batch of data to be added to the DataBatch collection later to be processed
      */
     public void addDataBatch(DataBatch batch){
+        batch.setStartingProcessTick(currentTick);
         unprocessedDataBatches.add(batch);
     }
     public int getNumOfProcessed(){

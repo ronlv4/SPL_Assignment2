@@ -31,7 +31,7 @@ public class Future<T> {
 	public synchronized T get() {
 		try{
 			if (result == null)
-				wait();
+				this.wait();
 		}
 		catch (InterruptedException e) {
 			return result;
@@ -44,7 +44,7 @@ public class Future<T> {
      */
 	public synchronized void resolve (T result) {
 		this.result = result;
-		notify();
+		this.notify();
 	}
 	
 	/**
