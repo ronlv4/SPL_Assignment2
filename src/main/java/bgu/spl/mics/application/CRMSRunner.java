@@ -72,7 +72,7 @@ public class CRMSRunner {
         Thread[] CPUServicesThreads = new Thread[cpus.length];
         int i = 0;
         for (CPU cpu: cpus){
-            CPUServicesThreads[i] = new Thread(new CPUService("GPU Service " + i, cpu));
+            CPUServicesThreads[i] = new Thread(new CPUService("CPU Service " + i, cpu));
             CPUServicesThreads[i++].start();
         }
     }

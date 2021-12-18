@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  */
 public class MessageBusImpl implements MessageBus {
 
-    private final static int SERVICES_DEFAULT_INITIAL_CAPACITY = 21;
+    private final static int SERVICES_DEFAULT_INITIAL_CAPACITY = 22;
 
 	/*
 	subscribers: need to hold which microservice is subscribed to some type of event
@@ -28,15 +28,15 @@ public class MessageBusImpl implements MessageBus {
     private Map<Class<? extends Broadcast>, Deque<MicroService>> broadcastSubscribersByType;
     private Map<MicroService, Deque<Class<? extends Event<?>>>> eventSubscribersByMicroService;
     private Map<MicroService, Deque<Class<? extends Broadcast>>> broadcastSubscribersByMicroService;
-    private HashMap<Event<?>, Future<?>> eventToFuture;
+    private Map<Event<?>, Future<?>> eventToFuture;
 
     private MessageBusImpl() {
-        microServicesMessages = new HashMap<>();
-        broadcastSubscribersByType = new HashMap<>();
-        eventSubscribersByType = new HashMap<>();
-        broadcastSubscribersByMicroService = new HashMap<>();
-        eventSubscribersByMicroService = new HashMap<>();
-        eventToFuture = new HashMap<>();
+        microServicesMessages = new ConcurrentHashMap<>();
+        broadcastSubscribersByType = new ConcurrentHashMap<>();
+        eventSubscribersByType = new ConcurrentHashMap<>();
+        broadcastSubscribersByMicroService = new ConcurrentHashMap<>();
+        eventSubscribersByMicroService = new ConcurrentHashMap<>();
+        eventToFuture = new ConcurrentHashMap<>();
         instance = this;
     }
 
@@ -44,45 +44,38 @@ public class MessageBusImpl implements MessageBus {
     public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
         // adding the microservice to the subscriberByType queue
         Deque<MicroService> subscribedMicroServiceDeque;
-        synchronized (this) {
-            subscribedMicroServiceDeque = eventSubscribersByType.get(type);
-            if (subscribedMicroServiceDeque == null) {
-                subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
-                eventSubscribersByType.put(type, subscribedMicroServiceDeque);
-            }
+        subscribedMicroServiceDeque = eventSubscribersByType.get(type);
+        if (subscribedMicroServiceDeque == null) {
+            subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
+            eventSubscribersByType.put(type, subscribedMicroServiceDeque);
         }
         subscribedMicroServiceDeque.addFirst(m);
 
         // adding the microservice to the subscriberByMicroService queue
         Deque<Class<? extends Event<?>>> typesSubscriptions = eventSubscribersByMicroService.get(m);
-        synchronized (this) {
-            if (typesSubscriptions == null) {
-                typesSubscriptions = new ConcurrentLinkedDeque<>();
-                eventSubscribersByMicroService.put(m, typesSubscriptions);
-            }
+        if (typesSubscriptions == null) {
+            typesSubscriptions = new ConcurrentLinkedDeque<>();
+            eventSubscribersByMicroService.put(m, typesSubscriptions);
         }
         typesSubscriptions.addFirst(type);
     }
 
     @Override
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+        System.out.println("subscribing " + m.getName() + " to Broadcast of type " + type.getName());
         Deque<MicroService> subscribedMicroServiceList;
-        synchronized (this) {
             subscribedMicroServiceList = broadcastSubscribersByType.get(type);
             if (subscribedMicroServiceList == null) {
                 subscribedMicroServiceList = new ConcurrentLinkedDeque<>();
                 broadcastSubscribersByType.put(type, subscribedMicroServiceList);
             }
-        }
-        subscribedMicroServiceList.addFirst(m);
+            subscribedMicroServiceList.addFirst(m);
 
         Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastSubscribersByMicroService.get(m);
-        synchronized (this) {
             if (typesSubscriptions == null) {
                 typesSubscriptions = new ConcurrentLinkedDeque<>();
                 broadcastSubscribersByMicroService.put(m, typesSubscriptions);
             }
-        }
         typesSubscriptions.add(type);
     }
 
@@ -108,12 +101,10 @@ public class MessageBusImpl implements MessageBus {
         Queue<MicroService> subscribedMicroServiceQueue = eventSubscribersByType.get(e.getClass());
         if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
             return null; //TODO what should we do if the type of event has no subscribers?
-        synchronized (this) {
-            MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
-            microServicesMessages.get(microServiceInLine).add(e);
+        MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
+        microServicesMessages.get(microServiceInLine).add(e);
 //            notifyAll();
-            subscribedMicroServiceQueue.add(microServiceInLine);
-        }
+        subscribedMicroServiceQueue.add(microServiceInLine);
         Future<T> newFuture = new Future<>();
         eventToFuture.put(e, newFuture);
         return newFuture;
@@ -144,7 +135,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
+    public Message awaitMessage(MicroService m) throws InterruptedException {
         if (!isRegistered(m))
             throw new IllegalStateException("Microservice " + m.getName() + " Was never registered");
         PriorityBlockingQueue<Message> awaitingMessagesQueue = microServicesMessages.get(m);

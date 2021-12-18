@@ -44,11 +44,12 @@ public class TimeService extends MicroService {
                 MessageBus.sendBroadcast(new TickBroadcast(currentTick));
                 currentTick ++;
                 if (currentTick > Duration) {
+                    System.out.println("Sending termination tick");
                     MessageBus.sendBroadcast(new TickBroadcast(0));
                     Thread.currentThread().interrupt();
                     timer.cancel();
                 }
             }
-        }, 300, tickTime);
+        }, 1000, tickTime);
     }
 }
