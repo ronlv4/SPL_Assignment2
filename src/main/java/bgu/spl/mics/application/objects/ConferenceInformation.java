@@ -11,16 +11,10 @@ public class ConferenceInformation {
 
     private String name;
     private int date;
-    private List<Model> publications;
 
     public ConferenceInformation(String name, int date){
         this.name=name;
         this.date=date;
-        this.publications = new LinkedList<Model>();
-    }
-
-    public void setResults(List goodResultsModels) {
-        this.publications = goodResultsModels;
     }
 
     public String getName(){
@@ -29,10 +23,6 @@ public class ConferenceInformation {
 
     public int getDate(){
         return date;
-    }
-
-    public List<Model> getPublications(){
-        return publications;
     }
 
 }
