@@ -52,6 +52,10 @@ public class Model {
         return name;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     private void setResult(Results result) {
         this.result = result;
     }

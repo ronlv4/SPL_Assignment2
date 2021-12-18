@@ -19,6 +19,9 @@ public class Cluster {
     private static GPU[] GPUS;
     private static CPU[] CPUS;
 
+    private int cpuPointer;
+    private int gpuPointer;
+
     private Cluster() {
     }
     /**
@@ -28,25 +31,33 @@ public class Cluster {
         return instance != null? instance : new Cluster();
     }
 
-    public static void setCPUS(CPU[] inputCPUS) {
+    public void setCPUS(CPU[] inputCPUS) {
         CPUS = inputCPUS;
+        cpuPointer = 0;
     }
 
-    public static void setGPUS(GPU[] inputGPUS) {
+    public void setGPUS(GPU[] inputGPUS) {
         GPUS = inputGPUS;
+        gpuPointer = 0;
     }
 
     /**
      * used by GPU to send unprocessed batches to the cpu.
      * those batches will be transferred to some CPU by the Cluster
-     * @param batch
+     * @param batch - the unprocessed batch to transfer
      */
     public void sendUnprocessedBatch(DataBatch batch){
-
+        CPUS[cpuPointer].addDataBatch(batch);
+        cpuPointer %= CPUS.length;
     }
 
+    /**
+     * used by CPU to send processed batches back to the GPU
+     * those batches will be transferred to some GPU by the Cluster
+     * @param batch - the processed batch to transfer
+     */
     public void sendProcessedBatch(DataBatch batch){
 
-    }
 
+    }
 }

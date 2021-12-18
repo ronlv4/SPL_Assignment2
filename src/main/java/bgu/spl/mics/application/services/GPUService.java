@@ -1,7 +1,5 @@
 package bgu.spl.mics.application.services;
-import bgu.spl.mics.Message;
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.MicroService;
+import bgu.spl.mics.*;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.messages.TestModelEvent;
@@ -21,6 +19,7 @@ public class GPUService extends MicroService {
 
     private GPU gpu;
     private MessageBusImpl messageBus;
+    private Model model;
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -48,7 +47,11 @@ public class GPUService extends MicroService {
     protected void initialize() {
         messageBus.register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
-            gpu.advanceTick();
+            Model model = gpu.advanceTick();
+            if (model != null){
+                this.model = model;
+                notify();
+            }
             if(c.getCurrentTick()==0){
                 Thread.currentThread().interrupt();
             }
@@ -56,6 +59,15 @@ public class GPUService extends MicroService {
         subscribeEvent(TrainModelEvent.class, c -> {
             Model model = c.getModel();
             createAndSendBatches(model.getData());
+            synchronized (this){
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("finished model");
+            complete(c, model);
         });
         subscribeEvent(TestModelEvent.class, c -> {
             Model model = c.getModelToTest();

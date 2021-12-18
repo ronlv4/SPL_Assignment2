@@ -41,11 +41,13 @@ public class ConferenceService extends MicroService {
             goodResultsModels.add(c.getGoodModel());
         });
         subscribeBroadcast(TickBroadcast.class, c->{
-            if (c.getCurrentTick() == conference.getDate())
+            if (c.getCurrentTick() == conference.getDate()) {
                 messageBus.sendBroadcast(new PublishConferenceBroadcast(goodResultsModels));
                 conference.setResults(goodResultsModels);
                 Thread.currentThread().interrupt(); // makes the conference unregister and terminate
+            }
             if (c.getCurrentTick()==0){
+                System.out.println(getName() + " is being interrupted");
                 Thread.currentThread().interrupt();
             }
         });

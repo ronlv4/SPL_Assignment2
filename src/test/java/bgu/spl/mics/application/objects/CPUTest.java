@@ -21,7 +21,7 @@ public class CPUTest {
         Cluster cluster = Cluster.getInstance();
         cpu32Cores = new CPU(32);
         cpu16Cores = new CPU(16);
-        batch = new DataBatch(new Data(Images, 0, 500_000),0);
+//        batch = new DataBatch(new Data(Images, 0, 500_000),0);
     }
 
     @Test

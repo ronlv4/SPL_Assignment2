@@ -15,15 +15,15 @@ public class GPUTest {
     @Before
     public void setUp() {
         data = new Data(Data.Type.Tabular, 0, 100_000);
-        batch = new DataBatch(data, 0);
+//        batch = new DataBatch(data, 0);
         gpu = new GPU(RTX3090);
     }
 
     @Test
     public void advanceTick() {
-        int ticksBefore = gpu.getTicks();
+        int ticksBefore = gpu.getCurrentTick();
         gpu.advanceTick();
-        int ticksAfter = gpu.getTicks();
+        int ticksAfter = gpu.getCurrentTick();
         assertEquals(ticksBefore + 1, ticksAfter);
     }
 
