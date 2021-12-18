@@ -3,16 +3,17 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.InputParsing.InputFile;
 import bgu.spl.mics.application.InputParsing.ModelDeserializer;
+import bgu.spl.mics.application.OutputWriting.OutputFile;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
-import java.io.FileReader;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
@@ -28,9 +29,9 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    private static String buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
+    private static void buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Student[] students=inputJava.getStudents();
+        Student[] students=getStudents(inputJava);
         ConferenceInformation[] conferences=getConferences(inputJava);
         int batchesProcessed=0;
         int gpuTimeUsed=0;
@@ -42,15 +43,22 @@ public class CRMSRunner {
             batchesProcessed+=cpus[i].getNumOfProcessed();
             cpuTimeUsed+=cpus[i].getTotalTime();
         }
-        JsonObject outputJson=new JsonObject();
-        String output=gson.toJson(students)+gson.toJson(conferences);
-        output += ",\ngpuTimeUsed: "+gpuTimeUsed+",\ncpuTimeUsed: "+cpuTimeUsed+",\nbatchesProcessed: "+batchesProcessed;
-        outputJson.getAsJsonObject(output);
-        return output;
+        try{
+            Writer writer = new FileWriter("output1.json");
+            gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
+            writer.flush(); //flush data to file
+            writer.close(); //close write
+        }
+        catch (java.io.IOException ignore){
+        }
     }
 
-    private static void buildStudentServices(InputFile inputJava) {
+    private static Student[] getStudents(InputFile inputJava) {
         Student[] students = inputJava.getStudents();
+        return students;
+    }
+
+    private static void buildStudentServices(Student[] students) {
         int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
         for (int i = 0; i < numOfStudents; i++) {
@@ -137,6 +145,7 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
+        buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildOutputFile(inputAsJavaObject, cpus, gpus);
@@ -144,9 +153,7 @@ public class CRMSRunner {
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
-        buildStudentServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
-//        buildOutputFile(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

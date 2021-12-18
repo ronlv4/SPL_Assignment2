@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Passive object representing information on a conference.
  * Add fields and methods to this class as you see fit (including public methods and constructors).
@@ -12,6 +15,10 @@ public class ConferenceInformation {
     public ConferenceInformation(String name, int date){
         this.name=name;
         this.date=date;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public int getDate(){
