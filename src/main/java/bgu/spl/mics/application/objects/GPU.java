@@ -1,7 +1,4 @@
 package bgu.spl.mics.application.objects;
-
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,6 +30,7 @@ public class GPU {
         this.cluster = Cluster.getInstance();
         this.type = type;
         this.totalTime = 0;
+        this.currentTick = 1;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
         } else if (type == Type.RTX2080) {

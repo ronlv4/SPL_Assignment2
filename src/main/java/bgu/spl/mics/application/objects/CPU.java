@@ -93,7 +93,6 @@ public class CPU {
      * @param batch - the batch of data to be added to the DataBatch collection later to be processed
      */
     public void addDataBatch(DataBatch batch){
-        System.out.println("adding a data batch to cpu");
         unprocessedDataBatches.add(batch);
     }
     public int getNumOfProcessed(){

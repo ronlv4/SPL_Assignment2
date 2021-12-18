@@ -29,10 +29,8 @@ public class CRMSRunner {
     }
 
     private static String buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
-        //Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
-        //JsonObject output = new JsonObject();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Student[] students=getStudents(inputJava);
+        Student[] students=inputJava.getStudents();
         ConferenceInformation[] conferences=getConferences(inputJava);
         int batchesProcessed=0;
         int gpuTimeUsed=0;
@@ -51,12 +49,8 @@ public class CRMSRunner {
         return output;
     }
 
-    private static Student[] getStudents(InputFile inputJava) {
+    private static void buildStudentServices(InputFile inputJava) {
         Student[] students = inputJava.getStudents();
-        return students;
-    }
-
-    private static void buildStudentServices(Student[] students) {
         int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
         for (int i = 0; i < numOfStudents; i++) {
@@ -78,7 +72,7 @@ public class CRMSRunner {
         Thread[] CPUServicesThreads = new Thread[cpus.length];
         int i = 0;
         for (CPU cpu: cpus){
-            CPUServicesThreads[i] = new Thread(new CPUService("GPU Service " + i, cpu));
+            CPUServicesThreads[i] = new Thread(new CPUService("CPU Service " + i, cpu));
             CPUServicesThreads[i++].start();
         }
     }
@@ -152,6 +146,7 @@ public class CRMSRunner {
         buildConferenceServices(inputAsJavaObject);
         buildStudentServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
+//        buildOutputFile(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

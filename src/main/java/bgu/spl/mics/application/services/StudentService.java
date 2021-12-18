@@ -32,9 +32,9 @@ public class StudentService extends MicroService {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
             if(c.getCurrentTick()==0)
+                System.out.println("interrupting service " + getName());
                 Thread.currentThread().interrupt();
             });
-
         subscribeBroadcast(PublishConferenceBroadcast.class, c -> {
             for (Model goodModel : c.getGoodModels()) {
                 if (goodModel.getStudent().equals(student)){
