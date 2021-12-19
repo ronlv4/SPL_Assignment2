@@ -38,8 +38,16 @@ public class CPU {
      */
     public void advanceTick() {
         currentTick++;
+//        if (currentTick % 100 == 0) {
+//            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
+//        }
+//        if (currentTick % 150 == 0){
+//            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
+//        }
+
         if (!unprocessedDataBatches.isEmpty()) {
             DataBatch batch = unprocessedDataBatches.poll();
+//            System.out.println("Processing batch number " + batch.getStartIndex() + " of model " + batch.getGpu().getModel().getName());
             if (batch.getDataType() == Data.Type.Tabular) {
                 processTabular(batch);
             } else if (batch.getDataType() == Data.Type.Text) {
