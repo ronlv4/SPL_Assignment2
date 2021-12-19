@@ -1,10 +1,8 @@
 package bgu.spl.mics.application.objects;
 
-import bgu.spl.mics.Event;
-import com.google.gson.annotations.Expose;
-
-import java.util.LinkedList;
 import java.util.List;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * Passive object representing information on a conference.
@@ -12,26 +10,23 @@ import java.util.List;
  */
 public class ConferenceInformation {
 
-    @Expose private String name;
-    @Expose private int date;
-    @Expose public List<Model>  publications = null;
+    @Expose
+    private String name;
+    @Expose
+    private int date;
+    @Expose
+    public List<Model> publications = null;
 
-    public ConferenceInformation(String name, int date){
-        this.name=name;
-        this.date=date;
+    public ConferenceInformation(String name, int date) {
+        this.name = name;
+        this.date = date;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public int getDate(){
+    public int getDate() {
         return date;
     }
-
-    public List getpublications(){
-        return publications;
-    }
-
-
 }

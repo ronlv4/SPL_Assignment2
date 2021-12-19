@@ -14,7 +14,7 @@ public class GPUTest {
 
     @Before
     public void setUp() {
-        data = new Data(Data.Type.Tabular, 0, 100_000);
+        data = new Data(Data.Type.Tabular, 100_000);
 //        batch = new DataBatch(data, 0);
         gpu = new GPU(RTX3090, 0);
     }
@@ -30,7 +30,7 @@ public class GPUTest {
     @Test
     public void addProcessedBatch() {
         int numOfBatchesBefore = gpu.getNumberOfProcessedBatches();
-        gpu.tryAddProcessedBatch(batch);
+//        gpu.tryAddProcessedBatch(batch);
         int numOfBatchesAfter = gpu.getNumberOfProcessedBatches();
         assertEquals(numOfBatchesBefore + 1, numOfBatchesAfter);
     }

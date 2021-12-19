@@ -1,9 +1,7 @@
 package bgu.spl.mics.application.objects;
 
-import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive object representing a single CPU.
@@ -11,13 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Add fields and methods to this class as you see fit (including public methods and constructors).
  */
 public class CPU {
-    private int cores;
+    private final int cores;
     private int currentTick = 1;
     private int numOfProcessed;
     private BlockingQueue<DataBatch> unprocessedDataBatches;
     private final Cluster cluster = Cluster.getInstance();
     private int totalTime = 0;
-
 
     public CPU(int cores) {
         this.cores = cores;
@@ -41,8 +38,7 @@ public class CPU {
         if (!unprocessedDataBatches.isEmpty()) {
             DataBatch batch = unprocessedDataBatches.poll();
             totalTime++;
-//            System.out.println("processing batch " + batch.getStartIndex() + " for model " + batch.getGpu().getModel().getName());
-            if (batch.getDataType() == Data.Type.Tabular){
+            if (batch.getDataType() == Data.Type.Tabular) {
                 processTabular(batch);
             } else if (batch.getDataType() == Data.Type.Text) {
                 processText(batch);
@@ -66,7 +62,6 @@ public class CPU {
 
     private void process(DataBatch batch, int processTimeRequired) {
         if (currentTick - batch.getStartingProcessTick() >= processTimeRequired) {
-//            System.out.println(Thread.currentThread().getName() + " finished processing batch" + batch.getStartIndex() + " type: " + batch.getDataType());
             cluster.sendProcessedBatch(batch);
             numOfProcessed++;
         } else {
@@ -97,5 +92,4 @@ public class CPU {
     public int getTotalTime() {
         return totalTime;
     }
-
 }

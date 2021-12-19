@@ -1,10 +1,9 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.MessageBus;
-import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.objects.CPU;
+import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
 
 /**
@@ -28,7 +27,6 @@ public class CPUService extends MicroService {
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
-//            System.out.println("from CPUService - calling to cpu.advancetick");
             cpu.advanceTick();
             if (c.getCurrentTick() == 0) {
                 Thread.currentThread().interrupt();

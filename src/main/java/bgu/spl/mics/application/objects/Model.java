@@ -9,36 +9,34 @@ import com.google.gson.annotations.Expose;
  */
 public class Model {
 
-    @Expose private String name;
-    @Expose private Data data;
-    @Expose private Status status;
-    @Expose private Results result;
+    @Expose
+    private String name;
+    @Expose
+    private Data data;
+    @Expose
+    private Status status;
+    @Expose
+    private Results result;
     private Student student;
 
 
     public enum Status {
-        PreTrained,
-        Training,
-        Trained,
-        Tested
+        PreTrained, Training, Trained, Tested
     }
 
     public enum Results {
-        None,
-        Good,
-        Bad
+        None, Good, Bad
     }
 
-    public Model(String name, String type, int size){
+    public Model(String name, String type, int size) {
         this.name = name;
         Data data;
         if (type.equals("Images")) {
-            data = new Data(Data.Type.Images, 0, size);
-        } else if (type.equals("Text")){
-            data = new Data(Data.Type.Text, 0, size);
-        }
-        else {
-            data = new Data(Data.Type.Tabular, 0, size);
+            data = new Data(Data.Type.Images, size);
+        } else if (type.equals("Text")) {
+            data = new Data(Data.Type.Text, size);
+        } else {
+            data = new Data(Data.Type.Tabular, size);
         }
         this.data = data;
         this.status = Status.PreTrained;
@@ -65,12 +63,14 @@ public class Model {
         this.result = result;
     }
 
-    public void setGoodResult(){
+    public void setGoodResult() {
         setResult(Results.Good);
     }
-    public void setBadResult(){
+
+    public void setBadResult() {
         setResult(Results.Bad);
     }
+
     public Student getStudent() {
         return student;
     }
@@ -82,7 +82,4 @@ public class Model {
     public Status getStatus() {
         return status;
     }
-
-
-
 }

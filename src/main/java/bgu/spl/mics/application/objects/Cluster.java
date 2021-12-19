@@ -1,11 +1,12 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.Queue;
 
-import bgu.spl.mics.application.InputParsing.InputFile;
 import com.google.gson.annotations.Expose;
 
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import bgu.spl.mics.application.InputParsing.InputFile;
 
 /**
  * Passive object representing the cluster.
@@ -21,17 +22,21 @@ public class Cluster {
     private static GPU[] GPUS;
     private static CPU[] CPUS;
     private InputFile arrays;
-    private Object[] statistics = new Object[6];
+    private Object[] statistics = new Object[7];
     private int cpuPointer;
-    private int gpuPointer;
     private Queue<DataBatch>[] processedDataBatches;
-    @Expose private int batchesProcessed=0;
-    @Expose private int gpuTimeUsed=0;
-    @Expose private int cpuTimeUsed=0;
+    @Expose
+    private int batchesProcessed = 0;
+    @Expose
+    private int gpuTimeUsed = 0;
+    @Expose
+    private int cpuTimeUsed = 0;
+    private String filePath;
 
     private Cluster() {
 
     }
+
     /**
      * Retrieves the single instance of this class.
      */
@@ -55,9 +60,8 @@ public class Cluster {
 
     public void setGPUS(GPU[] inputGPUS) {
         GPUS = inputGPUS;
-        gpuPointer = 0;
         processedDataBatches = new Queue[GPUS.length];
-        for (int i = 0; i< GPUS.length; i++){
+        for (int i = 0; i < GPUS.length; i++) {
             processedDataBatches[i] = new ConcurrentLinkedQueue<>();
         }
     }
@@ -65,43 +69,44 @@ public class Cluster {
     /**
      * used by GPU to send unprocessed batches to the cpu.
      * those batches will be transferred to some CPU by the Cluster
+     *
      * @param batch - the unprocessed batch to transfer
      */
-    public synchronized void sendUnprocessedBatch(DataBatch batch){
-//        System.out.println(batch.getStartIndex() + " of model " +batch.getGpu().getModel().getName() + " to cpu index " + cpuPointer);
+    public synchronized void sendUnprocessedBatch(DataBatch batch) {
         CPUS[cpuPointer].addDataBatch(batch);
         cpuPointer++;
         cpuPointer %= CPUS.length;
     }
 
-    public void setArrays(InputFile statistics){
+    public void setArrays(InputFile statistics, String filePath) {
         this.arrays = statistics;
+        this.filePath = filePath;
     }
 
     /**
      * used by CPU to send processed batches back to the GPU
      * those batches will be transferred to some GPU by the Cluster
+     *
      * @param batch - the processed batch to transfer
      */
-    public void sendProcessedBatch(DataBatch batch){
-//        System.out.println("from cluster sending a processed batch");
+    public void sendProcessedBatch(DataBatch batch) {
         processedDataBatches[batch.getGPUIndex()].add(batch);
     }
 
-    public DataBatch requestProcessedBatch(int GPUIndex){
-        if (processedDataBatches[GPUIndex].isEmpty()){
+    public DataBatch requestProcessedBatch(int GPUIndex) {
+        if (processedDataBatches[GPUIndex].isEmpty()) {
             return null;
         }
         return processedDataBatches[GPUIndex].poll();
     }
 
     public Object[] getStatistics() {
-        for(int i=0; i< GPUS.length; i++){
-            gpuTimeUsed+=GPUS[i].getTotalTime();
+        for (int i = 0; i < GPUS.length; i++) {
+            gpuTimeUsed += GPUS[i].getTotalTime();
         }
-        for(int i=0; i< CPUS.length; i++){
-            batchesProcessed+=CPUS[i].getNumOfProcessed();
-            cpuTimeUsed+=CPUS[i].getTotalTime();
+        for (int i = 0; i < CPUS.length; i++) {
+            batchesProcessed += CPUS[i].getNumOfProcessed();
+            cpuTimeUsed += CPUS[i].getTotalTime();
         }
         statistics[0] = arrays;
         statistics[1] = GPUS;
@@ -109,8 +114,8 @@ public class Cluster {
         statistics[3] = gpuTimeUsed;
         statistics[4] = cpuTimeUsed;
         statistics[5] = batchesProcessed;
+        statistics[6] = filePath;
 
         return statistics;
     }
-
 }

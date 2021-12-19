@@ -14,11 +14,13 @@ public class Data {
         Images, Text, Tabular
     }
 
-    @Expose private Type type;
-    @Expose private int size;
+    @Expose
+    private Type type;
+    @Expose
+    private int size;
     private int trainedBatches = 0;
 
-    public Data(Type type, int processed, int size) {
+    public Data(Type type, int size) {
         this.type = type;
         this.size = size;
     }
@@ -31,7 +33,7 @@ public class Data {
         return size;
     }
 
-    public void incTrainedBatches(){
+    public void incTrainedBatches() {
         trainedBatches++;
     }
 

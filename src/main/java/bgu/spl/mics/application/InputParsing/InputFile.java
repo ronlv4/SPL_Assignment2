@@ -1,14 +1,7 @@
 package bgu.spl.mics.application.InputParsing;
 
-import bgu.spl.mics.application.objects.ConferenceInformation;
-import bgu.spl.mics.application.objects.Model;
 import bgu.spl.mics.application.objects.Student;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-
-import java.lang.reflect.Type;
+import bgu.spl.mics.application.objects.ConferenceInformation;
 
 public class InputFile {
     private Student[] Students;
@@ -21,14 +14,16 @@ public class InputFile {
     public Student[] getStudents() {
         return Students;
     }
-    public int getNumOfStudents(){
+
+    public int getNumOfStudents() {
         return Students.length;
     }
 
     public String[] getGPUS() {
         return GPUS;
     }
-    public int getNumOfGPUS(){
+
+    public int getNumOfGPUS() {
         return GPUS.length;
     }
 
@@ -36,7 +31,7 @@ public class InputFile {
         return CPUS;
     }
 
-    public int getNumOfCPUS(){
+    public int getNumOfCPUS() {
         return CPUS.length;
     }
 
@@ -44,7 +39,7 @@ public class InputFile {
         return Conferences;
     }
 
-    public int getNumOfConferences(){
+    public int getNumOfConferences() {
         return Conferences.length;
     }
 

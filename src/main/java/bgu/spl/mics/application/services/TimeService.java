@@ -1,10 +1,10 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.CRMSRunner;
-import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Cluster;
+import bgu.spl.mics.application.messages.TickBroadcast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,10 +20,9 @@ import java.util.TimerTask;
  */
 public class TimeService extends MicroService {
 
-    //	private static TimeService instance = null;
-    private MessageBusImpl MessageBus;
-    private int tickTime;
-    private int Duration;
+    private MessageBusImpl MessageBus = MessageBusImpl.getInstance();
+    private final int tickTime;
+    private final int Duration;
     private int currentTick;
     private Timer timer;
 
@@ -31,7 +30,6 @@ public class TimeService extends MicroService {
         super("Universal_Time_Service");
         this.tickTime = tickTime;
         this.Duration = Duration;
-        this.MessageBus = MessageBusImpl.getInstance();
         this.currentTick = 1;
         this.timer = new Timer();
     }
@@ -43,18 +41,13 @@ public class TimeService extends MicroService {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-//                System.out.println("Sending tick broadcast: tick #" + currentTick);
                 MessageBus.sendBroadcast(new TickBroadcast(currentTick));
-                currentTick ++;
-                if (currentTick % 500 == 0)
-                    System.out.println("current tick: " + currentTick);
+                currentTick++;
                 if (currentTick > Duration) {
-                    System.out.println("Sending termination tick");
                     MessageBus.sendBroadcast(new TickBroadcast(0));
                     timer.cancel();
-                    CRMSRunner.buildOutputFile(Cluster.getInstance().getStatistics(), "new_output_file.json");
+                    CRMSRunner.buildOutputFile(Cluster.getInstance().getStatistics());
                     Thread.currentThread().interrupt();
-
                 }
             }
         }, 3000, tickTime);
