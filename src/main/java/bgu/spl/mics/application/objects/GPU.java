@@ -2,8 +2,8 @@ package bgu.spl.mics.application.objects;
 
 import java.util.Collection;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -46,13 +46,12 @@ public class GPU {
         return null;
     }
 
-    public synchronized void advanceTick() {
+    public void advanceTick() {
         if (!VRAM.isEmpty()) {
+            DataBatch batch = VRAM.poll();
             totalTime++;
             currentTick.incrementAndGet();
-            DataBatch batch = VRAM.poll();
             System.out.println(Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
-            batch.setStartingTrainTick(currentTick.intValue());
             model.setStatus(Model.Status.Training);
             if (type == Type.RTX3090) {
                 Train3090(batch);
@@ -77,28 +76,40 @@ public class GPU {
     }
 
     private void train(DataBatch batch, int trainTimeRequired) {
-        if (currentTick.intValue() - batch.getStartingTrainTick() == trainTimeRequired) {
+//        System.out.println("Current tick: " + currentTick.intValue());
+//        System.out.println("starting train tick: " + batch.getStartingTrainTick());
+//        System.out.println("traing time required: " + trainTimeRequired);
+        if (currentTick.intValue() - batch.getStartingTrainTick() >= trainTimeRequired) {
+            System.out.println("finished training a batch");
             if (batch.getStartIndex() == getData().getSize() - 1000) {
                 finalizeModelTraining();
+                System.out.println("finished training a model");
             }
+        }
+        else {
+            addProcessedBatch(batch);
         }
     }
 
-    public void addProcessedBatch(DataBatch batch) {
+    public void tryAddProcessedBatch(DataBatch batch) {
+        batch.setStartingTrainTick(currentTick.intValue());
+        addProcessedBatch(batch);
+    }
+    private void addProcessedBatch(DataBatch batch){
         boolean wasAdded;
         do {
+//            System.out.println("trying to add");
             wasAdded = VRAM.offer(batch);
         } while (!wasAdded);
-
     }
 
     public int getNumberOfProcessedBatches() {
         return VRAM.size();
     }
 
-    public synchronized void finalizeModelTraining() {
+    public void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
-        this.notifyAll();
+        System.out.println("finished Training");
     }
 
     public void setModel(Model model) {

@@ -11,9 +11,9 @@
           "name": "YOLO10",
           "data": {
             "type": "Images",
-            "size": 200000
+            "size": 20000
           },
-          "status": "PreTrained",
+          "status": "Training",
           "result": "None"
         },
         {
@@ -56,7 +56,7 @@
           "name": "VIT",
           "data": {
             "type": "Images",
-            "size": 100000000
+            "size": 10
           },
           "status": "PreTrained",
           "result": "None"
@@ -74,7 +74,7 @@
           "name": "Bert",
           "data": {
             "type": "Text",
-            "size": 1000000
+            "size": 10
           },
           "status": "PreTrained",
           "result": "None"
@@ -83,7 +83,7 @@
           "name": "GPT4",
           "data": {
             "type": "Text",
-            "size": 1000000
+            "size": 1000
           },
           "status": "PreTrained",
           "result": "None"
@@ -119,9 +119,9 @@
           "name": "Percepetron",
           "data": {
             "type": "Tabular",
-            "size": 1000000
+            "size": 10
           },
-          "status": "PreTrained",
+          "status": "Training",
           "result": "None"
         },
         {
@@ -164,7 +164,7 @@
           "name": "YOLO9000",
           "data": {
             "type": "Images",
-            "size": 100000
+            "size": 10
           },
           "status": "PreTrained",
           "result": "None"
@@ -221,7 +221,7 @@
       "date": 50000
     }
   ],
-  "gpuTimeUsed": 63,
-  "cpuTimeUsed": 0,
-  "batchesProcessed": 0
+  "gpuTimeUsed": 0,
+  "cpuTimeUsed": 12,
+  "batchesProcessed": 8
 }

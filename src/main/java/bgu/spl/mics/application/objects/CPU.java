@@ -47,7 +47,6 @@ public class CPU {
      *
      */
     public void advanceTick(){
-        System.out.println("advancing tick");
         currentTick.incrementAndGet();
         if (!unprocessedDataBatches.isEmpty()){
             DataBatch batch = unprocessedDataBatches.poll();
@@ -74,6 +73,7 @@ public class CPU {
 
     private void process(DataBatch batch, int processTimeRequired){
         if (currentTick.intValue()-batch.getStartingProcessTick() == processTimeRequired){
+//            System.out.println(Thread.currentThread().getName() + " finished processing batch" + batch.getStartIndex() + " type: " + batch.getDataType());
             cluster.sendProcessedBatch(batch);
             numOfProcessed++;
         }

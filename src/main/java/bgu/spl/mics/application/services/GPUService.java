@@ -6,6 +6,9 @@ import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * GPU service is responsible for handling the
  * {@link TrainModelEvent} and {@link TestModelEvent},
@@ -21,6 +24,7 @@ public class GPUService extends MicroService {
     private MessageBusImpl messageBus;
     private Model model;
     private Cluster cluster = Cluster.getInstance();
+    private Event<Model> currentEvent;
     /*
     flow:
     GPUService calls to messageBus.complete(Event<T> e, T result)
@@ -49,26 +53,21 @@ public class GPUService extends MicroService {
         messageBus.register(this);
         subscribeBroadcast(TickBroadcast.class, c -> {
             gpu.advanceTick();
+            if (model != null && model.getStatus()== Model.Status.Trained){
+                System.out.println("completed training");
+                complete(currentEvent, model);
+            }
             if(c.getCurrentTick()==0){
                 Thread.currentThread().interrupt();
             }
         });
         subscribeEvent(TrainModelEvent.class, c -> {
+//            System.out.println(Thread.currentThread().getName() + " got a model");
+            currentEvent = c;
             Model model = c.getModel();
+            gpu.setModel(model);
+            this.model = model;
             createAndSendBatches(model.getData());
-            synchronized (gpu) {
-                if (model.getStatus() != Model.Status.Trained) {
-//                    System.out.println("finished training model");
-                    try {
-                        gpu.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    System.out.println("finished Training the model");
-                    complete(c, model);
-                }
-            }
         });
         subscribeEvent(TestModelEvent.class, c -> {
             Model model = c.getModelToTest();
