@@ -27,20 +27,16 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    public static void buildOutputFile(InputFile inputAsJavaObject, GPU[] gpus, CPU[] cpus) {
+    public static void buildOutputFile(Object[] statistics) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Student[] students = inputAsJavaObject.getStudents();
-        ConferenceInformation[] conferences = inputAsJavaObject.getConferences();
-        int batchesProcessed=0;
-        int gpuTimeUsed=0;
-        int cpuTimeUsed=0;
-        for(int i=0; i< gpus.length; i++){
-            gpuTimeUsed+=gpus[i].getTotalTime();
-        }
-        for(int i=0; i< cpus.length; i++){
-            batchesProcessed+=cpus[i].getNumOfProcessed();
-            cpuTimeUsed+=cpus[i].getTotalTime();
-        }
+        InputFile arrays = (InputFile) statistics[0];
+        GPU[] gpus = (GPU[]) statistics[1];
+        CPU[] cpus = (CPU[]) statistics[2];
+        int gpuTimeUsed = (int) statistics[3];
+        int cpuTimeUsed = (int) statistics[4];
+        int batchesProcessed = (int) statistics[5];
+        Student[] students = arrays.getStudents();
+        ConferenceInformation[] conferences = arrays.getConferences();
         try{
             Writer writer = new FileWriter("output1.json");
             gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
@@ -151,11 +147,7 @@ public class CRMSRunner {
 //        buildConferenceServices(inputAsJavaObject);
         buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
-        Object statistics[] = new Object[3];
-        statistics[0] = inputAsJavaObject;
-        statistics[1] = gpus;
-        statistics[2] = cpus;
-        cluster.getInstance().setStatistics(statistics);
+        cluster.getInstance().setArrays(inputAsJavaObject);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

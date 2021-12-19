@@ -24,7 +24,7 @@ public class GPU {
     private Type type;
     private Model model;
     private Cluster cluster;
-    private int totalTime;
+    private int totalTime = 0;
     private AtomicInteger currentTick = new AtomicInteger(1);
 
     private Queue<DataBatch> VRAM;
@@ -32,7 +32,6 @@ public class GPU {
     public GPU(Type type) {
         this.cluster = Cluster.getInstance();
         this.type = type;
-        this.totalTime = 0;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
         } else if (type == Type.RTX2080) {

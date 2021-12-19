@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.objects;
 
 
+import bgu.spl.mics.application.InputParsing.InputFile;
+
 /**
  * Passive object representing the cluster.
  * <p>
@@ -14,9 +16,13 @@ public class Cluster {
     private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
-    private Object[] statistics = new Object[3];
+    private InputFile arrays;
+    private Object[] statistics = new Object[6];
     private int cpuPointer;
     private int gpuPointer;
+    private int batchesProcessed=0;
+    private int gpuTimeUsed=0;
+    private int cpuTimeUsed=0;
 
     private Cluster() {
 
@@ -58,8 +64,8 @@ public class Cluster {
         cpuPointer %= CPUS.length;
     }
 
-    public void setStatistics(Object[] statistics){
-        this.statistics = statistics;
+    public void setArrays(InputFile statistics){
+        this.arrays = statistics;
     }
 
     /**
@@ -73,6 +79,22 @@ public class Cluster {
     }
 
     public Object[] getStatistics() {
+        for(int i=0; i< GPUS.length; i++){
+            gpuTimeUsed+=GPUS[i].getTotalTime();
+        }
+        for(int i=0; i< CPUS.length; i++){
+            batchesProcessed+=CPUS[i].getNumOfProcessed();
+            cpuTimeUsed+=CPUS[i].getTotalTime();
+        }
+        statistics[0] = arrays;
+        statistics[1] = GPUS;
+        statistics[2] = CPUS;
+        statistics[3] = gpuTimeUsed;
+        statistics[4] = cpuTimeUsed;
+        statistics[5] = batchesProcessed;
+        System.out.println("hi"+cpuTimeUsed);
+
         return statistics;
     }
+
 }

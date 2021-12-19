@@ -166,7 +166,7 @@
             "type": "Images",
             "size": 10
           },
-          "status": "PreTrained",
+          "status": "Training",
           "result": "None"
         },
         {
@@ -221,7 +221,7 @@
       "date": 50000
     }
   ],
-  "gpuTimeUsed": 0,
-  "cpuTimeUsed": 12,
-  "batchesProcessed": 8
+  "gpuTimeUsed": 701,
+  "cpuTimeUsed": 10,
+  "batchesProcessed": 7
 }

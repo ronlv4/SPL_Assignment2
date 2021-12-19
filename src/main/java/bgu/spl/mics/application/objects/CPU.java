@@ -16,7 +16,7 @@ public class CPU {
     private int numOfProcessed;
     private BlockingQueue<DataBatch> unprocessedDataBatches;
     private Cluster cluster;
-    private int totalTime;
+    private int totalTime = 0;
 
 
     public CPU(int cores){
@@ -50,6 +50,7 @@ public class CPU {
         currentTick.incrementAndGet();
         if (!unprocessedDataBatches.isEmpty()){
             DataBatch batch = unprocessedDataBatches.poll();
+            totalTime++;
             if (batch.getDataType() == Data.Type.Tabular){
                 processTabular(batch);
             }
