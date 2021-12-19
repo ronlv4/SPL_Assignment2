@@ -11,10 +11,12 @@ public class ConferenceInformation {
 
     private String name;
     private int date;
+    private List publications;
 
     public ConferenceInformation(String name, int date){
         this.name=name;
         this.date=date;
+        this.publications = null;
     }
 
     public String getName(){
@@ -25,4 +27,11 @@ public class ConferenceInformation {
         return date;
     }
 
+    public List getpublications(){
+        return publications;
+    }
+
+    public void setResults(List goodResultsModels) {
+        this.publications = goodResultsModels;
+    }
 }

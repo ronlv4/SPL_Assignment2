@@ -13,7 +13,7 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.util.LinkedList;
-import java.util.List;
+
 
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
@@ -29,10 +29,10 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    private static void buildOutputFile(InputFile inputJava, CPU[] cpus, GPU[] gpus) {
+    public static void buildOutputFile(InputFile inputAsJavaObject, GPU[] gpus, CPU[] cpus) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Student[] students=getStudents(inputJava);
-        ConferenceInformation[] conferences=getConferences(inputJava);
+        Student[] students = inputAsJavaObject.getStudents();
+        ConferenceInformation[] conferences = inputAsJavaObject.getConferences();
         int batchesProcessed=0;
         int gpuTimeUsed=0;
         int cpuTimeUsed=0;
@@ -53,7 +53,7 @@ public class CRMSRunner {
         }
     }
 
-    private static Student[] getStudents(InputFile inputJava) {
+    public static Student[] getStudents(InputFile inputJava) {
         Student[] students = inputJava.getStudents();
         return students;
     }
@@ -148,12 +148,16 @@ public class CRMSRunner {
         buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
-        buildOutputFile(inputAsJavaObject, cpus, gpus);
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
         buildConferenceServices(inputAsJavaObject);
         buildTimeService(inputAsJavaObject);
+        Object statistics[] = new Object[3];
+        statistics[0] = inputAsJavaObject;
+        statistics[1] = gpus;
+        statistics[2] = cpus;
+        cluster.getInstance().setStatistics(statistics);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {
@@ -161,4 +165,5 @@ public class CRMSRunner {
         cluster.setCPUS(cpus);
         cluster.setGPUS(gpus);
     }
+
 }
