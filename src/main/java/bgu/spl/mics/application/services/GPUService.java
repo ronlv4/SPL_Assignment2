@@ -1,14 +1,11 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.*;
-import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.*;
+import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.messages.DataPreProcessEvent;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * GPU service is responsible for handling the
@@ -38,7 +35,6 @@ public class GPUService extends MicroService {
             DataBatch batch = new DataBatch(data, i, gpu.getGPUIndex());
             cluster.sendUnprocessedBatch(batch);
         }
-
     }
 
     @Override
@@ -47,7 +43,6 @@ public class GPUService extends MicroService {
         subscribeBroadcast(TickBroadcast.class, c -> {
             gpu.advanceTick();
             if (model != null && model.getStatus() == Model.Status.Trained) {
-//                System.out.println("completed training");
                 complete(currentEvent, model);
             }
             if (c.getCurrentTick() == 0) {
@@ -55,7 +50,6 @@ public class GPUService extends MicroService {
             }
         });
         subscribeEvent(TrainModelEvent.class, c -> {
-//            System.out.println(Thread.currentThread().getName() + " got a model");
             currentEvent = c;
             Model model = c.getModel();
             gpu.setModel(model);
@@ -63,7 +57,6 @@ public class GPUService extends MicroService {
             createAndSendBatches(model.getData());
         });
         subscribeEvent(TestModelEvent.class, c -> {
-            System.out.println("Testing a model");
             Model model = c.getModelToTest();
             if (model.getStudent().isMsc()) {
                 if (Math.random() < 0.6) {

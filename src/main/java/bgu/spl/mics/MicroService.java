@@ -28,8 +28,6 @@ public abstract class MicroService implements Runnable {
     private final String name;
     private final MessageBusImpl messageBus = MessageBusImpl.getInstance();
     private Map<Class<? extends Message>, Callback<? extends Message>> messageCallbacks = new HashMap<>();
-    private HashMap<Class<? extends Event<?>>, Callback<? extends Event<?>>> eventCallBacks;
-    private HashMap<Class<? extends Broadcast>, Callback<? extends Broadcast>> broadcastCallBacks;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -37,8 +35,6 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
-        eventCallBacks = new HashMap<>();
-        broadcastCallBacks = new HashMap<>();
     }
 
     /**
@@ -159,7 +155,7 @@ public abstract class MicroService implements Runnable {
     }
 
     /**
-     * The entry point of the micro-service. TODO: you must complete this code
+     * The entry point of the micro-service.
      * otherwise you will end up in an infinite loop.
      */
     @Override
@@ -167,16 +163,14 @@ public abstract class MicroService implements Runnable {
         Thread.currentThread().setName(name);
         initialize();
         while (!terminated) {
-            try{
+            try {
                 Message message = messageBus.awaitMessage(this);
                 Callback callback = messageCallbacks.get(message.getClass());
                 if (callback != null) {
-//                    System.out.println("calling to callback " + message + "at Thread " + Thread.currentThread().getName());
                     callback.call(message);
                 }
             } catch (InterruptedException e) {
                 messageBus.unregister(this);
-                System.out.println("Terminating " + Thread.currentThread().getName());
                 terminate();
             }
         }

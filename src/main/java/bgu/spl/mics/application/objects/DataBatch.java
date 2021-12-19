@@ -7,24 +7,18 @@ package bgu.spl.mics.application.objects;
 
 public class DataBatch {
 
-    private Data data;
-    private int startIndex;
-    private int GPUIndex;
+    private final Data data;
+    private final int GPUIndex;
     private int startingProcessTick;
     private int startingTrainTick;
 
     public DataBatch(Data data, int startIndex, int index) {
         this.data = data;
-        this.startIndex = startIndex;
         this.GPUIndex = index;
     }
 
     public int getGPUIndex() {
         return GPUIndex;
-    }
-
-    public int getStartIndex() {
-        return startIndex;
     }
 
     public int getStartingTrainTick() {
@@ -45,8 +39,6 @@ public class DataBatch {
 
     public Data.Type getDataType() {
         return data.getType();
-
-
     }
 
     public Data getData() {

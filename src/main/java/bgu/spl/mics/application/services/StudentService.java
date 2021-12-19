@@ -1,9 +1,7 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.Callback;
-import bgu.spl.mics.Future;
-import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.Model;
 import bgu.spl.mics.application.objects.Student;
@@ -33,24 +31,17 @@ public class StudentService extends MicroService {
         modelIndex = 0;
         subscribeBroadcast(TickBroadcast.class, c -> {
             Model currentModel = student.getModels()[modelIndex];
-            Future<Model> future;
             if (currentModel.getStatus() == Model.Status.PreTrained) {
-                System.out.println("Sent a new Train Model event to model " + currentModel.getName());
                 currentModel.setStatus(Model.Status.Training);
                 sendEvent(new TrainModelEvent(currentModel));
             } else if (currentModel.getStatus() == Model.Status.Trained) {
-
-                System.out.println("finished training model " + currentModel.getName());
                 sendEvent(new TestModelEvent(currentModel));
             } else if (currentModel.getStatus() == Model.Status.Tested) {
                 if (currentModel.getResult() == Model.Results.Good) {
-                    System.out.println("it has good results");
                     sendEvent(new PublishResultsEvent(currentModel));
                 }
-                if (modelIndex+1 < student.getModels().length)
-                    modelIndex++;
-                else
-                    Thread.currentThread().interrupt();
+                if (modelIndex + 1 < student.getModels().length) modelIndex++;
+                else Thread.currentThread().interrupt();
             }
             if (c.getCurrentTick() == 0) {
                 Thread.currentThread().interrupt();

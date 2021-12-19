@@ -14,7 +14,17 @@
       "status": "PhD",
       "publications": 0,
       "papersRead": 0,
-      "trainedModels": []
+      "trainedModels": [
+        {
+          "name": "VIT",
+          "data": {
+            "type": "Tabular",
+            "size": 100000000
+          },
+          "status": "Training",
+          "result": "None"
+        }
+      ]
     },
     {
       "name": "Pumba",
@@ -37,7 +47,26 @@
       "status": "PhD",
       "publications": 0,
       "papersRead": 0,
-      "trainedModels": []
+      "trainedModels": [
+        {
+          "name": "MuchMoreEfficientNet",
+          "data": {
+            "type": "Tabular",
+            "size": 20000
+          },
+          "status": "Tested",
+          "result": "Good"
+        },
+        {
+          "name": "YOLO9000",
+          "data": {
+            "type": "Tabular",
+            "size": 100000
+          },
+          "status": "Tested",
+          "result": "Bad"
+        }
+      ]
     }
   ],
   "conferences": [
@@ -55,14 +84,25 @@
     },
     {
       "name": "ECCV",
-      "date": 4000
+      "date": 4000,
+      "publications": [
+        {
+          "name": "MuchMoreEfficientNet",
+          "data": {
+            "type": "Tabular",
+            "size": 20000
+          },
+          "status": "Tested",
+          "result": "Good"
+        }
+      ]
     },
     {
       "name": "AISTATS",
       "date": 5000
     }
   ],
-  "gpuTimeUsed": 69,
-  "cpuTimeUsed": 55,
-  "batchesProcessed": 58
+  "cpuTimeUsed": 6993,
+  "gpuTimeUsed": 1174,
+  "batchesProcessed": 6987
 }

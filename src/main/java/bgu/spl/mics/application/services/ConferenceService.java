@@ -8,8 +8,8 @@ import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.ConferenceInformation;
 import bgu.spl.mics.application.objects.Model;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
 
 
 /**
@@ -17,7 +17,7 @@ import java.util.List;
  * aggregating good results and publishing them via the {@link PublishConferenceBroadcast},
  * after publishing results the conference will unregister from the system.
  * This class may not hold references for objects which it is not responsible for.
- *
+ * <p>
  * You can add private fields and public methods to this class.
  * You MAY change constructor signatures and even add new public constructors.
  */
@@ -31,23 +31,22 @@ public class ConferenceService extends MicroService {
         super(name);
         this.conference = conference;
         this.messageBus = MessageBusImpl.getInstance();
-        this.goodResultsModels = new LinkedList<Model>();
+        this.goodResultsModels = new LinkedList<>();
     }
 
     @Override
     protected void initialize() {
         messageBus.register(this);
-        subscribeEvent(PublishResultsEvent.class,c->{
+        subscribeEvent(PublishResultsEvent.class, c -> {
             goodResultsModels.add(c.getGoodModel());
-            System.out.println("working");
-            conference.publications=goodResultsModels;
+            conference.publications = goodResultsModels;
         });
-        subscribeBroadcast(TickBroadcast.class, c->{
+        subscribeBroadcast(TickBroadcast.class, c -> {
             if (c.getCurrentTick() == conference.getDate()) {
                 messageBus.sendBroadcast(new PublishConferenceBroadcast(goodResultsModels));
                 Thread.currentThread().interrupt(); // makes the conference unregister and terminate
             }
-            if (c.getCurrentTick()==0){
+            if (c.getCurrentTick() == 0) {
                 Thread.currentThread().interrupt();
             }
         });

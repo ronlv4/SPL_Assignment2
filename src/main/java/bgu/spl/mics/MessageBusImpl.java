@@ -90,15 +90,13 @@ public class MessageBusImpl implements MessageBus {
         for (MicroService subscriber : subscribedMicroServiceQueue) {
             microServicesMessages.get(subscriber).add(b);
         }
-//        notifyAll();
     }
 
     @Override
     public synchronized <T> Future<T> sendEvent(Event<T> e) {
         Queue<MicroService> subscribedMicroServiceQueue = eventSubscribersByType.get(e.getClass());
-        if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
-            return null; //TODO what should we do if the type of event has no subscribers?
-        synchronized (this){
+        if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) return null;
+        synchronized (this) {
             MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
             microServicesMessages.get(microServiceInLine).add(e);
             subscribedMicroServiceQueue.add(microServiceInLine);
@@ -117,18 +115,12 @@ public class MessageBusImpl implements MessageBus {
                 return 1;
             else if (Broadcast.class.isAssignableFrom(m2.getClass()) && Event.class.isAssignableFrom(m1.getClass()))
                 return -1;
-            else
-                return 0;
+            else return 0;
         }));
     }
 
     @Override
     public void unregister(MicroService m) {
-        // TODO rewrite this function
-//        for (Class<Message> type : eventSubscribersByMicroService.get(m)) {
-//            broadcastSubscribersByType.get(type).remove(m);
-//        }
-
         Deque<Class<? extends Event<?>>> eventSubscribedTypesDeque = eventSubscribersByMicroService.get(m);
         if (eventSubscribedTypesDeque != null) {
             for (Class<? extends Event<?>> type : eventSubscribedTypesDeque) {
@@ -137,7 +129,7 @@ public class MessageBusImpl implements MessageBus {
         }
 
         Deque<Class<? extends Broadcast>> broadcastSubscribedTypesDeque = broadcastSubscribersByMicroService.get(m);
-        for (Class<? extends Broadcast> type: broadcastSubscribedTypesDeque){
+        for (Class<? extends Broadcast> type : broadcastSubscribedTypesDeque) {
             broadcastSubscribersByType.get(type).remove(m);
         }
 
@@ -149,8 +141,7 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public Message awaitMessage(MicroService m) throws InterruptedException {
-        if (!isRegistered(m))
-            throw new IllegalStateException("Microservice " + m.getName() + " Was never registered");
+        if (!isRegistered(m)) throw new IllegalStateException("Microservice " + m.getName() + " Was never registered");
         PriorityBlockingQueue<Message> awaitingMessagesQueue = microServicesMessages.get(m);
         return awaitingMessagesQueue.take();
     }
@@ -170,5 +161,4 @@ public class MessageBusImpl implements MessageBus {
     private boolean isRegistered(MicroService m) {
         return microServicesMessages.containsKey(m);
     }
-
 }

@@ -1,9 +1,10 @@
 package bgu.spl.mics.application.InputParsing;
 
-import bgu.spl.mics.application.objects.Model;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
+
+import bgu.spl.mics.application.objects.Model;
 
 public class ModelDeserializer implements JsonDeserializer<Model> {
 
