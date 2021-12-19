@@ -57,6 +57,6 @@ public class TimeService extends MicroService {
                     Thread.currentThread().interrupt();
                 }
             }
-        }, 1000, tickTime);
+        }, 3000, tickTime);
     }
 }

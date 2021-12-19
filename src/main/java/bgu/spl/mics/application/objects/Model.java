@@ -14,7 +14,7 @@ public class Model {
     private Results result;
 
 
-    enum Status {
+    public enum Status {
         PreTrained,
         Training,
         Trained,

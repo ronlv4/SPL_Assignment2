@@ -13,8 +13,6 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.util.LinkedList;
-
-
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -145,13 +143,13 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
-        buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
-        buildConferenceServices(inputAsJavaObject);
+//        buildConferenceServices(inputAsJavaObject);
+        buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
         Object statistics[] = new Object[3];
         statistics[0] = inputAsJavaObject;

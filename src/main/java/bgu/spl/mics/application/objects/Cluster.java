@@ -19,6 +19,7 @@ import java.util.List;
 public class Cluster {
 
     private static Cluster instance = null;
+    private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
     private static boolean isDone = false;
@@ -27,6 +28,7 @@ public class Cluster {
     private int gpuPointer;
 
     private Cluster() {
+
     }
     /**
      * Retrieves the single instance of this class.
@@ -59,8 +61,9 @@ public class Cluster {
      * those batches will be transferred to some CPU by the Cluster
      * @param batch - the unprocessed batch to transfer
      */
-    public void sendUnprocessedBatch(DataBatch batch){
+    public synchronized void sendUnprocessedBatch(DataBatch batch){
         CPUS[cpuPointer].addDataBatch(batch);
+        cpuPointer++;
         cpuPointer %= CPUS.length;
     }
 
@@ -74,8 +77,7 @@ public class Cluster {
      * @param batch - the processed batch to transfer
      */
     public void sendProcessedBatch(DataBatch batch){
-
-
+        batch.getGpu().addProcessedBatch(batch);
     }
 
     public Object[] getStatistics() {
