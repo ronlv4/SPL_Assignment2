@@ -2,11 +2,12 @@ package bgu.spl.mics.application.objects;
 
 
 import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.application.InputParsing.InputFile;
 
 import java.nio.file.LinkPermission;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Passive object representing the cluster.
@@ -21,7 +22,8 @@ public class Cluster {
     private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
-
+    private static boolean isDone = false;
+    private Object[] statistics = new Object[3];
     private int cpuPointer;
     private int gpuPointer;
 
@@ -31,9 +33,10 @@ public class Cluster {
     /**
      * Retrieves the single instance of this class.
      */
+
     public static Cluster getInstance() {
         if (!isDone) {
-            synchronized (Class.class) {
+            synchronized (Cluster.class) {
                 if (!isDone) {
                     instance = new Cluster();
                     isDone = true;
@@ -63,6 +66,11 @@ public class Cluster {
         cpuPointer++;
         cpuPointer %= CPUS.length;
     }
+
+    public void setStatistics(Object[] statistics){
+        this.statistics = statistics;
+    }
+
     /**
      * used by CPU to send processed batches back to the GPU
      * those batches will be transferred to some GPU by the Cluster
@@ -70,5 +78,9 @@ public class Cluster {
      */
     public void sendProcessedBatch(DataBatch batch){
         batch.getGpu().addProcessedBatch(batch);
+    }
+
+    public Object[] getStatistics() {
+        return statistics;
     }
 }
