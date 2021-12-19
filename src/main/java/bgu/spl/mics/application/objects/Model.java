@@ -39,9 +39,12 @@ public class Model {
             data = new Data(Data.Type.Tabular, 0, size);
         }
         this.data = data;
-        this.student = student;
         this.status = Status.PreTrained;
         this.result = Results.None;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public Data getData() {

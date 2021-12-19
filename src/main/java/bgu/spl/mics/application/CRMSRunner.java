@@ -133,6 +133,14 @@ public class CRMSRunner {
 
     }
 
+    private static void updateStudentFieldInModels(InputFile inputJava){
+        for (Student student: inputJava.getStudents()){
+            for (Model model: student.getModels()){
+                model.setStudent(student);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         InputFile inputAsJavaObject = null;
         try {
@@ -143,12 +151,13 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
+        updateStudentFieldInModels(inputAsJavaObject);
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
-//        buildConferenceServices(inputAsJavaObject);
+        buildConferenceServices(inputAsJavaObject);
         buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
         Object statistics[] = new Object[3];

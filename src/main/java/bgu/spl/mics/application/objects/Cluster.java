@@ -53,6 +53,7 @@ public class Cluster {
      * @param batch - the unprocessed batch to transfer
      */
     public synchronized void sendUnprocessedBatch(DataBatch batch){
+//        System.out.println(batch.getStartIndex() + " of model " +batch.getGpu().getModel().getName() + " to cpu index " + cpuPointer);
         CPUS[cpuPointer].addDataBatch(batch);
         cpuPointer++;
         cpuPointer %= CPUS.length;
@@ -68,7 +69,7 @@ public class Cluster {
      * @param batch - the processed batch to transfer
      */
     public void sendProcessedBatch(DataBatch batch){
-        System.out.println("from cluster sending a processed batch");
+//        System.out.println("from cluster sending a processed batch");
         batch.getGpu().tryAddProcessedBatch(batch);
     }
 

@@ -5,7 +5,7 @@ import bgu.spl.mics.application.objects.Model;
 
 import java.util.List;
 
-public class PublishResultsEvent implements Event {
+public class PublishResultsEvent implements Event<Model> {
     private Model goodModel;
 
     public PublishResultsEvent(Model model){

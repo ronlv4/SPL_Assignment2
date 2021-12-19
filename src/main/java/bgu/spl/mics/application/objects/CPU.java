@@ -12,72 +12,70 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CPU {
     private int cores;
-    private AtomicInteger currentTick = new AtomicInteger(1);
+    private int currentTick = 1;
     private int numOfProcessed;
     private BlockingQueue<DataBatch> unprocessedDataBatches;
-    private Cluster cluster;
+    private final Cluster cluster = Cluster.getInstance();
     private int totalTime;
 
 
-    public CPU(int cores){
+    public CPU(int cores) {
         this.cores = cores;
-        this.cluster = Cluster.getInstance();
         this.numOfProcessed = 0;
         this.unprocessedDataBatches = new LinkedBlockingQueue<>();
     }
 
     public int getTicks() {
-        return currentTick.intValue();
+        return currentTick;
     }
 
-    public Collection<DataBatch> getDataBatchCollection() {
-        return unprocessedDataBatches;
-    }
-
-    public int getNumOfBatches(){
+    public int getNumOfBatches() {
         return unprocessedDataBatches.size();
-    }
-
-    public Cluster getCluster() {
-        return cluster;
     }
 
     /**
      * @pre getTicks() + 1 == @post getTicks()
-     *
      */
-    public void advanceTick(){
-        currentTick.incrementAndGet();
-        if (!unprocessedDataBatches.isEmpty()){
+    public void advanceTick() {
+        currentTick++;
+//        if (currentTick % 100 == 0) {
+//            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
+//        }
+//        if (currentTick % 150 == 0){
+//            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
+//        }
+
+        if (!unprocessedDataBatches.isEmpty()) {
             DataBatch batch = unprocessedDataBatches.poll();
-            if (batch.getDataType() == Data.Type.Tabular){
+//            System.out.println("Processing batch number " + batch.getStartIndex() + " of model " + batch.getGpu().getModel().getName());
+            if (batch.getDataType() == Data.Type.Tabular) {
                 processTabular(batch);
-            }
-            else if (batch.getDataType() == Data.Type.Text){
+            } else if (batch.getDataType() == Data.Type.Text) {
                 processText(batch);
-            }
-            else {
+            } else {
                 processImage(batch);
             }
         }
     }
-    private void processTabular(DataBatch batch){
+
+    private void processTabular(DataBatch batch) {
         process(batch, 32 / cores);
     }
-    private void processText(DataBatch batch){
+
+    private void processText(DataBatch batch) {
         process(batch, 32 / cores * 2);
     }
-    private void processImage(DataBatch batch){
+
+    private void processImage(DataBatch batch) {
         process(batch, 32 / cores * 4);
     }
 
-    private void process(DataBatch batch, int processTimeRequired){
-        if (currentTick.intValue()-batch.getStartingProcessTick() == processTimeRequired){
+    private void process(DataBatch batch, int processTimeRequired) {
+        if (currentTick - batch.getStartingProcessTick() == processTimeRequired) {
 //            System.out.println(Thread.currentThread().getName() + " finished processing batch" + batch.getStartIndex() + " type: " + batch.getDataType());
             cluster.sendProcessedBatch(batch);
             numOfProcessed++;
-        }
-        else {
+        } else {
             unprocessedDataBatches.add(batch);
         }
     }
@@ -85,21 +83,25 @@ public class CPU {
     /**
      * @return number of cores of this CPU
      */
-    public int getNumOfCores(){
+    public int getNumOfCores() {
         return cores;
     }
 
     /**
-     * @pre this.getNumOfBatches.size() + 1 = @post this.getNumOfBatches()
      * @param batch - the batch of data to be added to the DataBatch collection later to be processed
+     * @pre this.getNumOfBatches.size() + 1 = @post this.getNumOfBatches()
      */
-    public void addDataBatch(DataBatch batch){
-        batch.setStartingProcessTick(currentTick.intValue());
+    public void addDataBatch(DataBatch batch) {
+        batch.setStartingProcessTick(currentTick);
         unprocessedDataBatches.add(batch);
     }
-    public int getNumOfProcessed(){
+
+    public int getNumOfProcessed() {
         return numOfProcessed;
     }
-    public int getTotalTime(){ return totalTime;}
+
+    public int getTotalTime() {
+        return totalTime;
+    }
 
 }

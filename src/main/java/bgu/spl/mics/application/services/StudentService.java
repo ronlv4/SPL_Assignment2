@@ -51,12 +51,13 @@ public class StudentService extends MicroService {
             do {
                 future  = sendEvent(new TrainModelEvent(model));
             }while (future == null);
-            System.out.println("future is not null");
             future.get();
             System.out.println("got a future");
             future = sendEvent(new TestModelEvent(model));
             Model finishedModel = future.get();
+            System.out.println("Student got model " + model.getName());
             if (finishedModel.getResult() == Model.Results.Good){
+                System.out.println("it has good results");
                 sendEvent(new PublishResultsEvent(model));
             }
         }
