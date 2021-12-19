@@ -49,8 +49,10 @@ public class TimeService extends MicroService {
                 if (currentTick > Duration) {
                     System.out.println("Sending termination tick");
                     MessageBus.sendBroadcast(new TickBroadcast(0));
-//                    CRMSRunner.buildOutputFile(Cluster.getInstance().getStatistics());
                     timer.cancel();
+                    CRMSRunner.buildOutputFile(Cluster.getInstance().getStatistics());
+                    Thread.currentThread().interrupt();
+
                 }
             }
         }, 3000, tickTime);

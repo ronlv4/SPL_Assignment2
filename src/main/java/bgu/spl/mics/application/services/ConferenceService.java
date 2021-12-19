@@ -30,7 +30,7 @@ public class ConferenceService extends MicroService {
     public ConferenceService(String name, ConferenceInformation conference) {
         super(name);
         this.conference = conference;
-        this.messageBus=MessageBusImpl.getInstance();
+        this.messageBus = MessageBusImpl.getInstance();
         this.goodResultsModels = new LinkedList<Model>();
     }
 
@@ -39,6 +39,8 @@ public class ConferenceService extends MicroService {
         messageBus.register(this);
         subscribeEvent(PublishResultsEvent.class,c->{
             goodResultsModels.add(c.getGoodModel());
+            System.out.println("working");
+            conference.publications=goodResultsModels;
         });
         subscribeBroadcast(TickBroadcast.class, c->{
             if (c.getCurrentTick() == conference.getDate()) {

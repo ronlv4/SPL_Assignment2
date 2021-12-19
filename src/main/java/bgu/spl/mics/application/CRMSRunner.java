@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
@@ -30,15 +31,19 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    public static void buildOutputFile(InputFile inputJava) {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Model.class, new ModelSerializer()).create();
-//        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Student.class, new StudentSerializer()).create();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputFile outputFile = new OutputFile(inputJava.getStudents(), inputJava.getConferences(), 0, 0, 0);
-        Writer writer;
-        try {
-            writer = new FileWriter("output1.json");
-            gson.toJson(outputFile, writer);
+    public static void buildOutputFile(Object[] statistics) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        InputFile arrays = (InputFile) statistics[0];
+        GPU[] gpus = (GPU[]) statistics[1];
+        CPU[] cpus = (CPU[]) statistics[2];
+        int gpuTimeUsed = (int) statistics[3];
+        int cpuTimeUsed = (int) statistics[4];
+        int batchesProcessed = (int) statistics[5];
+        Student[] students = arrays.getStudents();
+        ConferenceInformation[] conferences = arrays.getConferences();
+        try{
+            Writer writer = new FileWriter("output1.json");
+            gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
             writer.flush(); //flush data to file
             writer.close(); //close write
         } catch (IOException e) {
@@ -78,6 +83,9 @@ public class CRMSRunner {
         int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
         for (int i = 0; i < numOfStudents; i++) {
+            Arrays.sort(students[i].getModels(),(m1, m2)->{
+                return m1.getData().getSize()-m2.getData().getSize();
+            });
             studentServicesThreads[i] = new Thread(new StudentService("Student Service " + i, students[i]));
             studentServicesThreads[i].start();
         }

@@ -2,6 +2,7 @@ package bgu.spl.mics.application.objects;
 
 
 import bgu.spl.mics.application.InputParsing.InputFile;
+import com.google.gson.annotations.Expose;
 
 /**
  * Passive object representing the cluster.
@@ -21,9 +22,9 @@ public class Cluster {
     private Object[] statistics = new Object[6];
     private int cpuPointer;
     private int gpuPointer;
-    private int batchesProcessed=0;
-    private int gpuTimeUsed=0;
-    private int cpuTimeUsed=0;
+    @Expose private int batchesProcessed=0;
+    @Expose private int gpuTimeUsed=0;
+    @Expose private int cpuTimeUsed=0;
 
     private Cluster() {
 

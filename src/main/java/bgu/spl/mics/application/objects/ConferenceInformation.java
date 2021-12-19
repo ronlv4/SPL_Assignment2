@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.objects;
 
+import bgu.spl.mics.Event;
+import com.google.gson.annotations.Expose;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,14 +12,13 @@ import java.util.List;
  */
 public class ConferenceInformation {
 
-    private String name;
-    private int date;
-    private List publications;
+    @Expose private String name;
+    @Expose private int date;
+    @Expose public List<Model>  publications = null;
 
     public ConferenceInformation(String name, int date){
         this.name=name;
         this.date=date;
-        this.publications = null;
     }
 
     public String getName(){
@@ -31,7 +33,5 @@ public class ConferenceInformation {
         return publications;
     }
 
-    public void setResults(List goodResultsModels) {
-        this.publications = goodResultsModels;
-    }
+
 }

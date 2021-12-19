@@ -1,7 +1,8 @@
 package bgu.spl.mics.application.objects;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Passive object representing single student.
@@ -15,11 +16,11 @@ public class Student {
         MSc, PhD
     }
 
-    private String name;
-    private String department;
-    private Degree status;
-    private int publications;
-    private int papersRead;
+    @Expose private String name;
+    @Expose private String department;
+    @Expose private Degree status;
+    @Expose private int publications;
+    @Expose private int papersRead;
     private Model[] models;
     private List<Model> trainedModels = new LinkedList<>();
 
