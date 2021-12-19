@@ -15,8 +15,8 @@ import java.io.Writer;
 public class OutputFile {
     @Expose Student[] students;
     @Expose ConferenceInformation[] conferences;
-    @Expose int gpuTimeUsed;
     @Expose int cpuTimeUsed;
+    @Expose int gpuTimeUsed;
     @Expose int batchesProcessed;
 
     public OutputFile(Student[] students, ConferenceInformation[] conferences, int gpuTimeUsed, int cpuTimeUsed, int batchesProcessed) {

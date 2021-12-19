@@ -35,7 +35,7 @@ public class GPUService extends MicroService {
 
     private void createAndSendBatches(Data data) {
         for (int i = 0; i < data.getSize(); i += 1000) {
-            DataBatch batch = new DataBatch(data, i, gpu);
+            DataBatch batch = new DataBatch(data, i, gpu.getGPUIndex());
             cluster.sendUnprocessedBatch(batch);
         }
 

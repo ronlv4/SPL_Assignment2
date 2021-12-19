@@ -38,12 +38,6 @@ public class CPU {
      */
     public void advanceTick() {
         currentTick++;
-//        if (currentTick % 100 == 0) {
-//            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
-//        }
-//        if (currentTick % 150 == 0){
-//            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
-//        }
         if (!unprocessedDataBatches.isEmpty()) {
             DataBatch batch = unprocessedDataBatches.poll();
             totalTime++;

@@ -4,6 +4,9 @@ package bgu.spl.mics.application.objects;
 import bgu.spl.mics.application.InputParsing.InputFile;
 import com.google.gson.annotations.Expose;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * Passive object representing the cluster.
  * <p>
@@ -17,11 +20,11 @@ public class Cluster {
     private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
-    private Statistics stats = new Statistics();
     private InputFile arrays;
     private Object[] statistics = new Object[6];
     private int cpuPointer;
     private int gpuPointer;
+    private Queue<DataBatch>[] processedDataBatches;
     @Expose private int batchesProcessed=0;
     @Expose private int gpuTimeUsed=0;
     @Expose private int cpuTimeUsed=0;
@@ -53,6 +56,10 @@ public class Cluster {
     public void setGPUS(GPU[] inputGPUS) {
         GPUS = inputGPUS;
         gpuPointer = 0;
+        processedDataBatches = new Queue[GPUS.length];
+        for (int i = 0; i< GPUS.length; i++){
+            processedDataBatches[i] = new ConcurrentLinkedQueue<>();
+        }
     }
 
     /**
@@ -78,7 +85,14 @@ public class Cluster {
      */
     public void sendProcessedBatch(DataBatch batch){
 //        System.out.println("from cluster sending a processed batch");
-        batch.getGpu().tryAddProcessedBatch(batch);
+        processedDataBatches[batch.getGPUIndex()].add(batch);
+    }
+
+    public DataBatch requestProcessedBatch(int GPUIndex){
+        if (processedDataBatches[GPUIndex].isEmpty()){
+            return null;
+        }
+        return processedDataBatches[GPUIndex].poll();
     }
 
     public Object[] getStatistics() {
