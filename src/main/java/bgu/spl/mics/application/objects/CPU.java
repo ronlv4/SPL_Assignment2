@@ -16,7 +16,7 @@ public class CPU {
     private int numOfProcessed;
     private BlockingQueue<DataBatch> unprocessedDataBatches;
     private final Cluster cluster = Cluster.getInstance();
-    private int totalTime;
+    private int totalTime = 0;
 
 
     public CPU(int cores) {
@@ -47,8 +47,8 @@ public class CPU {
 
         if (!unprocessedDataBatches.isEmpty()) {
             DataBatch batch = unprocessedDataBatches.poll();
-//            System.out.println("Processing batch number " + batch.getStartIndex() + " of model " + batch.getGpu().getModel().getName());
-            if (batch.getDataType() == Data.Type.Tabular) {
+            totalTime++;
+            if (batch.getDataType() == Data.Type.Tabular){
                 processTabular(batch);
             } else if (batch.getDataType() == Data.Type.Text) {
                 processText(batch);
