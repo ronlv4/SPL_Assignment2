@@ -46,7 +46,6 @@ public class ConferenceService extends MicroService {
                 Thread.currentThread().interrupt(); // makes the conference unregister and terminate
             }
             if (c.getCurrentTick()==0){
-                System.out.println(getName() + " is being interrupted");
                 Thread.currentThread().interrupt();
             }
         });

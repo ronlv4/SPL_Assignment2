@@ -2,13 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.CRMSRunner;
-import bgu.spl.mics.application.InputParsing.InputFile;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.CPU;
-import bgu.spl.mics.application.objects.Cluster;
-import bgu.spl.mics.application.objects.GPU;
-import bgu.spl.mics.application.objects.Student;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,7 +46,7 @@ public class TimeService extends MicroService {
                 if (currentTick > Duration) {
                     System.out.println("Sending termination tick");
                     MessageBus.sendBroadcast(new TickBroadcast(0));
-                    CRMSRunner.buildOutputFile((InputFile) Cluster.getInstance().getStatistics()[0], (GPU[]) Cluster.getInstance().getStatistics()[1], (CPU[])Cluster.getInstance().getStatistics()[2]);                    
+//                    CRMSRunner.buildOutputFile((InputFile) Cluster.getInstance().getStatistics()[0], (GPU[]) Cluster.getInstance().getStatistics()[1], (CPU[])Cluster.getInstance().getStatistics()[2]);
                     timer.cancel();
                     Thread.currentThread().interrupt();
                 }

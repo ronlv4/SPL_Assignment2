@@ -15,7 +15,7 @@
                 {
                     "name": "ResNet9000",
                     "type": "Images",
-                    "size": 200000
+                    "size": 2000
                 },
                 {
                     "name": "LessEfficientNet",
@@ -39,7 +39,7 @@
                 {
                     "name": "VIT",
                     "type": "Images",
-                    "size": 10
+                    "size": 10000
                 }
             ]
 
@@ -53,12 +53,12 @@
                 {
                     "name": "Bert",
                     "type": "Text",
-                    "size": 10
+                    "size": 1000
                 },
                 {
                     "name": "GPT4",
                     "type": "Text",
-                    "size": 1000
+                    "size": 10000
                 },
                 {
                     "name": "GPT5",
@@ -82,7 +82,7 @@
                 {
                     "name": "Percepetron",
                     "type": "Tabular",
-                    "size": 10
+                    "size": 10000
                 },
                 {
                     "name": "GNN",
@@ -111,7 +111,7 @@
                 {
                     "name": "YOLO9000",
                     "type": "Images",
-                    "size": 10
+                    "size": 10000
                 },
                 {
                     "name": "VIT2",
@@ -142,6 +142,6 @@
         {"name": "ECCV", "date": 40000},
         {"name": "AISTATS", "date": 50000}
     ],
-    "TickTime": 100,
-    "Duration": 100
+    "TickTime": 10,
+    "Duration": 10000
 }

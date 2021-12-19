@@ -68,7 +68,7 @@ public class Cluster {
      * @param batch - the processed batch to transfer
      */
     public void sendProcessedBatch(DataBatch batch){
-        System.out.println("from cluster sending a processed batch");
+//        System.out.println("from cluster sending a processed batch");
         batch.getGpu().tryAddProcessedBatch(batch);
     }
 

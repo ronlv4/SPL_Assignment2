@@ -23,14 +23,13 @@ public class GPU {
 
     private Type type;
     private Model model;
-    private Cluster cluster;
+    private Cluster cluster = Cluster.getInstance();
     private int totalTime;
     private AtomicInteger currentTick = new AtomicInteger(1);
 
     private Queue<DataBatch> VRAM;
 
     public GPU(Type type) {
-        this.cluster = Cluster.getInstance();
         this.type = type;
         this.totalTime = 0;
         if (type == Type.RTX3090) {
@@ -51,7 +50,7 @@ public class GPU {
             DataBatch batch = VRAM.poll();
             totalTime++;
             currentTick.incrementAndGet();
-            System.out.println(Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
+//            System.out.println(Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
             model.setStatus(Model.Status.Training);
             if (type == Type.RTX3090) {
                 Train3090(batch);
@@ -80,10 +79,10 @@ public class GPU {
 //        System.out.println("starting train tick: " + batch.getStartingTrainTick());
 //        System.out.println("traing time required: " + trainTimeRequired);
         if (currentTick.intValue() - batch.getStartingTrainTick() >= trainTimeRequired) {
-            System.out.println("finished training a batch");
+//            System.out.println("finished training a batch");
             if (batch.getStartIndex() == getData().getSize() - 1000) {
                 finalizeModelTraining();
-                System.out.println("finished training a model");
+//                System.out.println("finished training a model");
             }
         }
         else {
@@ -109,7 +108,7 @@ public class GPU {
 
     public void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
-        System.out.println("finished Training");
+//        System.out.println("finished Training");
     }
 
     public void setModel(Model model) {
