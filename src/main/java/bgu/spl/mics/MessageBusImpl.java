@@ -41,7 +41,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+    public synchronized <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
         // adding the microservice to the subscriberByType queue
         Deque<MicroService> subscribedMicroServiceDeque;
         subscribedMicroServiceDeque = eventSubscribersByType.get(type);
@@ -50,7 +50,6 @@ public class MessageBusImpl implements MessageBus {
             eventSubscribersByType.put(type, subscribedMicroServiceDeque);
         }
         subscribedMicroServiceDeque.add(m);
-
         // adding the microservice to the subscriberByMicroService queue
         Deque<Class<? extends Event<?>>> typesSubscriptions = eventSubscribersByMicroService.get(m);
         if (typesSubscriptions == null) {
@@ -61,7 +60,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+    public synchronized void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
         Deque<MicroService> subscribedMicroServiceList;
         subscribedMicroServiceList = broadcastSubscribersByType.get(type);
         if (subscribedMicroServiceList == null) {
@@ -69,7 +68,6 @@ public class MessageBusImpl implements MessageBus {
             broadcastSubscribersByType.put(type, subscribedMicroServiceList);
         }
         subscribedMicroServiceList.add(m);
-
         Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastSubscribersByMicroService.get(m);
         if (typesSubscriptions == null) {
             typesSubscriptions = new ConcurrentLinkedDeque<>();
@@ -87,7 +85,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public void sendBroadcast(Broadcast b) {
+    public synchronized void sendBroadcast(Broadcast b) {
         Queue<MicroService> subscribedMicroServiceQueue = broadcastSubscribersByType.get(b.getClass());
         for (MicroService subscriber : subscribedMicroServiceQueue) {
             microServicesMessages.get(subscriber).add(b);
@@ -96,7 +94,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public <T> Future<T> sendEvent(Event<T> e) {
+    public synchronized <T> Future<T> sendEvent(Event<T> e) {
         Queue<MicroService> subscribedMicroServiceQueue = eventSubscribersByType.get(e.getClass());
         if (subscribedMicroServiceQueue == null || subscribedMicroServiceQueue.isEmpty()) //TODO make sure that if an event has no subscribers it's being deleted from the map
             return null; //TODO what should we do if the type of event has no subscribers?

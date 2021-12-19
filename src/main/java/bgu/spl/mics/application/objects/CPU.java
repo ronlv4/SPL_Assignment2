@@ -74,8 +74,6 @@ public class CPU {
 
     private void process(DataBatch batch, int processTimeRequired){
         if (currentTick.intValue()-batch.getStartingProcessTick() == processTimeRequired){
-            System.out.println(Thread.currentThread().getName() + " processing a batch");
-            System.out.println("currently processed " + numOfProcessed);
             cluster.sendProcessedBatch(batch);
             numOfProcessed++;
         }

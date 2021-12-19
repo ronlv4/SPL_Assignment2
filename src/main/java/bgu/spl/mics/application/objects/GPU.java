@@ -51,7 +51,7 @@ public class GPU {
             totalTime++;
             currentTick.incrementAndGet();
             DataBatch batch = VRAM.poll();
-            System.out.println("GPU Service " + Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
+            System.out.println(Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
             batch.setStartingTrainTick(currentTick.intValue());
             model.setStatus(Model.Status.Training);
             if (type == Type.RTX3090) {
