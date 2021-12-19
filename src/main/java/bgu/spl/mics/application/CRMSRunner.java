@@ -14,6 +14,7 @@ import com.google.gson.stream.JsonReader;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
@@ -145,15 +146,15 @@ public class CRMSRunner {
         }
         MessageBusImpl messageBus = MessageBusImpl.getInstance();
         Cluster cluster = Cluster.getInstance();
-        buildStudentServices(getStudents(inputAsJavaObject));
         GPU[] gpus = parseAndConstructGPUS(inputAsJavaObject.getGPUS());
         CPU[] cpus = parseAndConstructCPUS(inputAsJavaObject.getCPUS());
-        buildOutputFile(inputAsJavaObject, cpus, gpus);
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
-        buildConferenceServices(inputAsJavaObject);
+//        buildConferenceServices(inputAsJavaObject);
+        buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
+        buildOutputFile(inputAsJavaObject, cpus, gpus);
     }
 
     private static void updateCluster(GPU[] gpus, CPU[] cpus) {

@@ -29,6 +29,7 @@ public class CPUService extends MicroService {
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TickBroadcast.class, c->{
+            System.out.println("from CPUService - calling to cpu.advancetick");
             cpu.advanceTick();
             if(c.getCurrentTick()==0){
                 Thread.currentThread().interrupt();

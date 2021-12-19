@@ -1,7 +1,10 @@
 package bgu.spl.mics.application.objects;
+
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive object representing a single GPU.
@@ -22,7 +25,7 @@ public class GPU {
     private Model model;
     private Cluster cluster;
     private int totalTime;
-    private int currentTick;
+    private AtomicInteger currentTick = new AtomicInteger(1);
 
     private Queue<DataBatch> VRAM;
 
@@ -30,7 +33,6 @@ public class GPU {
         this.cluster = Cluster.getInstance();
         this.type = type;
         this.totalTime = 0;
-        this.currentTick = 1;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
         } else if (type == Type.RTX2080) {
@@ -44,59 +46,59 @@ public class GPU {
         return null;
     }
 
-    public synchronized Model advanceTick() {
+    public synchronized void advanceTick() {
         if (!VRAM.isEmpty()) {
             totalTime++;
+            currentTick.incrementAndGet();
             DataBatch batch = VRAM.poll();
-            batch.setStartingTrainTick(currentTick);
+            System.out.println("GPU Service " + Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
+            batch.setStartingTrainTick(currentTick.intValue());
             model.setStatus(Model.Status.Training);
             if (type == Type.RTX3090) {
-                return Train3090(batch);
+                Train3090(batch);
             } else if (batch.getDataType() == Data.Type.Text) {
-                return Train2080(batch);
+                Train2080(batch);
             } else {
-                return Train1080(batch);
+                Train1080(batch);
             }
         }
-        return null;
     }
 
-    private Model Train3090(DataBatch batch) {
-        return train(batch, 1);
+    private void Train3090(DataBatch batch) {
+        train(batch, 1);
     }
 
-    private Model Train2080(DataBatch batch) {
-        return train(batch, 2);
+    private void Train2080(DataBatch batch) {
+        train(batch, 2);
     }
 
-    private Model Train1080(DataBatch batch) {
-        return train(batch, 4);
+    private void Train1080(DataBatch batch) {
+        train(batch, 4);
     }
 
-    private Model train(DataBatch batch, int trainTimeRequired) {
-        if (currentTick - batch.getStartingTrainTick() == trainTimeRequired) {
-            if (batch.getStartIndex() == getData().getSize()-1000){
+    private void train(DataBatch batch, int trainTimeRequired) {
+        if (currentTick.intValue() - batch.getStartingTrainTick() == trainTimeRequired) {
+            if (batch.getStartIndex() == getData().getSize() - 1000) {
                 finalizeModelTraining();
-                return model;
             }
         }
-        return null;
     }
 
     public void addProcessedBatch(DataBatch batch) {
         boolean wasAdded;
         do {
             wasAdded = VRAM.offer(batch);
-        }while(!wasAdded);
+        } while (!wasAdded);
+
     }
 
     public int getNumberOfProcessedBatches() {
         return VRAM.size();
     }
 
-    public void finalizeModelTraining() {
+    public synchronized void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
-//        return
+        this.notifyAll();
     }
 
     public void setModel(Model model) {
@@ -117,8 +119,10 @@ public class GPU {
     }
 
     public int getCurrentTick() {
-        return currentTick;
+        return currentTick.get();
     }
 
-    public int getTotalTime(){return totalTime;}
+    public int getTotalTime() {
+        return totalTime;
+    }
 }
