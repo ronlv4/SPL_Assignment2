@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive object representing a single GPU.
@@ -24,7 +25,7 @@ public class GPU {
     private Model model;
     private Cluster cluster;
     private int totalTime;
-    private int currentTick;
+    private AtomicInteger currentTick = new AtomicInteger(1);
 
     private Queue<DataBatch> VRAM;
 
@@ -32,7 +33,6 @@ public class GPU {
         this.cluster = Cluster.getInstance();
         this.type = type;
         this.totalTime = 0;
-        this.currentTick = 1;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
         } else if (type == Type.RTX2080) {
@@ -49,8 +49,10 @@ public class GPU {
     public synchronized void advanceTick() {
         if (!VRAM.isEmpty()) {
             totalTime++;
+            currentTick.incrementAndGet();
             DataBatch batch = VRAM.poll();
-            batch.setStartingTrainTick(currentTick);
+            System.out.println("GPU Service " + Thread.currentThread().getName() + " training batch index " + batch.getStartIndex());
+            batch.setStartingTrainTick(currentTick.intValue());
             model.setStatus(Model.Status.Training);
             if (type == Type.RTX3090) {
                 Train3090(batch);
@@ -75,7 +77,7 @@ public class GPU {
     }
 
     private void train(DataBatch batch, int trainTimeRequired) {
-        if (currentTick - batch.getStartingTrainTick() == trainTimeRequired) {
+        if (currentTick.intValue() - batch.getStartingTrainTick() == trainTimeRequired) {
             if (batch.getStartIndex() == getData().getSize() - 1000) {
                 finalizeModelTraining();
             }
@@ -117,7 +119,7 @@ public class GPU {
     }
 
     public int getCurrentTick() {
-        return currentTick;
+        return currentTick.get();
     }
 
     public int getTotalTime() {

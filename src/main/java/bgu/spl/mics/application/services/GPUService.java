@@ -58,11 +58,12 @@ public class GPUService extends MicroService {
             createAndSendBatches(model.getData());
             synchronized (gpu) {
                 if (model.getStatus() != Model.Status.Trained) {
-                    try {
-                        gpu.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    System.out.println("finished training model");
+//                    try {
+//                        gpu.wait();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                 } else {
                     System.out.println("finished Training the model");
                     complete(c, model);
@@ -86,15 +87,6 @@ public class GPUService extends MicroService {
             }
             messageBus.complete(c, model);
         });
-    }
-
-    private void getMessages() {
-        try {
-            Message message = messageBus.awaitMessage(this);
-        } catch (InterruptedException ignored) {
-
-        }
-
     }
 
 }

@@ -49,7 +49,7 @@ public class MessageBusImpl implements MessageBus {
             subscribedMicroServiceDeque = new ConcurrentLinkedDeque<>();
             eventSubscribersByType.put(type, subscribedMicroServiceDeque);
         }
-        subscribedMicroServiceDeque.addFirst(m);
+        subscribedMicroServiceDeque.add(m);
 
         // adding the microservice to the subscriberByMicroService queue
         Deque<Class<? extends Event<?>>> typesSubscriptions = eventSubscribersByMicroService.get(m);
@@ -57,7 +57,7 @@ public class MessageBusImpl implements MessageBus {
             typesSubscriptions = new ConcurrentLinkedDeque<>();
             eventSubscribersByMicroService.put(m, typesSubscriptions);
         }
-        typesSubscriptions.addFirst(type);
+        typesSubscriptions.add(type);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MessageBusImpl implements MessageBus {
             subscribedMicroServiceList = new ConcurrentLinkedDeque<>();
             broadcastSubscribersByType.put(type, subscribedMicroServiceList);
         }
-        subscribedMicroServiceList.addFirst(m);
+        subscribedMicroServiceList.add(m);
 
         Deque<Class<? extends Broadcast>> typesSubscriptions = broadcastSubscribersByMicroService.get(m);
         if (typesSubscriptions == null) {
@@ -103,7 +103,6 @@ public class MessageBusImpl implements MessageBus {
         synchronized (this){
             MicroService microServiceInLine = subscribedMicroServiceQueue.remove();
             microServicesMessages.get(microServiceInLine).add(e);
-//            notifyAll();
             subscribedMicroServiceQueue.add(microServiceInLine);
         }
         Future<T> newFuture = new Future<>();
@@ -113,7 +112,7 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void register(MicroService m) {
-        microServicesMessages.put(m, new PriorityBlockingQueue<>(SERVICES_DEFAULT_INITIAL_CAPACITY, (m1, m2) -> {
+        microServicesMessages.putIfAbsent(m, new PriorityBlockingQueue<>(SERVICES_DEFAULT_INITIAL_CAPACITY, (m1, m2) -> {
             // returns negative if m1 < m2
             // Broadcast > event
             if (Broadcast.class.isAssignableFrom(m1.getClass()) && Event.class.isAssignableFrom(m2.getClass()))

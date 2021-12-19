@@ -3,6 +3,7 @@ package bgu.spl.mics.application.objects;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive object representing a single CPU.
@@ -11,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class CPU {
     private int cores;
-    private int currentTick;
+    private AtomicInteger currentTick = new AtomicInteger(1);
     private int numOfProcessed;
     private BlockingQueue<DataBatch> unprocessedDataBatches;
     private Cluster cluster;
@@ -21,13 +22,12 @@ public class CPU {
     public CPU(int cores){
         this.cores = cores;
         this.cluster = Cluster.getInstance();
-        this.currentTick = 1;
         this.numOfProcessed = 0;
         this.unprocessedDataBatches = new LinkedBlockingQueue<>();
     }
 
     public int getTicks() {
-        return currentTick;
+        return currentTick.intValue();
     }
 
     public Collection<DataBatch> getDataBatchCollection() {
@@ -48,8 +48,8 @@ public class CPU {
      */
     public void advanceTick(){
         System.out.println("advancing tick");
-        currentTick++;
-        while (!unprocessedDataBatches.isEmpty()){
+        currentTick.incrementAndGet();
+        if (!unprocessedDataBatches.isEmpty()){
             DataBatch batch = unprocessedDataBatches.poll();
             if (batch.getDataType() == Data.Type.Tabular){
                 processTabular(batch);
@@ -73,8 +73,7 @@ public class CPU {
     }
 
     private void process(DataBatch batch, int processTimeRequired){
-
-        if (currentTick-batch.getStartingProcessTick() == processTimeRequired){
+        if (currentTick.intValue()-batch.getStartingProcessTick() == processTimeRequired){
             System.out.println(Thread.currentThread().getName() + " processing a batch");
             System.out.println("currently processed " + numOfProcessed);
             cluster.sendProcessedBatch(batch);
@@ -97,7 +96,7 @@ public class CPU {
      * @param batch - the batch of data to be added to the DataBatch collection later to be processed
      */
     public void addDataBatch(DataBatch batch){
-        batch.setStartingProcessTick(currentTick);
+        batch.setStartingProcessTick(currentTick.intValue());
         unprocessedDataBatches.add(batch);
     }
     public int getNumOfProcessed(){

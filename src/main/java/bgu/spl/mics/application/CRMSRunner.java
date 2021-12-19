@@ -151,11 +151,9 @@ public class CRMSRunner {
         buildGPUServices(gpus);
         buildCPUServices(cpus);
         updateCluster(gpus,cpus);
-        buildConferenceServices(inputAsJavaObject);
+//        buildConferenceServices(inputAsJavaObject);
         buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        System.out.println(threadSet);
         buildOutputFile(inputAsJavaObject, cpus, gpus);
     }
 
