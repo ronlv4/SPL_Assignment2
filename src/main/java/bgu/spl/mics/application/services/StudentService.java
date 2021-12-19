@@ -20,46 +20,50 @@ import bgu.spl.mics.application.objects.Student;
 public class StudentService extends MicroService {
 
     private Student student;
+    private int modelIndex;
 
     public StudentService(String name, Student student) {
         super(name);
         this.student = student;
     }
 
-
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
+        modelIndex = 0;
         subscribeBroadcast(TickBroadcast.class, c -> {
-            if(c.getCurrentTick()==0)
-                System.out.println("interrupting service " + getName());
+            Model currentModel = student.getModels()[modelIndex];
+            Future<Model> future;
+            if (currentModel.getStatus() == Model.Status.PreTrained) {
+                System.out.println("Sent a new Train Model event to model " + currentModel.getName());
+                currentModel.setStatus(Model.Status.Training);
+                sendEvent(new TrainModelEvent(currentModel));
+            } else if (currentModel.getStatus() == Model.Status.Trained) {
+
+                System.out.println("finished training model " + currentModel.getName());
+                sendEvent(new TestModelEvent(currentModel));
+            } else if (currentModel.getStatus() == Model.Status.Tested) {
+                if (currentModel.getResult() == Model.Results.Good) {
+                    System.out.println("it has good results");
+                    sendEvent(new PublishResultsEvent(currentModel));
+                }
+                if (modelIndex+1 < student.getModels().length)
+                    modelIndex++;
+                else
+                    Thread.currentThread().interrupt();
+            }
+            if (c.getCurrentTick() == 0) {
                 Thread.currentThread().interrupt();
-            });
+            }
+        });
         subscribeBroadcast(PublishConferenceBroadcast.class, c -> {
             for (Model goodModel : c.getGoodModels()) {
-                if (goodModel.getStudent().equals(student)){
+                if (goodModel.getStudent().equals(student)) {
                     student.increasePublications();
-                }
-                else{
+                } else {
                     student.increasePapersRead();
                 }
             }
         });
-
-        for (Model model : student.getModels()) {
-            Future<Model> future;
-            do {
-                future  = sendEvent(new TrainModelEvent(model));
-            }while (future == null);
-            future.get();
-            System.out.println("got a future");
-            future = sendEvent(new TestModelEvent(model));
-            Model finishedModel = future.get();
-            System.out.println("Student got model " + model.getName());
-            if (finishedModel.getResult() == Model.Results.Good){
-                System.out.println("it has good results");
-                sendEvent(new PublishResultsEvent(model));
-            }
-        }
     }
 }

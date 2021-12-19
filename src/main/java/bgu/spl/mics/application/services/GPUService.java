@@ -63,7 +63,7 @@ public class GPUService extends MicroService {
             createAndSendBatches(model.getData());
         });
         subscribeEvent(TestModelEvent.class, c -> {
-//            System.out.println("Testing a model");
+            System.out.println("Testing a model");
             Model model = c.getModelToTest();
             if (model.getStudent().isMsc()) {
                 if (Math.random() < 0.6) {
@@ -78,6 +78,8 @@ public class GPUService extends MicroService {
                     model.setBadResult();
                 }
             }
+            model.setStatus(Model.Status.Tested);
+            model.getStudent().addTrainedModel(model);
             messageBus.complete(c, model);
         });
     }

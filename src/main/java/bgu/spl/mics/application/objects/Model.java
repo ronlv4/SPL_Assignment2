@@ -9,7 +9,7 @@ public class Model {
 
     private String name;
     private Data data;
-    private Student student;
+    private transient Student student;
     private Status status;
     private Results result;
 
@@ -80,4 +80,7 @@ public class Model {
     public Status getStatus() {
         return status;
     }
+
+
+
 }
