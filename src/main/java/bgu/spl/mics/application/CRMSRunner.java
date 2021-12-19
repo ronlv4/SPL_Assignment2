@@ -3,7 +3,10 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.InputParsing.InputFile;
 import bgu.spl.mics.application.InputParsing.ModelDeserializer;
+import bgu.spl.mics.application.OutputWriting.ModelSerializer;
 import bgu.spl.mics.application.OutputWriting.OutputFile;
+//import bgu.spl.mics.application.OutputWriting.StudentSerializer;
+import bgu.spl.mics.application.OutputWriting.StudentSerializer;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
@@ -43,9 +46,32 @@ public class CRMSRunner {
             gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
             writer.flush(); //flush data to file
             writer.close(); //close write
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (java.io.IOException ignore){
-        }
+
+//        Gson gson = new GsonBuilder().registerTypeAdapter(Model.class, new ModelDeserializer()).create();
+//        JsonReader reader = new JsonReader(new FileReader(jsonPath));
+//        return gson.fromJson(reader, InputFile.class);
+
+
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        InputFile arrays = (InputFile) statistics[0];
+//        GPU[] gpus = (GPU[]) statistics[1];
+//        CPU[] cpus = (CPU[]) statistics[2];
+//        int gpuTimeUsed = (int) statistics[3];
+//        int cpuTimeUsed = (int) statistics[4];
+//        int batchesProcessed = (int) statistics[5];
+//        Student[] students = arrays.getStudents();
+//        ConferenceInformation[] conferences = arrays.getConferences();
+//        try{
+//            Writer writer = new FileWriter("output1.json");
+//            gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
+//            writer.flush(); //flush data to file
+//            writer.close(); //close write
+//        }
+//        catch (java.io.IOException ignore){
+//        }
     }
 
     public static Student[] getStudents(InputFile inputJava) {
@@ -160,6 +186,7 @@ public class CRMSRunner {
         buildConferenceServices(inputAsJavaObject);
         buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
+        buildOutputFile(inputAsJavaObject);
         cluster.getInstance().setArrays(inputAsJavaObject);
     }
 

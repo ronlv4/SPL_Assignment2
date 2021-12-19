@@ -16,7 +16,6 @@ public class Model {
     private Student student;
 
 
-
     public enum Status {
         PreTrained,
         Training,
@@ -83,4 +82,7 @@ public class Model {
     public Status getStatus() {
         return status;
     }
+
+
+
 }

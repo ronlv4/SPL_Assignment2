@@ -17,6 +17,7 @@ public class Cluster {
     private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
+    private Statistics stats = new Statistics();
     private InputFile arrays;
     private Object[] statistics = new Object[6];
     private int cpuPointer;
@@ -94,7 +95,6 @@ public class Cluster {
         statistics[3] = gpuTimeUsed;
         statistics[4] = cpuTimeUsed;
         statistics[5] = batchesProcessed;
-        System.out.println("hi"+cpuTimeUsed);
 
         return statistics;
     }

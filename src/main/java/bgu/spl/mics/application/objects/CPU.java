@@ -44,10 +44,10 @@ public class CPU {
 //        if (currentTick % 150 == 0){
 //            System.out.println(currentTick + " - " + Thread.currentThread().getName() + ": " + getNumOfBatches());
 //        }
-
         if (!unprocessedDataBatches.isEmpty()) {
             DataBatch batch = unprocessedDataBatches.poll();
             totalTime++;
+//            System.out.println("processing batch " + batch.getStartIndex() + " for model " + batch.getGpu().getModel().getName());
             if (batch.getDataType() == Data.Type.Tabular){
                 processTabular(batch);
             } else if (batch.getDataType() == Data.Type.Text) {
@@ -71,7 +71,7 @@ public class CPU {
     }
 
     private void process(DataBatch batch, int processTimeRequired) {
-        if (currentTick - batch.getStartingProcessTick() == processTimeRequired) {
+        if (currentTick - batch.getStartingProcessTick() >= processTimeRequired) {
 //            System.out.println(Thread.currentThread().getName() + " finished processing batch" + batch.getStartIndex() + " type: " + batch.getDataType());
             cluster.sendProcessedBatch(batch);
             numOfProcessed++;

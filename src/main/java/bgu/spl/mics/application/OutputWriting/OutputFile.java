@@ -19,13 +19,11 @@ public class OutputFile {
     @Expose int cpuTimeUsed;
     @Expose int batchesProcessed;
 
-    public OutputFile(Student[] students, ConferenceInformation[] conferences ,int gpuTimeUsed, int cpuTimeUsed, int batchesProcessed){
+    public OutputFile(Student[] students, ConferenceInformation[] conferences, int gpuTimeUsed, int cpuTimeUsed, int batchesProcessed) {
         this.students = students;
         this.conferences = conferences;
-        this.cpuTimeUsed = cpuTimeUsed;
         this.gpuTimeUsed = gpuTimeUsed;
+        this.cpuTimeUsed = cpuTimeUsed;
         this.batchesProcessed = batchesProcessed;
     }
-
-
 }

@@ -39,6 +39,7 @@ public class TimeService extends MicroService {
     @Override
     protected void initialize() {
         MessageBus.register(this);
+        terminate();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -51,6 +52,7 @@ public class TimeService extends MicroService {
                     timer.cancel();
                     CRMSRunner.buildOutputFile(Cluster.getInstance().getStatistics());
                     Thread.currentThread().interrupt();
+
                 }
             }
         }, 3000, tickTime);

@@ -77,8 +77,8 @@ public class GPU {
 //        System.out.println("Current tick: " + currentTick.intValue());
 //        System.out.println("starting train tick: " + batch.getStartingTrainTick());
 //        System.out.println("traing time required: " + trainTimeRequired);
-        System.out.println(Thread.currentThread().getName() + " is training");
-        System.out.println(VRAM.size());
+//        System.out.println(Thread.currentThread().getName() + " is training");
+//        System.out.println(VRAM.size());
         if (currentTick - batch.getStartingTrainTick() >= trainTimeRequired) {
 //            System.out.println("finished training a batch");
             if (batch.getStartIndex() == getData().getSize() - 1000) {
@@ -92,6 +92,7 @@ public class GPU {
     }
 
     public void tryAddProcessedBatch(DataBatch batch) {
+//        System.out.println("adding a processed batch " + batch.getStartIndex());
         batch.setStartingTrainTick(currentTick);
         addProcessedBatch(batch);
     }

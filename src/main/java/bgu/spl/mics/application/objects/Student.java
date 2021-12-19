@@ -22,8 +22,12 @@ public class Student {
     @Expose private int publications;
     @Expose private int papersRead;
     private Model[] models;
-    @Expose public static LinkedList<Model> trainedModels = new LinkedList<>();
+    private List<Model> trainedModels = new LinkedList<>();
 
+    public void addTrainedModel(Model trainedModel){
+        trainedModels.add(trainedModel);
+
+    }
     public Model[] getModels() {
         return models;
     }
