@@ -109,6 +109,8 @@ public class GPU {
 
     public void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
+        Student.trainedModels.add(model);
+        System.out.println("working");
 //        System.out.println("finished Training");
     }
 

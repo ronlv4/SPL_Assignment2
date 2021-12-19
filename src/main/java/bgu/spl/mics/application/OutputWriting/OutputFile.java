@@ -7,16 +7,17 @@ import bgu.spl.mics.application.objects.GPU;
 import bgu.spl.mics.application.objects.Student;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 import java.io.FileWriter;
 import java.io.Writer;
 
 public class OutputFile {
-    Student[] students;
-    ConferenceInformation[] conferences;
-    int gpuTimeUsed;
-    int cpuTimeUsed;
-    int batchesProcessed;
+    @Expose Student[] students;
+    @Expose ConferenceInformation[] conferences;
+    @Expose int gpuTimeUsed;
+    @Expose int cpuTimeUsed;
+    @Expose int batchesProcessed;
 
     public OutputFile(Student[] students, ConferenceInformation[] conferences ,int gpuTimeUsed, int cpuTimeUsed, int batchesProcessed){
         this.students = students;
