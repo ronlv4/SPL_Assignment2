@@ -1,14 +1,6 @@
 package bgu.spl.mics.application.objects;
 
 
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.application.InputParsing.InputFile;
-
-import java.nio.file.LinkPermission;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Passive object representing the cluster.
  * <p>
@@ -22,7 +14,6 @@ public class Cluster {
     private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
-    private static boolean isDone = false;
     private Object[] statistics = new Object[3];
     private int cpuPointer;
     private int gpuPointer;
@@ -77,7 +68,8 @@ public class Cluster {
      * @param batch - the processed batch to transfer
      */
     public void sendProcessedBatch(DataBatch batch){
-        batch.getGpu().addProcessedBatch(batch);
+        System.out.println("from cluster sending a processed batch");
+        batch.getGpu().tryAddProcessedBatch(batch);
     }
 
     public Object[] getStatistics() {

@@ -30,7 +30,7 @@ public class GPUTest {
     @Test
     public void addProcessedBatch() {
         int numOfBatchesBefore = gpu.getNumberOfProcessedBatches();
-        gpu.addProcessedBatch(batch);
+        gpu.tryAddProcessedBatch(batch);
         int numOfBatchesAfter = gpu.getNumberOfProcessedBatches();
         assertEquals(numOfBatchesBefore + 1, numOfBatchesAfter);
     }
