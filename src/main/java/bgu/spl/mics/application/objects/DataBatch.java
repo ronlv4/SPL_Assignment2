@@ -43,7 +43,13 @@ public class DataBatch {
         return startingProcessTick;
     }
 
-    public Data.Type getDataType(){
+    public Data.Type getDataType() {
         return data.getType();
+
+
+    }
+
+    public Data getData() {
+        return data;
     }
 }

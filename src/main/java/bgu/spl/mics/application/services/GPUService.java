@@ -79,7 +79,6 @@ public class GPUService extends MicroService {
                 }
             }
             model.setStatus(Model.Status.Tested);
-            model.getStudent().addTrainedModel(model);
             messageBus.complete(c, model);
         });
     }

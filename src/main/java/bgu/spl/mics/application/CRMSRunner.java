@@ -16,6 +16,7 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 /**
  * This is the Main class of Compute Resources Management System application. You should parse the input file,
@@ -83,9 +84,7 @@ public class CRMSRunner {
         int numOfStudents = students.length;
         Thread[] studentServicesThreads = new Thread[numOfStudents];
         for (int i = 0; i < numOfStudents; i++) {
-            Arrays.sort(students[i].getModels(),(m1, m2)->{
-                return m1.getData().getSize()-m2.getData().getSize();
-            });
+            Arrays.sort(students[i].getModels(), Comparator.comparingInt(m -> m.getData().getSize()));
             studentServicesThreads[i] = new Thread(new StudentService("Student Service " + i, students[i]));
             studentServicesThreads[i].start();
         }
@@ -186,7 +185,7 @@ public class CRMSRunner {
         buildConferenceServices(inputAsJavaObject);
         buildStudentServices(getStudents(inputAsJavaObject));
         buildTimeService(inputAsJavaObject);
-        buildOutputFile(inputAsJavaObject);
+//        buildOutputFile(inputAsJavaObject);
         cluster.getInstance().setArrays(inputAsJavaObject);
     }
 
