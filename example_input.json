@@ -53,7 +53,7 @@
                 {
                     "name": "Bert",
                     "type": "Text",
-                    "size": 1000
+                    "size": 15000
                 },
                 {
                     "name": "GPT4",
@@ -63,7 +63,7 @@
                 {
                     "name": "GPT5",
                     "type": "Text",
-                    "size": 200000
+                    "size": 20000
                 },
                 {
                     "name": "GPT10",
@@ -87,17 +87,17 @@
                 {
                     "name": "GNN",
                     "type": "Tabular",
-                    "size": 1000000
+                    "size": 10000
                 },
                 {
                     "name": "MoreStyleGAN",
                     "type": "Images",
-                    "size": 100000
+                    "size": 10000
                 },
                 {
                     "name": "ConditionalGAN",
                     "type": "Images",
-                    "size": 500000
+                    "size": 50000
                 }
             ]
 
@@ -116,7 +116,7 @@
                 {
                     "name": "VIT2",
                     "type": "Images",
-                    "size": 1000000
+                    "size": 100000
                 },
                 {
                     "name": "MuchMoreEfficientNet",
@@ -142,6 +142,6 @@
         {"name": "ECCV", "date": 40000},
         {"name": "AISTATS", "date": 50000}
     ],
-    "TickTime": 10,
-    "Duration": 1000
+    "TickTime": 100,
+    "Duration": 10000
 }

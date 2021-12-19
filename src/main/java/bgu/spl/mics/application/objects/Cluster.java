@@ -93,7 +93,6 @@ public class Cluster {
         statistics[3] = gpuTimeUsed;
         statistics[4] = cpuTimeUsed;
         statistics[5] = batchesProcessed;
-        System.out.println("hi"+cpuTimeUsed);
 
         return statistics;
     }
