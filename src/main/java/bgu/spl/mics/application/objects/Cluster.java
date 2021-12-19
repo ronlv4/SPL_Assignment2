@@ -16,6 +16,7 @@ public class Cluster {
     private static boolean isDone = false;
     private static GPU[] GPUS;
     private static CPU[] CPUS;
+    private Statistics stats = new Statistics();
     private InputFile arrays;
     private Object[] statistics = new Object[6];
     private int cpuPointer;

@@ -110,6 +110,7 @@ public class GPU {
 
     public void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
+
 //        System.out.println("finished Training");
     }
 

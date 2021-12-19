@@ -39,6 +39,7 @@ public class StudentService extends MicroService {
                 currentModel.setStatus(Model.Status.Training);
                 sendEvent(new TrainModelEvent(currentModel));
             } else if (currentModel.getStatus() == Model.Status.Trained) {
+
                 System.out.println("finished training model " + currentModel.getName());
                 sendEvent(new TestModelEvent(currentModel));
             } else if (currentModel.getStatus() == Model.Status.Tested) {
