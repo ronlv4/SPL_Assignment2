@@ -80,8 +80,11 @@ public class GPU {
 //        System.out.println(Thread.currentThread().getName() + " is training");
 //        System.out.println(VRAM.size());
         if (currentTick - batch.getStartingTrainTick() >= trainTimeRequired) {
+            Data currentData = batch.getData();
+            currentData.incTrainedBatches();
 //            System.out.println("finished training a batch");
-            if (batch.getStartIndex() == getData().getSize() - 1000) {
+
+            if (currentData.getTrainedBatches() == currentData.getSize() / 1000) {
                 finalizeModelTraining();
 //                System.out.println("finished training a model");
             }
@@ -110,7 +113,7 @@ public class GPU {
 
     public void finalizeModelTraining() {
         model.setStatus(Model.Status.Trained);
-        Student.trainedModels.add(model);
+        model.getStudent().addTrainedModel(model);
         System.out.println("working");
 //        System.out.println("finished Training");
     }

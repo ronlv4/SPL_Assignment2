@@ -3,28 +3,28 @@
     [
         {
             "name": "Simba",
-            "department": "Computer Science",            
+            "department": "Computer Science",
             "status": "MSc",
             "models":
             [
                 {
                     "name": "YOLO10",
-                    "type": "Images",
-                    "size": 20000
+                    "type": "images",
+                    "size": 200000
                 },
                 {
                     "name": "ResNet9000",
-                    "type": "Images",
-                    "size": 2000
+                    "type": "images",
+                    "size": 200000
                 },
                 {
                     "name": "LessEfficientNet",
-                    "type": "Images",
+                    "type": "images",
                     "size": 20000
                 },
                 {
                     "name": "DensestNet",
-                    "type": "Images",
+                    "type": "images",
                     "size": 200000
                 }
             ]
@@ -32,38 +32,38 @@
         },
         {
             "name": "Zazu",
-            "department": "EE",            
+            "department": "EE",
             "status": "PhD",
             "models":
             [
                 {
                     "name": "VIT",
-                    "type": "Images",
-                    "size": 10000
+                    "type": "images",
+                    "size": 100000000
                 }
             ]
 
         },
         {
             "name": "Pumba",
-            "department": "Computer Science",            
+            "department": "Computer Science",
             "status": "PhD",
             "models":
             [
                 {
                     "name": "Bert",
                     "type": "Text",
-                    "size": 15000
+                    "size": 1000000
                 },
                 {
                     "name": "GPT4",
                     "type": "Text",
-                    "size": 10000
+                    "size": 1000000
                 },
                 {
                     "name": "GPT5",
                     "type": "Text",
-                    "size": 20000
+                    "size": 200000
                 },
                 {
                     "name": "GPT10",
@@ -75,57 +75,57 @@
         },
         {
             "name": "Timon",
-            "department": "SE",            
-            "status": "MSc",
+            "department": "SE",
+            "status": "MsC",
             "models":
             [
                 {
                     "name": "Percepetron",
                     "type": "Tabular",
-                    "size": 10000
+                    "size": 1000000
                 },
                 {
                     "name": "GNN",
                     "type": "Tabular",
-                    "size": 10000
+                    "size": 1000000
                 },
                 {
                     "name": "MoreStyleGAN",
                     "type": "Images",
-                    "size": 10000
+                    "size": 100000
                 },
                 {
                     "name": "ConditionalGAN",
                     "type": "Images",
-                    "size": 50000
+                    "size": 500000
                 }
             ]
 
         },
         {
             "name": "Nala",
-            "department": "Computer Science",            
+            "department": "Computer Science",
             "status": "PhD",
             "models":
             [
                 {
                     "name": "YOLO9000",
-                    "type": "Images",
-                    "size": 10000
-                },
-                {
-                    "name": "VIT2",
-                    "type": "Images",
+                    "type": "images",
                     "size": 100000
                 },
                 {
+                    "name": "VIT2",
+                    "type": "images",
+                    "size": 1000000
+                },
+                {
                     "name": "MuchMoreEfficientNet",
-                    "type": "Images",
+                    "type": "images",
                     "size": 20000
                 },
                 {
                     "name": "DenserNet",
-                    "type": "Images",
+                    "type": "images",
                     "size": 100000
                 }
             ]
@@ -136,12 +136,12 @@
     "CPUS": [32,32,32,16,16,16,16],
     "Conferences":
     [
-        {"name": "ICML", "date": 20000},
-        {"name": "NeurIPS", "date": 25000},
-        {"name": "CVPR", "date": 30000},
-        {"name": "ECCV", "date": 40000},
-        {"name": "AISTATS", "date": 50000}
+        {"name": "ICML", "date": 500},
+        {"name": "NeurIPS", "date": 2500},
+        {"name": "CVPR", "date": 3000},
+        {"name": "ECCV", "date": 4000},
+        {"name": "AISTATS", "date": 5000}
     ],
-    "TickTime": 100,
-    "Duration": 10000
+    "TickTime": 50,
+    "Duration": 500
 }

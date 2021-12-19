@@ -6,44 +6,6 @@
       "status": "MSc",
       "publications": 0,
       "papersRead": 0,
-      "models": [
-        {
-          "name": "YOLO10",
-          "data": {
-            "type": "Images",
-            "size": 20000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "ResNet9000",
-          "data": {
-            "type": "Images",
-            "size": 2000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "LessEfficientNet",
-          "data": {
-            "type": "Images",
-            "size": 20000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "DensestNet",
-          "data": {
-            "type": "Images",
-            "size": 200000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        }
-      ],
       "trainedModels": []
     },
     {
@@ -52,17 +14,6 @@
       "status": "PhD",
       "publications": 0,
       "papersRead": 0,
-      "models": [
-        {
-          "name": "VIT",
-          "data": {
-            "type": "Images",
-            "size": 10000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        }
-      ],
       "trainedModels": []
     },
     {
@@ -70,168 +21,48 @@
       "department": "Computer Science",
       "status": "PhD",
       "publications": 0,
-      "papersRead": 0
       "papersRead": 0,
-      "models": [
-        {
-          "name": "Bert",
-          "data": {
-            "type": "Text",
-            "size": 15000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "GPT4",
-          "data": {
-            "type": "Text",
-            "size": 10000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "GPT5",
-          "data": {
-            "type": "Text",
-            "size": 20000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "GPT10",
-          "data": {
-            "type": "Text",
-            "size": 50000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        }
-      ],
       "trainedModels": []
     },
     {
       "name": "Timon",
       "department": "SE",
-      "status": "MSc",
       "publications": 0,
-      "papersRead": 0
       "papersRead": 0,
-      "models": [
-        {
-          "name": "Percepetron",
-          "data": {
-            "type": "Tabular",
-            "size": 10000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "GNN",
-          "data": {
-            "type": "Tabular",
-            "size": 10000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "MoreStyleGAN",
-          "data": {
-            "type": "Images",
-            "size": 10000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "ConditionalGAN",
-          "data": {
-            "type": "Images",
-            "size": 50000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        }
-      ],
-      "trainedModels": []    },
+      "trainedModels": []
+    },
     {
       "name": "Nala",
       "department": "Computer Science",
       "status": "PhD",
       "publications": 0,
-      "papersRead": 0
       "papersRead": 0,
-      "models": [
-        {
-          "name": "YOLO9000",
-          "data": {
-            "type": "Images",
-            "size": 10000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "VIT2",
-          "data": {
-            "type": "Images",
-            "size": 100000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "MuchMoreEfficientNet",
-          "data": {
-            "type": "Images",
-            "size": 20000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        },
-        {
-          "name": "DenserNet",
-          "data": {
-            "type": "Images",
-            "size": 100000
-          },
-          "status": "PreTrained",
-          "result": "None"
-        }
-      ],
       "trainedModels": []
     }
   ],
   "conferences": [
     {
       "name": "ICML",
-      "date": 20000
+      "date": 500
     },
     {
       "name": "NeurIPS",
-      "date": 25000
+      "date": 2500
     },
     {
       "name": "CVPR",
-      "date": 30000
+      "date": 3000
     },
     {
       "name": "ECCV",
-      "date": 40000
+      "date": 4000
     },
     {
       "name": "AISTATS",
-      "date": 50000
+      "date": 5000
     }
   ],
-  "gpuTimeUsed": 7007,
-  "cpuTimeUsed": 8,
-  "batchesProcessed": 5
-  "gpuTimeUsed": 0,
-  "cpuTimeUsed": 0,
-  "batchesProcessed": 0
+  "gpuTimeUsed": 69,
+  "cpuTimeUsed": 55,
+  "batchesProcessed": 58
 }

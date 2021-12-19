@@ -128,8 +128,23 @@ public class MessageBusImpl implements MessageBus {
 //        for (Class<Message> type : eventSubscribersByMicroService.get(m)) {
 //            broadcastSubscribersByType.get(type).remove(m);
 //        }
+
+        Deque<Class<? extends Event<?>>> eventSubscribedTypesDeque = eventSubscribersByMicroService.get(m);
+        if (eventSubscribedTypesDeque != null) {
+            for (Class<? extends Event<?>> type : eventSubscribedTypesDeque) {
+                eventSubscribersByType.get(type).remove(m);
+            }
+        }
+
+        Deque<Class<? extends Broadcast>> broadcastSubscribedTypesDeque = broadcastSubscribersByMicroService.get(m);
+        for (Class<? extends Broadcast> type: broadcastSubscribedTypesDeque){
+            broadcastSubscribersByType.get(type).remove(m);
+        }
+
         eventSubscribersByMicroService.remove(m);
-        microServicesMessages.remove(m); // does not throw exception if key does not exist in map
+        broadcastSubscribersByMicroService.remove(m);
+
+        microServicesMessages.remove(m);
     }
 
     @Override

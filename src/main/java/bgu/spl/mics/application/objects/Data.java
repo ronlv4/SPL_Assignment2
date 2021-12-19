@@ -16,6 +16,7 @@ public class Data {
 
     @Expose private Type type;
     @Expose private int size;
+    private int trainedBatches = 0;
 
     public Data(Type type, int processed, int size) {
         this.type = type;
@@ -28,5 +29,13 @@ public class Data {
 
     public int getSize() {
         return size;
+    }
+
+    public void incTrainedBatches(){
+        trainedBatches++;
+    }
+
+    public int getTrainedBatches() {
+        return trainedBatches;
     }
 }

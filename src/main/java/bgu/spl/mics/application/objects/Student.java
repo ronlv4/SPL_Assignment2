@@ -3,6 +3,7 @@ package bgu.spl.mics.application.objects;
 import com.google.gson.annotations.Expose;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Passive object representing single student.
@@ -22,7 +23,7 @@ public class Student {
     @Expose private int publications;
     @Expose private int papersRead;
     private Model[] models;
-    private List<Model> trainedModels = new LinkedList<>();
+    @Expose private List<Model> trainedModels = new LinkedList<>();
 
     public void addTrainedModel(Model trainedModel){
         trainedModels.add(trainedModel);
