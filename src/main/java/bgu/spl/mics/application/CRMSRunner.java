@@ -32,7 +32,7 @@ public class CRMSRunner {
         return gson.fromJson(reader, InputFile.class);
     }
 
-    public static void buildOutputFile(Object[] statistics) {
+    public static void buildOutputFile(Object[] statistics, String outputPath) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
         InputFile arrays = (InputFile) statistics[0];
         GPU[] gpus = (GPU[]) statistics[1];
@@ -43,8 +43,8 @@ public class CRMSRunner {
         Student[] students = arrays.getStudents();
         ConferenceInformation[] conferences = arrays.getConferences();
         try{
-            Writer writer = new FileWriter("output1.json");
-            gson.toJson(new OutputFile(students, conferences, cpuTimeUsed, gpuTimeUsed, batchesProcessed), writer);
+            Writer writer = new FileWriter(outputPath);
+            gson.toJson(new OutputFile(students, conferences, gpuTimeUsed, cpuTimeUsed, batchesProcessed), writer);
             writer.flush(); //flush data to file
             writer.close(); //close write
         } catch (IOException e) {
@@ -134,7 +134,7 @@ public class CRMSRunner {
         GPU[] gpus = new GPU[gpuStrings.length];
         for (int i = 0; i < gpuStrings.length; i++){
             GPU.Type type = convertStringTypeToEnum(gpuStrings[i]);
-            gpus[i] = new GPU(type);
+            gpus[i] = new GPU(type, i);
         }
         return gpus;
 

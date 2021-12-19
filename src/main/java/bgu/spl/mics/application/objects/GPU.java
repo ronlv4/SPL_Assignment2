@@ -1,10 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive object representing a single GPU.
@@ -25,11 +22,12 @@ public class GPU {
     private Model model;
     private Cluster cluster = Cluster.getInstance();
     private int totalTime = 0;
+    private int GPUIndex;
     private int currentTick = 1;
 
-    private Queue<DataBatch> VRAM;
+    private LinkedBlockingQueue<DataBatch> VRAM;
 
-    public GPU(Type type) {
+    public GPU(Type type, int index) {
         this.type = type;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
@@ -38,6 +36,7 @@ public class GPU {
         } else {
             VRAM = new LinkedBlockingQueue<>(8);
         }
+        this.GPUIndex = index;
     }
 
     public Collection<DataBatch> getUnprocessedBatches() {
@@ -45,6 +44,9 @@ public class GPU {
     }
 
     public void advanceTick() {
+        if (VRAM.remainingCapacity()>0){
+            fillVRAM();
+        }
         if (!VRAM.isEmpty()) {
             DataBatch batch = VRAM.poll();
             totalTime++;
@@ -90,7 +92,7 @@ public class GPU {
             }
         }
         else {
-            addProcessedBatch(batch);
+            VRAM.offer(batch);
         }
     }
 
@@ -118,6 +120,13 @@ public class GPU {
 //        System.out.println("finished Training");
     }
 
+    public void fillVRAM(){
+        DataBatch nextBatch = cluster.requestProcessedBatch(GPUIndex);
+        if (nextBatch != null){
+            VRAM.offer(nextBatch);
+        }
+    }
+
     public void setModel(Model model) {
         this.model = model;
     }
@@ -141,5 +150,9 @@ public class GPU {
 
     public int getTotalTime() {
         return totalTime;
+    }
+
+    public int getGPUIndex() {
+        return GPUIndex;
     }
 }

@@ -9,18 +9,18 @@ public class DataBatch {
 
     private Data data;
     private int startIndex;
-    private GPU gpu;
+    private int GPUIndex;
     private int startingProcessTick;
     private int startingTrainTick;
 
-    public DataBatch(Data data, int startIndex, GPU gpu) {
+    public DataBatch(Data data, int startIndex, int index) {
         this.data = data;
         this.startIndex = startIndex;
-        this.gpu = gpu;
+        this.GPUIndex = index;
     }
 
-    public GPU getGpu() {
-        return gpu;
+    public int getGPUIndex() {
+        return GPUIndex;
     }
 
     public int getStartIndex() {
