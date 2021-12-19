@@ -1,0 +1,108 @@
+{
+  "students": [
+    {
+      "name": "Simba",
+      "department": "Computer Science",
+      "status": "MSc",
+      "publications": 0,
+      "papersRead": 0,
+      "trainedModels": []
+    },
+    {
+      "name": "Zazu",
+      "department": "EE",
+      "status": "PhD",
+      "publications": 0,
+      "papersRead": 0,
+      "trainedModels": [
+        {
+          "name": "VIT",
+          "data": {
+            "type": "Tabular",
+            "size": 100000000
+          },
+          "status": "Training",
+          "result": "None"
+        }
+      ]
+    },
+    {
+      "name": "Pumba",
+      "department": "Computer Science",
+      "status": "PhD",
+      "publications": 0,
+      "papersRead": 0,
+      "trainedModels": []
+    },
+    {
+      "name": "Timon",
+      "department": "SE",
+      "publications": 0,
+      "papersRead": 0,
+      "trainedModels": []
+    },
+    {
+      "name": "Nala",
+      "department": "Computer Science",
+      "status": "PhD",
+      "publications": 0,
+      "papersRead": 0,
+      "trainedModels": [
+        {
+          "name": "MuchMoreEfficientNet",
+          "data": {
+            "type": "Tabular",
+            "size": 20000
+          },
+          "status": "Tested",
+          "result": "Good"
+        },
+        {
+          "name": "YOLO9000",
+          "data": {
+            "type": "Tabular",
+            "size": 100000
+          },
+          "status": "Tested",
+          "result": "Bad"
+        }
+      ]
+    }
+  ],
+  "conferences": [
+    {
+      "name": "ICML",
+      "date": 500
+    },
+    {
+      "name": "NeurIPS",
+      "date": 2500
+    },
+    {
+      "name": "CVPR",
+      "date": 3000
+    },
+    {
+      "name": "ECCV",
+      "date": 4000,
+      "publications": [
+        {
+          "name": "MuchMoreEfficientNet",
+          "data": {
+            "type": "Tabular",
+            "size": 20000
+          },
+          "status": "Tested",
+          "result": "Good"
+        }
+      ]
+    },
+    {
+      "name": "AISTATS",
+      "date": 5000
+    }
+  ],
+  "cpuTimeUsed": 6993,
+  "gpuTimeUsed": 1174,
+  "batchesProcessed": 6987
+}
