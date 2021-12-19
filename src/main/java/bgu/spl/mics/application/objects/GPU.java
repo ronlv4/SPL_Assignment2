@@ -24,14 +24,13 @@ public class GPU {
     private Type type;
     private Model model;
     private Cluster cluster = Cluster.getInstance();
-    private int totalTime;
+    private int totalTime = 0;
     private int currentTick = 1;
 
     private Queue<DataBatch> VRAM;
 
     public GPU(Type type) {
         this.type = type;
-        this.totalTime = 0;
         if (type == Type.RTX3090) {
             VRAM = new LinkedBlockingQueue<>(32);
         } else if (type == Type.RTX2080) {
